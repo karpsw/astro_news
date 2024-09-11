@@ -7,6 +7,11 @@ COPY . /app/
 #RUN npm run build
 
 RUN yarn install
+
+ARG ARG_SITE_URL
+ENV SITE_URL=$ARG_SITE_URL
+RUN echo "SITE_URL=$SITE_URL"
+
 RUN yarn build
 
 ENV HOST=0.0.0.0

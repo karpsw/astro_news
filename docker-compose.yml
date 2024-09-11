@@ -5,7 +5,7 @@ services:
   astroapp:
     container_name: astroapp
     build:
-      context: ./src
+      context: ./app
       dockerfile: ./../docker/astroapp/Dockerfile
       args:
         ARG_SITE_URL: 'http://localhost:8080'
