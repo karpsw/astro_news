@@ -88,8 +88,8 @@ services:
       - wordpress
  
   mysql:
-    image: mysql:8.0
-#    image: mysql:8.0-debian
+#    image: mysql:8.0
+    image: mysql:8.0-debian
     container_name: mysql
 #    restart: always
     env_file:
