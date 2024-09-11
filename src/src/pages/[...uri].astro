@@ -1,0 +1,62 @@
+---
+import Centered from "../layouts/Centered.astro";
+console.log("uri: "+ Astro.url );
+
+import MainLayout from "../layouts/Base.astro";
+import Archive from "../components/templates/Archive.astro";
+import Single from "../components/templates/Single.astro";
+import { getNodeByURI, getAllUris } from "../libs/wpapi";
+import MyBase from "../layouts/MyBase.astro";
+const uri = `/${Astro.params.uri}/`;
+const data = await getNodeByURI(uri);
+const node = data.nodeByUri;
+const props = Astro.props;
+const { title, description } = Astro.props;
+import type { BaseHeadProps } from '@/components/BaseHead.astro';
+
+if(!node?.__typename){
+        return new Response("Not found", { status: 404 });
+}
+
+export async function getStaticPaths(){
+    return await getAllUris();
+}
+
+function resolveContentTemplate(node){ 
+    let template;
+    switch(node.__typename){
+        case 'Post':
+            template = Single;
+            break; 
+        case 'Page':
+            template = Single;
+            break; 
+        case 'Category':
+            template = Archive;
+            break; 
+        case 'Tag':
+            template = Archive;
+            break; 
+        default: 
+            template = Single;
+    }
+
+    return template;
+}
+
+
+
+const Template = resolveContentTemplate(node)
+console.log("Template: "+Template);
+
+export interface BaseProps extends BaseHeadProps {}
+
+const { metadata } = Astro.props as BaseProps;
+
+---
+
+<Centered  metadata >
+        <article class="my-prose">
+                <Template node={node}></Template>
+        </article>
+</Centered>

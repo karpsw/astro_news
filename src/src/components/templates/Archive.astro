@@ -1,0 +1,12 @@
+---
+import MyPostCard from "../MyPostCard.astro";
+
+const { node } = Astro.props;
+---     
+ <h1>{node.name} - Archive</h1>
+
+ {node.posts.nodes.map(post => {
+    return (
+        <MyPostCard post={post}></MyPostCard>
+    )
+})}

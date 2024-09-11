@@ -1,0 +1,146 @@
+version: '3.7'
+name: astronews6
+services:
+
+  astroapp:
+    container_name: astroapp
+    build:
+      context: ./src
+      dockerfile: ./../docker/astroapp/Dockerfile
+      args:
+        ARG_SITE_URL: 'http://localhost:8080'
+       
+    links:
+      - wordpress
+    networks:
+      - wordpress
+      
+  nginx:
+    container_name: nginx
+    build: ./docker/nginx
+    command: nginx -g "daemon off;"
+    links:
+      - wordpress
+      - phpmyadmin
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+      - "3003:3003"
+#    volumes:
+#      - ./volumes/logs/nginx:/var/log/nginx
+    networks:
+      - wordpress
+      
+      
+  wordpress:
+    depends_on:
+      - mysql
+      - elasticsearch
+    links:
+      - mysql
+      - elasticsearch      
+    image: wordpress:latest
+    restart: always
+
+    networks:
+      - wordpress
+#    ports:
+#      - "3003:80"      
+    volumes:
+      - ./volumes/wordpress/plugins:/var/www/html/wp-content/plugins:cached
+      - ./volumes/wordpress/themes:/var/www/html/wp-content/themes
+      - ./volumes/wordpress/uploads:/var/www/html/wp-content/uploads:cached
+      - ./volumes/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      
+#      - ./volumes/wordpress/wp-content/plugins:/var/www/html/wp-content/plugins:cached
+#      - ./volumes/wordpress/wp-content/uploads:/var/www/html/wp-content/uploads:cached
+#      - ./volumes/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_USER: astronews
+      WORDPRESS_DB_PASSWORD: astronews
+      WORDPRESS_DB_NAME: astronews
+      WORDPRESS_CONFIG_EXTRA: |
+
+        /* development parameters */
+        define('WP_CACHE', false);
+        define('ENVIRONMENT', 'local');
+        define('WP_DEBUG', true);
+
+        /* configure mail server */
+        define('WORDPRESS_SMTP_AUTH', false);
+        define('WORDPRESS_SMTP_SECURE', '');
+        define('WORDPRESS_SMTP_HOST', 'mailhog');
+        define('WORDPRESS_SMTP_PORT', '1025');
+        define('WORDPRESS_SMTP_USERNAME', null);
+        define('WORDPRESS_SMTP_PASSWORD', null);
+        define('WORDPRESS_SMTP_FROM', 'whoever@example.com');
+        define('WORDPRESS_SMTP_FROM_NAME', 'Whoever');
+
+        /* add anymore custom configs here... */
+        
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "8025:8025"
+    networks:
+      - wordpress
+ 
+  mysql:
+    image: mysql:8.0
+#    image: mysql:8.0-debian
+    container_name: mysql
+#    restart: always
+    env_file:
+      - ./env/mysql.env
+    volumes:
+      - mysql:/var/lib/mysql
+    command: '--default-authentication-plugin=mysql_native_password'
+#    command: ["mysqld", "--mysql-native-password=ON"]
+    networks:
+      - wordpress
+
+      
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+#    ports:
+#      - 8085:80
+    networks:
+      - wordpress      
+      
+  elasticsearch:
+    image: elasticsearch:8.8.2
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - wordpress      
+      
+volumes:
+  mysql: {}
+  elasticsearch: {}
+  
+
+networks:
+  wordpress:
+    driver: bridge
