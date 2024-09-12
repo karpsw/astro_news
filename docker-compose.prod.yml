@@ -6,3 +6,31 @@ services:
       - "88:80"
 #    volumes:
 #      - ./volumes/logs/nginx:/var/log/nginx
+
+  wordpress:
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_CONFIG_EXTRA: |
+
+        /* development parameters */
+        define('WP_CACHE', false);
+        define('ENVIRONMENT', 'local');
+        define('WP_DEBUG', true);
+
+        define( 'WP_HOME', 'https://wp-astronews.ror.ru' );
+        define( 'WP_SITEURL', 'https://wp-astronews.ror.ru' );
+        
+        /* configure mail server */
+        define('WORDPRESS_SMTP_AUTH', false);
+        define('WORDPRESS_SMTP_SECURE', '');
+        define('WORDPRESS_SMTP_HOST', 'mailhog');
+        define('WORDPRESS_SMTP_PORT', '1025');
+        define('WORDPRESS_SMTP_USERNAME', null);
+        define('WORDPRESS_SMTP_PASSWORD', null);
+        define('WORDPRESS_SMTP_FROM', 'whoever@example.com');
+        define('WORDPRESS_SMTP_FROM_NAME', 'Whoever');
+
+        /* add anymore custom configs here... */
