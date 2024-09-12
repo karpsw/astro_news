@@ -95,9 +95,8 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
- 
     volumes:
-      - mysql:/var/lib/mysql
+      - ./volumes/db/mysql:/var/lib/mysql
     command: '--default-authentication-plugin=mysql_native_password'
 #    command: ["mysqld", "--mysql-native-password=ON"]
     networks:
@@ -133,15 +132,10 @@ services:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - elasticsearch:/usr/share/elasticsearch/data
     networks:
       - wordpress      
-      
-volumes:
-  mysql: {}
-  elasticsearch: {}
-  
+    volumes:
+      - ./volumes/db/elasticsearch:/usr/share/elasticsearch/data
 
 networks:
   wordpress:
