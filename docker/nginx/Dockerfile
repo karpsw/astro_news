@@ -1,3 +1,5 @@
+RUN echo "STEP0--->"
+
 FROM nginx:1.20
 
 RUN echo "STEP1--->"
