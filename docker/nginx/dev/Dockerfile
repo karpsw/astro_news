@@ -1,0 +1,6 @@
+FROM nginx:1.20
+
+#COPY  ssl /etc/nginx/conf.d/ssl/
+COPY ./nginx.conf /etc/nginx/nginx.conf
+ADD default.conf /etc/nginx/conf.d/default.conf
+
