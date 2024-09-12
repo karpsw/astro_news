@@ -1,6 +1,7 @@
 services:
 
   nginx:
+    build: ./docker/nginx/Dockerfile.prod  
     ports:
       - "88:80"
 #    volumes:

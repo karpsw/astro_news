@@ -17,7 +17,7 @@ services:
       
   nginx:
     container_name: nginx
-    build: ./docker/nginx
+
     command: nginx -g "daemon off;"
     links:
       - wordpress
