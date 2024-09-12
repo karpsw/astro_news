@@ -3,7 +3,7 @@
 services:
 
   astroapp:
-    container_name: astroapp
+  #  container_name: astroapp
     build:
       context: ./app
       dockerfile: ./../docker/astroapp/Dockerfile
@@ -16,7 +16,7 @@ services:
       - wordpress
       
   nginx:
-    container_name: nginx
+ #   container_name: nginx
 
     command: nginx -g "daemon off;"
     links:
@@ -88,7 +88,7 @@ services:
  
   mysql:
     image: ${MYSQL_IMAGE}
-    container_name: mysql
+#    container_name: mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD:  ${MYSQL_ROOT_PASSWORD}
@@ -106,7 +106,7 @@ services:
       
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: pma
+ #   container_name: pma
     links:
       - mysql
     environment:
