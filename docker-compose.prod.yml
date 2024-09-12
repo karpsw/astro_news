@@ -1,0 +1,7 @@
+services:
+
+  nginx:
+    ports:
+      - "88:80"
+#    volumes:
+#      - ./volumes/logs/nginx:/var/log/nginx
