@@ -43,9 +43,9 @@ services:
 #    ports:
 #      - "3003:80"      
     volumes:
-      - /var/apps/astronews/volumes/wordpress/plugins:/var/www/html/wp-content/plugins:cached
+      - /var/apps/astronews/volumes/wordpress/plugins:/var/www/html/wp-content/plugins
       - /var/apps/astronews/volumes/wordpress/themes:/var/www/html/wp-content/themes
-      - /var/apps/astronews/volumes/wordpress/uploads:/var/www/html/wp-content/uploads:cached
+      - /var/apps/astronews/volumes/wordpress/uploads:/var/www/html/wp-content/uploads
 #      - /var/apps/astronews/volumes/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - type: bind
         source: /var/apps/astronews/volumes/wordpress/uploads.ini
@@ -120,6 +120,7 @@ services:
       
   elasticsearch:
     image: elasticsearch:8.8.2
+    restart: always
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
