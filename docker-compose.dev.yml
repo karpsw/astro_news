@@ -1,3 +1,4 @@
+name: astronews6
 services:
 
   nginx:
