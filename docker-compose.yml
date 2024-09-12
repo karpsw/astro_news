@@ -23,7 +23,7 @@ services:
       - wordpress
       - phpmyadmin
 #    volumes:
-#      - ./volumes/logs/nginx:/var/log/nginx
+#      - /var/apps/astronews/volumes/logs/nginx:/var/log/nginx
     networks:
       - wordpress
       
@@ -43,17 +43,17 @@ services:
 #    ports:
 #      - "3003:80"      
     volumes:
-      - ./volumes/wordpress/plugins:/var/www/html/wp-content/plugins:cached
-      - ./volumes/wordpress/themes:/var/www/html/wp-content/themes
-      - ./volumes/wordpress/uploads:/var/www/html/wp-content/uploads:cached
-#      - ./volumes/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - /var/apps/astronews/volumes/wordpress/plugins:/var/www/html/wp-content/plugins:cached
+      - /var/apps/astronews/volumes/wordpress/themes:/var/www/html/wp-content/themes
+      - /var/apps/astronews/volumes/wordpress/uploads:/var/www/html/wp-content/uploads:cached
+#      - /var/apps/astronews/volumes/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - type: bind
-        source: ./volumes/wordpress/uploads.ini
+        source: /var/apps/astronews/volumes/wordpress/uploads.ini
         target: /usr/local/etc/php/conf.d/uploads.ini
       
-#      - ./volumes/wordpress/wp-content/plugins:/var/www/html/wp-content/plugins:cached
-#      - ./volumes/wordpress/wp-content/uploads:/var/www/html/wp-content/uploads:cached
-#      - ./volumes/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+#      - /var/apps/astronews/volumes/wordpress/wp-content/plugins:/var/www/html/wp-content/plugins:cached
+#      - /var/apps/astronews/volumes/wordpress/wp-content/uploads:/var/www/html/wp-content/uploads:cached
+#      - /var/apps/astronews/volumes/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     
     environment:
       WORDPRESS_DB_HOST: mysql:3306
@@ -96,7 +96,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - ./volumes/db/mysql:/var/lib/mysql
+      - /var/apps/astronews/volumes/db/mysql:/var/lib/mysql
     command: '--default-authentication-plugin=mysql_native_password'
 #    command: ["mysqld", "--mysql-native-password=ON"]
     networks:
@@ -135,7 +135,7 @@ services:
     networks:
       - wordpress      
     volumes:
-      - ./volumes/db/elasticsearch:/usr/share/elasticsearch/data
+      - /var/apps/astronews/volumes/db/elasticsearch:/usr/share/elasticsearch/data
 
 networks:
   wordpress:
