@@ -26,6 +26,7 @@ export const configClientSchema = processEnvSchema
   .merge(
     z.object({
       SITE_TITLE: z.string().min(1),
+      SEARCH_URL: z.string().min(1),
       SITE_DESCRIPTION: z.string().min(1),
       PAGE_SIZE_POST_CARD: z.number(),
       PAGE_SIZE_POST_CARD_SMALL: z.number(),

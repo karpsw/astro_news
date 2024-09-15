@@ -38,6 +38,7 @@
     "astro-icon": "^1.1.0",
     "astro-remote": "^0.3.3",
     "astro-social-share": "^2.0.2",
+    "astro-useragent": "^4.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",

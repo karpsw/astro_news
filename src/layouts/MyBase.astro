@@ -2,8 +2,10 @@
 import { Icon } from 'astro-icon/components';
 
 import BaseHead from '@/components/BaseHead.astro';
+import BaseHeadMobile from '@/components/BaseHeadMobile.astro';
 import Footer from '@/components/Footer.astro';
 import Header from '@/components/Header.astro';
+import HeaderMobile from '@/components/HeaderMobile.astro';
 import ScrollToTop from '@/components/react/ScrollToTop';
 import { DEFAULT_METADATA } from '@/constants/metadata';
 const { title,  description, passedTitle='' } = DEFAULT_METADATA;
@@ -12,17 +14,33 @@ import type { BaseHeadProps } from '@/components/BaseHead.astro';
 export interface BaseProps extends BaseHeadProps {}
 
 const { metadata } = Astro.props as BaseProps;
+
+import { useUserAgent } from "astro-useragent";
+const { source, isMobile } = useUserAgent(Astro.request.headers.get("user-agent"));
+console.log("isMobile: "+isMobile);
 ---
 
 <html lang="en">
-  <BaseHead metadata />
-  <body class="relative flex flex-col min-h-screen bg-base-100 transition-colors duration-500">
-    <Header />
-    <slot />
-    <Footer />
+{
+  isMobile ?
+      (<BaseHeadMobile metadata />):
+      (<BaseHead metadata />)
+}
 
-    <ScrollToTop client:only="react">
-      <Icon name="mdi:arrow-up-thin" class="h-10 w-10 text-content hover:text-links-hover" />
-    </ScrollToTop>
-  </body>
+<body class="relative flex flex-col min-h-screen bg-base-100 transition-colors duration-500">
+{
+  isMobile ?
+      (<HeaderMobile />):
+      (<Header />)
+}
+
+<main id="main" class="flex-grow flex flex-col ml-1 mr-1">
+  <slot />
+</main>
+<Footer />
+
+<ScrollToTop client:only="react">
+  <Icon name="mdi:arrow-up-thin" class="h-10 w-10 text-content hover:text-links-hover" />
+</ScrollToTop>
+</body>
 </html>

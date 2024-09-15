@@ -1,6 +1,5 @@
 ---
 import Centered from "../layouts/Centered.astro";
-console.log("uri: "+ Astro.url );
 
 import MainLayout from "../layouts/Base.astro";
 import Archive from "../components/templates/Archive.astro";
@@ -47,7 +46,6 @@ function resolveContentTemplate(node){
 
 
 const Template = resolveContentTemplate(node)
-console.log("Template: "+Template);
 
 export interface BaseProps extends BaseHeadProps {}
 

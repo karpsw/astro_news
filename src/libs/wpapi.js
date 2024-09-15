@@ -1,6 +1,63 @@
-export async function navQuery(){
-    const siteNavQueryRes = await fetch(import.meta.env.WORDPRESS_API_URL, {
+export async function graphQlTest(){
+    const siteNavQueryRes = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
         method: 'post', 
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            query: `{
+               query MyQuery {
+  posts(where: {search: "трамп"}, last: 10) {
+    nodes {
+      id
+      title
+      uri
+    }
+  }
+}
+            `
+        })
+    });
+    const{ data } = await siteNavQueryRes.json();
+    return data;
+}
+export async function graphGatoQlTest(){
+    const siteNavQueryRes = await fetch(import.meta.env.WORDPRESS_API_HOST  +'/graphql/internal/', {
+        method: 'post',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            query: `{
+               query MyQuery {
+  posts(
+    sort: {order: DESC, by: DATE}
+    pagination: {limit: 10}
+    filter: {
+      metaQuery: {
+        key: "главная_новость",
+        compareBy: {
+          stringValue: {
+            value: "1"
+            operator: EQUALS
+          }
+        }
+      }
+      
+    }
+  ) {
+    id
+    date
+    excerpt
+    metaValues(key: "главная_новость")
+  }
+}
+            `
+        })
+    });
+    const{ data } = await siteNavQueryRes.json();
+    return data;
+}
+
+export async function navQuery(){
+    const siteNavQueryRes = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
+        method: 'post',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             query: `{
@@ -31,7 +88,7 @@ export async function navQuery(){
 }
 
 export async function homePagePostsQuery(){
-    const response = await fetch(import.meta.env.WORDPRESS_API_URL, {
+    const response = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
         method: 'post', 
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -72,7 +129,7 @@ export async function homePagePostsQuery(){
 
 
 export async function getNodeByURI(uri){
-    const response = await fetch(import.meta.env.WORDPRESS_API_URL, {
+    const response = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
         method: 'post', 
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -157,7 +214,7 @@ export async function getNodeByURI(uri){
 export async function getAllUris(){
 
 
-  const response = await fetch(import.meta.env.WORDPRESS_API_URL, {
+  const response = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
       method: 'post', 
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({

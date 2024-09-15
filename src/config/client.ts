@@ -8,6 +8,7 @@ import type { ConfigClientType } from '@/types/config';
 const configClientData: ConfigClientType = {
   /** all urls without '/' */
   SITE_URL,
+  SEARCH_URL:'/search',
   SITE_TITLE: 'Nemanja Mitic',
   SITE_DESCRIPTION: 'I am Nemanja, full stack developer',
   PLAUSIBLE_SCRIPT_URL,

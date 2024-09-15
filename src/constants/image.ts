@@ -29,6 +29,10 @@ export const IMAGE_SIZES = {
       width: 48,
       height: 48,
     },
+    AVATAR_MOB: {
+      width: 32,
+      height: 30,
+    },
     POST_CARD_SMALL: {
       width: 215,
       height: 120,

@@ -1,7 +1,9 @@
 ---
 import { useEffect } from 'react';
 
-
+import { useUserAgent } from "astro-useragent";
+const { source, isMobile } = useUserAgent(Astro.request.headers.get("user-agent"));
+import { getNodeByURI, getAllUris } from "libs/wpapi";
 ---
 
 <!DOCTYPE html>
@@ -12,6 +14,14 @@ import { useEffect } from 'react';
     <title>Главная страница</title>
 </head>
 <body>
-<h1>Перенаправление...</h1>
+
+
+<title>My Astro website</title>
+
+
+<p>Source: {source}</p>
+{isMobile ? <p>I'm on mobile</p> : <p>I'm on desktop</p>}
+
+
 </body>
 </html>

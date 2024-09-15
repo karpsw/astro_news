@@ -1,0 +1,32 @@
+---
+// must be at top
+import List from '@/layouts/List.astro';
+import { getPageMetadata } from '@/utils/metadata';
+
+
+import Layout from "../layouts/MyBase.astro";
+
+import { graphQlTest, graphGatoQlTest } from "../libs/wpapi";
+console.time("graphQlTest");
+const data = await graphQlTest();
+console.timeEnd("graphQlTest");
+
+console.time("graphGatoQlTest");
+const data2 = await graphGatoQlTest();
+console.timeEnd("graphGatoQlTest");
+---
+
+<Layout  metadata >
+    <article class="my-prose">
+        xx
+    </article>
+</Layout>
+
+
+<style is:global>
+
+</style>
+
+<script>
+
+</script>
