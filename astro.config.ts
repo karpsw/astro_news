@@ -28,7 +28,7 @@ export default defineConfig({
   // default
   compressHTML: true,
 
-  server: { port: 4000 },
+  server: { port: 4000, host:true },
   devToolbar: { enabled: false },
 
   integrations: [

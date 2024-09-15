@@ -1,8 +1,8 @@
 # build output
-app/dist/
+dist/
 
 # dependencies
-app/node_modules/
+node_modules/
 volumes/
 
 # logs

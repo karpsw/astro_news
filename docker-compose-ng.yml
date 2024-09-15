@@ -1,0 +1,17 @@
+version: '3'
+services:
+ 
+  nginx:
+#    image: my-nginx-with-cachepurge:v1
+    container_name: nginx-v01
+    build: 
+      context: ./docker/nginx
+    ports:
+      - "99:99"
+ 
+    command: nginx -g "daemon off;"
+    
+    volumes:
+      - C:\Projects\Telegraf\astro\_trunk10_volumes\logs\nginx:/var/log/nginx
+      - C:\Projects\Telegraf\astro\_trunk10_volumes\cache\nginx:/var/cache/nginx
+  
