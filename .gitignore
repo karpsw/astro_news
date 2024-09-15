@@ -33,4 +33,6 @@ pnpm-debug.log*
 .netlify
 
 .astro/*
+.idea/
+.astro/
 !.astro/types.d.ts
