@@ -97,13 +97,13 @@ services:
 
         /* add anymore custom configs here... */
         
-  mailhog:
-    container_name: ${DOCKER_APP_NAME}-mailhog
-    image: mailhog/mailhog:latest
-    ports:
-      - "8025:8025"
-    networks:
-      - wordpress
+#  mailhog:
+#    container_name: ${DOCKER_APP_NAME}-mailhog
+#    image: mailhog/mailhog:latest
+#    ports:
+#      - "8025:8025"
+#    networks:
+#      - wordpress
  
   mysql:
     image: ${MYSQL_IMAGE}
