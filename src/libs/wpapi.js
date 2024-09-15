@@ -31,7 +31,6 @@ export async function navQuery(){
 }
 
 export async function homePagePostsQuery(){
-    console.log('homePagePostsQuery: ' + import.meta.env.WORDPRESS_API_URL);
     const response = await fetch(import.meta.env.WORDPRESS_API_URL, {
         method: 'post', 
         headers: {'Content-Type':'application/json'},
@@ -73,7 +72,6 @@ export async function homePagePostsQuery(){
 
 
 export async function getNodeByURI(uri){
-    console.log('getNodeByURI: ' + import.meta.env.WORDPRESS_API_URL);
     const response = await fetch(import.meta.env.WORDPRESS_API_URL, {
         method: 'post', 
         headers: {'Content-Type':'application/json'},
@@ -158,7 +156,6 @@ export async function getNodeByURI(uri){
 
 export async function getAllUris(){
 
-    console.log('wpApiUrl-' + import.meta.env.WORDPRESS_API_URL);
 
   const response = await fetch(import.meta.env.WORDPRESS_API_URL, {
       method: 'post', 
