@@ -2,7 +2,7 @@ version: '3'
 services:
 
   web-astro:
-    container_name: web-astro
+    container_name: ${DOCKER_APP_NAME}-web-astro
     restart: always
     build: .
 #    ports:
@@ -16,7 +16,7 @@ services:
       - wordpress
  
   nginx:
-    container_name: nginx-purge-img
+    container_name: ${DOCKER_APP_NAME}-nginx-purge-img
     build: 
       context: ./docker/nginx
     ports:
@@ -38,7 +38,7 @@ services:
       
       
   wordpress:
-    container_name: wordpress
+    container_name: ${DOCKER_APP_NAME}-wordpress
     depends_on:
       - mysql
       - elasticsearch
@@ -98,6 +98,7 @@ services:
         /* add anymore custom configs here... */
         
   mailhog:
+    container_name: ${DOCKER_APP_NAME}-mailhog
     image: mailhog/mailhog:latest
     ports:
       - "8025:8025"
@@ -106,7 +107,7 @@ services:
  
   mysql:
     image: ${MYSQL_IMAGE}
-    container_name: mysql
+    container_name: ${DOCKER_APP_NAME}-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD:  ${MYSQL_ROOT_PASSWORD}
@@ -123,7 +124,7 @@ services:
       
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: pma
+    container_name: ${DOCKER_APP_NAME}-pma
     links:
       - mysql
     environment:
@@ -137,6 +138,7 @@ services:
       - wordpress      
       
   elasticsearch:
+    container_name: ${DOCKER_APP_NAME}-elastic
     image: elasticsearch:8.8.2
     restart: always
     environment:
