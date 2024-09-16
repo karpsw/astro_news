@@ -1,7 +1,10 @@
-export async function getImageUrl(src, width, height){
+export function getImageUrl(src, width, height){
     let url =  'https://astronews.ror.ru'+ src + '?w='+width+'&h='+height + '&q=80';
-    console.log(url);
     return url;
+}
+
+export function getAbsoluteSiteUrl(href){
+    return 'https://astronews.ror.ru'+ href;
 }
 
 

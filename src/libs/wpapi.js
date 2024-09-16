@@ -12,21 +12,33 @@ export async function mainPageQuery(){
   ) {
     ...Post
   }
-  top_news_block: posts(
-    pagination: {limit: 1, offset: 1}
+  top_news_lenta: posts(
+    pagination: {limit: 13}
     sort: {by: DATE, order: DESC}
   ) {
     ...Post
   }
-  top_news_block2: posts(
-    pagination: {limit: 2, offset: 3}
+  all_news_list: posts(
+    pagination: {limit: 10, offset: 14}
     sort: {by: DATE, order: DESC}
   ) {
     ...Post
   }
+  
+  pupular_tags:tags(sort: {by: COUNT, order: DESC}, filter: {}, pagination: {limit: 12}) {
+     
+      id
+      name
+      urlPath
+      count
+    
+  }
+  
+  
 }
 
 fragment Post on Post {
+  id
   title
   urlPath
   dateStr(format: "Y.m.d H:i")
@@ -46,6 +58,7 @@ fragment Post on Post {
   }
 }
 
+
             `
         })
     })
@@ -55,37 +68,6 @@ fragment Post on Post {
 }
 
 
-export async function navQuery(){
-    const siteNavQueryRes = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
-        method: 'post',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-            query: `{
-                menus(where: {location: PRIMARY}) {
-                  nodes {
-                    name
-                    menuItems {
-                        nodes {
-                            uri
-                            url
-                            order
-                            label
-                        }
-                    }
-                  }
-                }
-                generalSettings {
-                    title
-                    url
-                    description
-                }
-            }
-            `
-        })
-    });
-    const{ data } = await siteNavQueryRes.json();
-    return data;
-}
 
 export async function homePagePostsQuery(){
     const response = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
