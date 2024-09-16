@@ -3,6 +3,8 @@ FROM node:20.13.1-alpine
 
 WORKDIR /app
 
+COPY . .
+
 RUN apk add --no-cache git
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
@@ -15,8 +17,15 @@ RUN yarn add --ignore-engines sharp@0.33.4
 RUN yarn build
 #RUN npm install
 
-COPY . .
 
+
+
+ENV HOST=0.0.0.0
+ENV PORT=4000
 EXPOSE 4000
+CMD node ./dist/server/entry.mjs
 
-#CMD ["npm", "run", "start"]
+#CMD yarn start
+#CMD node ./dist/server/entry.mjs
+#CMD ["node", "run", "start"]
+#CMD ["node", "./dist/server/entry.mjs"]

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "start": "serve ./dist",
+    "start2": "serve ./dist",
+    "start": "HOST=0.0.0.0 node ./dist/server/entry.mjs",
     "preview": "astro preview",
     "build": "astro build",
     "build:nginx": "SITE_URL='https://nemanjamitic.com' PLAUSIBLE_SCRIPT_URL='https://plausible.arm1.nemanjamitic.com/js/script.js' astro build",
