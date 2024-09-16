@@ -6,19 +6,44 @@ import { getPageMetadata } from '@/utils/metadata';
 
 import Layout from "../layouts/MyBase.astro";
 
-import { graphQlTest, graphGatoQlTest } from "../libs/wpapi";
+import { mainPageQuery  } from "../libs/wpapi";
+import NewsCardOne from "../components/news/mob/NewsCardOne.astro";
+import {getImageUrl} from "../libs/utils";
+import {Image} from "astro:assets";
+import Link from "../components/Link.astro";
+import {Icon} from "astro-icon/components";
+
 console.time("graphQlTest");
-const data = await graphQlTest();
+const dataResult = await mainPageQuery();
 console.timeEnd("graphQlTest");
 
-console.time("graphGatoQlTest");
-const data2 = await graphGatoQlTest();
-console.timeEnd("graphGatoQlTest");
 ---
 
 <Layout  metadata >
     <article class="my-prose">
-        xx
+
+        {dataResult.main_top_news.map(post => {
+            return (
+                    <>
+                    <Link href={post.uri} variant="link-heading" set:html={post.title}/>
+                    {
+                        post?.featuredImage?.srcPath && (
+                                <div class="md:shrink-0">
+                                    <a  {post.uri} >
+                                        <Link href={post.uri}>
+                                            <Image src={getImageUrl(post.featuredImage.srcPath, 400, 230)} width={400} height={230} alt="" />
+                                        </Link>
+                                    </a>
+
+
+                                </div>
+                        )
+                    }
+
+                </>
+            )
+        })}
+
     </article>
 </Layout>
 

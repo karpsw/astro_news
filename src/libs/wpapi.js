@@ -1,59 +1,59 @@
-export async function graphQlTest(){
-    const siteNavQueryRes = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
+export async function mainPageQuery(){
+    console.log(import.meta.env.WORDPRESS_API_HOST + '/graphql/internal/')
+    const query = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql/internal/', {
         method: 'post', 
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             query: `{
-               query MyQuery {
-  posts(where: {search: "трамп"}, last: 10) {
-    nodes {
-      id
-      title
-      uri
-    }
-  }
-}
-            `
-        })
-    });
-    const{ data } = await siteNavQueryRes.json();
-    return data;
-}
-export async function graphGatoQlTest(){
-    const siteNavQueryRes = await fetch(import.meta.env.WORDPRESS_API_HOST  +'/graphql/internal/', {
-        method: 'post',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-            query: `{
-               query MyQuery {
-  posts(
+  main_top_news: posts(
     sort: {order: DESC, by: DATE}
-    pagination: {limit: 10}
-    filter: {
-      metaQuery: {
-        key: "главная_новость",
-        compareBy: {
-          stringValue: {
-            value: "1"
-            operator: EQUALS
-          }
-        }
-      }
-      
-    }
+    pagination: {limit: 1}
+    filter: {metaQuery: {key: "главная_новость", compareBy: {stringValue: {value: "1", operator: EQUALS}}}}
   ) {
-    id
-    date
-    excerpt
-    metaValues(key: "главная_новость")
+    ...Post
+  }
+  top_news_block: posts(
+    pagination: {limit: 1, offset: 1}
+    sort: {by: DATE, order: DESC}
+  ) {
+    ...Post
+  }
+  top_news_block2: posts(
+    pagination: {limit: 2, offset: 3}
+    sort: {by: DATE, order: DESC}
+  ) {
+    ...Post
   }
 }
+
+fragment Post on Post {
+  title
+  urlPath
+  dateStr(format: "Y.m.d H:i")
+  excerpt
+  categories {
+    name
+    urlPath
+  }
+  tags {
+    name
+    urlPath
+  }
+  featuredImage {
+    height
+    width
+    srcPath
+  }
+}
+
             `
         })
-    });
-    const{ data } = await siteNavQueryRes.json();
+    })
+
+    const{ data } = await query.json();
     return data;
 }
+
 
 export async function navQuery(){
     const siteNavQueryRes = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
