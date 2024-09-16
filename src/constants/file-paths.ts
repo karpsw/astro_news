@@ -5,7 +5,7 @@ export const FILE_PATHS = {
   OG_FOLDER: './src/assets/images/default/open-graph/',
   IMAGE_404: './src/assets/images/pages/image404.jpg',
   /** .jpg */
-  AVATAR: './src/assets/images/avatar.jpg',
+  AVATAR: './src/assets/icons/a-logo.png',
   /** .png */
   AVATAR_TRANSPARENT: './src/assets/images/avatar-transparent.png',
 } as const;

@@ -4,7 +4,7 @@ export function getImageUrl(src, width, height){
 }
 
 export function getAbsoluteSiteUrl(href){
-    return 'https://astronews.ror.ru'+ href;
+    return import.meta.env.SITE_URL+ href;
 }
 
 

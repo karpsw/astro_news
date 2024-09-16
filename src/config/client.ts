@@ -17,7 +17,7 @@ const configClientData: ConfigClientType = {
   MORE_POSTS_COUNT: 3,
   DEFAULT_MODE: 'light',
   DEFAULT_THEME: 'default-light',
-  AUTHOR_NAME: 'Nemanja Mitic',
+  AUTHOR_NAME: 'Astro.news',
   AUTHOR_EMAIL: 'email@email.com',
   AUTHOR_GITHUB: 'https://github.com/nemanjam',
   AUTHOR_LINKEDIN: 'https://www.linkedin.com/in/nemanja-mitic',
