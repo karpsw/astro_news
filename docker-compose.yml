@@ -79,6 +79,7 @@ services:
         define('WP_CACHE', false);
         define('ENVIRONMENT', 'local');
         define('WP_DEBUG', true);
+        define('NGINX_HELPER_LOG', true);
 
 
         define( 'WP_HOME', '${WP_HOME}' );
