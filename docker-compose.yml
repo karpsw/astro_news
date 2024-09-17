@@ -1,8 +1,8 @@
 version: '3'
 services:
 
-  web-astro:
-    container_name: ${DOCKER_APP_NAME}-web-astro
+  web-app:
+    container_name: ${DOCKER_APP_NAME}-web-app
  #   restart: always
     build: .
     ports:
@@ -22,14 +22,14 @@ services:
     ports:
       - "${NGINX_PORT}:80"
     depends_on:
-      - web-astro      
+      - web-app
       - wordpress      
       - phpmyadmin      
     command: nginx -g "daemon off;"
     links:
       - wordpress
       - phpmyadmin
-      - web-astro
+      - web-app
     volumes:
       - ${VOLUME_PATH}/logs/nginx:/var/log/nginx
       - ${VOLUME_PATH}/cache/nginx:/var/cache/nginx
