@@ -41,10 +41,10 @@ services:
     container_name: ${DOCKER_APP_NAME}-wordpress
     depends_on:
       - mysql
-#      - elasticsearch
+      - elasticsearch
     links:
       - mysql
-#      - elasticsearch
+      - elasticsearch
   
     image: wordpress:latest
     restart: always
@@ -78,8 +78,7 @@ services:
         /* development parameters */
         define('WP_CACHE', false);
         define('ENVIRONMENT', 'local');
-        define('WP_DEBUG', true);
-        define('NGINX_HELPER_LOG', true);
+        define('WP_DEBUG', false);
 
 
         define( 'WP_HOME', '${WP_HOME}' );
@@ -138,23 +137,23 @@ services:
     networks:
       - wordpress      
       
-#  elasticsearch:
-#    container_name: ${DOCKER_APP_NAME}-elastic
-#    image: elasticsearch:8.8.2
-#    restart: always
-#    environment:
-#      - discovery.type=single-node
-#      - bootstrap.memory_lock=true
-#      - xpack.security.enabled=false
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    networks:
-#      - wordpress
-#    volumes:
-#      - ${VOLUME_PATH}/db/elasticsearch:/usr/share/elasticsearch/data
+  elasticsearch:
+    container_name: ${DOCKER_APP_NAME}-elastic
+    image: elasticsearch:8.8.2
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - wordpress
+    volumes:
+      - ${VOLUME_PATH}/db/elasticsearch:/usr/share/elasticsearch/data
 
 networks:
   wordpress:
