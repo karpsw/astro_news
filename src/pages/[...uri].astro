@@ -7,6 +7,8 @@ import Single from "../components/templates/Single.astro";
 import { getNodeByURI, getAllUris } from "../libs/wpapi";
 import MyBase from "../layouts/MyBase.astro";
 const uri = `/${Astro.params.uri}/`;
+export const prerender = false;
+export const output = "server";
 
 if(!uri || uri == '/undefined/'){
         const headers = {"Content-Type": "text/html"};

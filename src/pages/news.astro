@@ -22,10 +22,6 @@ const { GITHUB_MARKDOWN_BODY_ID } = SELECTORS;
 import { homePagePostsQuery } from "../libs/wpapi";
 import Centered from "../layouts/Centered.astro";
 
-const data = await homePagePostsQuery();
-const posts = data.posts.nodes;
-
-console.log(JSON.stringify(data, null, "\t"))
 
 ---
 
