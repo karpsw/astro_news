@@ -140,7 +140,7 @@ services:
   elasticsearch:
     container_name: ${DOCKER_APP_NAME}-elastic
     image: elasticsearch:8.8.2
-    restart: always
+#    restart: always
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
