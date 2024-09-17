@@ -3,7 +3,7 @@ layout: '../layouts/Page.astro'
 title: 'About'
 description: 'About me page'
 ---
-
+export const prerender = true;
 import { Image } from 'astro:assets';
 
 import { CONFIG_CLIENT } from '../config/client';

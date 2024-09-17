@@ -20,7 +20,7 @@ const { SITE_URL } = PROCESS_ENV;
 const remarkPlugins = [remarkReadingTime];
 
 export default defineConfig({
-  output: 'server',
+  output: 'hybrid',
   site: SITE_URL,
   experimental: { env: envSchema },
   trailingSlash: 'ignore',
@@ -55,4 +55,8 @@ export default defineConfig({
   adapter: node({
     mode: 'standalone',
   }),
+
+  prefetch: {
+    prefetchAll: false
+  }
 });

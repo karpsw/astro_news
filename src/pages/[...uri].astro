@@ -21,7 +21,7 @@ if(!uri || uri == '/undefined/'){
             { headers, status: 404 },
         );
 }
-
+console.log(new Date().toString());
 console.log("getNodeByURI ->>>> "+ uri)
 const data = await getNodeByURI(uri);
 const node = data.nodeByUri;

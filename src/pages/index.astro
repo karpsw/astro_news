@@ -26,7 +26,7 @@ let usedIds: number[] = [];
             usedIds.push(post.id);
             return (
                     <>
-                    <Link href={getAbsoluteSiteUrl(post.urlPath)} variant="link-heading" set:html={post.title}/>
+                    <Link href={getAbsoluteSiteUrl(post.urlPath)}  set:html={post.title}/>
                     {
                         post?.featuredImage?.srcPath && (
                                 <div class="md:shrink-0 mb-1 pb-1 border-b-2">
