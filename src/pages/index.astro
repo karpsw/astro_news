@@ -31,7 +31,7 @@ let usedIds: number[] = [];
                         post?.featuredImage?.srcPath && (
                                 <div class="md:shrink-0 mb-1 pb-1 border-b-2">
                                     <a  href={getAbsoluteSiteUrl(post.urlPath)} >
-                                        <Image src={getImageUrl(post.featuredImage.srcPath, 400, 230)} width={400} height={230} alt="" />
+                                        <Image src={getImageUrl(post.featuredImage.srcPath, 400, 230)} width={400} height={230} loading="lazy"  alt="" />
                                     </a>
 
 
@@ -47,7 +47,7 @@ let usedIds: number[] = [];
             usedIds.push(post.id);
             return (
                     <div class="mb-1 pb-1 border-b-2">
-                        <Link href={getAbsoluteSiteUrl(post.urlPath)} variant="link-heading" set:html={post.title}/>
+                        <Link href={getAbsoluteSiteUrl(post.urlPath)} variant="link-heading" set:html={post.title} loading="lazy"/>
                     </div>
             )
         })}
