@@ -1,4 +1,4 @@
-import { PLAUSIBLE_SCRIPT_URL, SITE_URL } from 'astro:env/client';
+import {PLAUSIBLE_SCRIPT_URL, SITE_URL} from 'astro:env/client';
 
 import { configClientSchema } from '@/schemas/config';
 import { validateData } from '@/utils/validation';

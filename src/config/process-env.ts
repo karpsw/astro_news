@@ -8,6 +8,7 @@ import { validateData } from '../utils/validation';
 
 import type { ProcessEnvType } from '../types/config';
 
+
 /*------------------ load .env file -----------------*/
 
 // import.meta.env is not available in astro.config.mjs, only after the config is loaded.
@@ -57,6 +58,7 @@ export const envSchema = {
       access: 'public',
       // default: omit to have explicit validation
     }),
+
     PLAUSIBLE_SCRIPT_URL: envField.string({
       context: 'client',
       access: 'public',

@@ -7,6 +7,21 @@ import Single from "../components/templates/Single.astro";
 import { getNodeByURI, getAllUris } from "../libs/wpapi";
 import MyBase from "../layouts/MyBase.astro";
 const uri = `/${Astro.params.uri}/`;
+
+if(!uri || uri == '/undefined/'){
+        const headers = {"Content-Type": "text/html"};
+        return new Response(
+            `<html>
+        <head>
+        </head>
+        <body>
+          <p>url incorrect -> '{Astro.params.uri}'</p>
+        </body>
+      </html>`,
+            { headers, status: 404 },
+        );
+}
+
 console.log("getNodeByURI ->>>> "+ uri)
 const data = await getNodeByURI(uri);
 const node = data.nodeByUri;

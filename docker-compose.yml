@@ -5,8 +5,8 @@ services:
     container_name: ${DOCKER_APP_NAME}-web-astro
  #   restart: always
     build: .
-#    ports:
-#      - "4000:4000"
+    ports:
+      - "4001:4000"
 #    volumes:
 #      - .:/app
 #      - node_modules:/app/node_modules

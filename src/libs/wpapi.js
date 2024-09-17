@@ -1,6 +1,10 @@
+
 export async function mainPageQuery(){
-    console.log(import.meta.env.WORDPRESS_API_HOST + '/graphql/internal/')
-    const query = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql/internal/', {
+
+
+    console.log('PUBLIC_WORDPRESS_API_HOST='+import.meta.env.PUBLIC_WORDPRESS_API_HOST)
+
+    const query = await fetch(import.meta.env.PUBLIC_WORDPRESS_API_HOST + '/graphql/internal/', {
         method: 'post', 
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -70,7 +74,7 @@ fragment Post on Post {
 
 
 export async function homePagePostsQuery(){
-    const response = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
+    const response = await fetch(import.meta.env.PUBLIC_WORDPRESS_API_HOST + '/graphql', {
         method: 'post', 
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -111,7 +115,9 @@ export async function homePagePostsQuery(){
 
 
 export async function getNodeByURI(uri){
-    const response = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
+
+
+    const response = await fetch(import.meta.env.PUBLIC_WORDPRESS_API_HOST + '/graphql', {
         method: 'post', 
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -196,7 +202,7 @@ export async function getNodeByURI(uri){
 export async function getAllUris(){
 
 
-  const response = await fetch(import.meta.env.WORDPRESS_API_HOST + '/graphql', {
+  const response = await fetch(import.meta.env.PUBLIC_WORDPRESS_API_HOST + '/graphql', {
       method: 'post', 
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
