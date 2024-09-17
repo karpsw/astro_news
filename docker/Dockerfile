@@ -25,16 +25,15 @@ ARG ARG_SITE_URL
 ENV SITE_URL=$ARG_SITE_URL
 RUN echo "SITE_URL=$SITE_URL"
 
+# build time only env var
+ARG ARG_WORDPRESS_API_HOST
+ENV WORDPRESS_API_HOST=$ARG_WORDPRESS_API_HOST
+RUN echo "WORDPRESS_API_HOST=$WORDPRESS_API_HOST"
+
 ARG ARG_PLAUSIBLE_SCRIPT_URL
 ENV PLAUSIBLE_SCRIPT_URL=$ARG_PLAUSIBLE_SCRIPT_URL
 RUN echo "PLAUSIBLE_SCRIPT_URL=$PLAUSIBLE_SCRIPT_URL"
 
-RUN yarn build
+RUN yarn build2
 
-FROM nginx:stable-alpine3.17-slim AS runtime
-COPY ./docker/nginx.conf /etc/nginx/nginx.conf
-
-# sufficient for SSG
-COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 8080
 

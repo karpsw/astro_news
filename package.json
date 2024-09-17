@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "astro dev",
     "start2": "serve ./dist",
+    "start3": "node ./dist/server/entry.mjs",
     "start": "HOST=0.0.0.0 node ./dist/server/entry.mjs",
     "preview": "astro preview",
-    "build": "astro build",
+    "build": "export $(cat .env.runtime) && astro build",
+    "build2": "astro build",
     "build:nginx": "SITE_URL='https://nemanjamitic.com' PLAUSIBLE_SCRIPT_URL='https://plausible.arm1.nemanjamitic.com/js/script.js' astro build",
     "build:nginx:local": "SITE_URL='https://blog.local.nemanjamitic.com' PLAUSIBLE_SCRIPT_URL='https://plausible.arm1.nemanjamitic.com/js/script.js' astro build",
     "astro": "astro",
