@@ -3,7 +3,8 @@
 import '@/assets/styles/github-markdown.css';
 
 
-
+export const prerender = false;
+export const output = "server";
 const readmeContent = await fetch('https://telegraf.news/sidebar_ajax1').then((response) => response.text());
 
 ---
