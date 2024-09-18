@@ -24,6 +24,10 @@ import NewsCardItem from "../components/news/NewsCardItem.astro";
 import {ROUTES} from "../constants/routes";
 import Link from "../components/Link.astro";
 const data = await getAllNews(0, 36);
+
+export const prerender = false;
+export const output = "server";
+
 ---
 
 <Centered  metadata >
