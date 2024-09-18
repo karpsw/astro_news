@@ -28,7 +28,7 @@ export async function mainPageQuery(){
     console.log('PUBLIC_WORDPRESS_API_HOST='+import.meta.env.PUBLIC_WORDPRESS_API_HOST)
 
     const query = await fetch(import.meta.env.PUBLIC_WORDPRESS_API_HOST + '/graphql/internal/', {
-        method: 'post', 
+        method: 'post',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             query: `{
@@ -121,7 +121,7 @@ fragment Post on Post {
 
 export async function homePagePostsQuery(){
     const response = await fetch(import.meta.env.PUBLIC_WORDPRESS_API_HOST + '/graphql', {
-        method: 'post', 
+        method: 'post',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             query: `{
@@ -164,77 +164,106 @@ export async function getNodeByURI(uri){
 
 
     const response = await fetch(import.meta.env.PUBLIC_WORDPRESS_API_HOST + '/graphql', {
-        method: 'post', 
+        method: 'post',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             query: `query GetNodeByURI($uri: String!) {
-                nodeByUri(uri: $uri) {
-                  __typename
-                  isContentNode
-                  isTermNode
-                  ... on Post {
-                    id
-                    title
-                    date
-                    uri
-                    excerpt
-                    content
-                    categories {
-                      nodes {
-                        name
-                        uri
-                      }
-                    }
-                    featuredImage {
-                      node {
-                        srcSet
-                        sourceUrl
-                        altText
-                        mediaDetails {
-                          height
-                          width
-                        }
-                      }
-                    }
-                  }
-                  ... on Page {
-                    id
-                    title
-                    uri
-                    date
-                    content
-                  }
-                  ... on Category {
-                    id
-                    name
-                    posts {
-                      nodes {
-                        date
-                        title
-                        excerpt
-                        uri
-                        categories {
-                          nodes {
-                            name
-                            uri
-                          }
-                        }
-                        featuredImage {
-                          node {
-                            srcSet
-                            sourceUrl
-                            altText
-                            mediaDetails {
-                              height
-                              width
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
+  nodeByUri(uri: $uri) {
+    __typename
+    isContentNode
+    isTermNode
+    ... on Post {
+      id
+      title
+      date
+      uri
+      excerpt
+      content
+      categories {
+        nodes {
+          name
+          uri
+        }
+      }
+      featuredImage {
+        node {
+          srcSet
+          sourceUrl
+          altText
+          mediaDetails {
+            height
+            width
+          }
+        }
+      }
+    }
+    ... on Page {
+      id
+      title
+      uri
+      date
+      content
+    }
+    ... on Category {
+      id
+      name
+      posts {
+        nodes {
+          date
+          title
+          excerpt
+          uri
+          categories {
+            nodes {
+              name
+              uri
+            }
+          }
+          featuredImage {
+            node {
+              srcSet
+              sourceUrl
+              altText
+              mediaDetails {
+                height
+                width
               }
+            }
+          }
+        }
+      }
+    }
+    ... on Tag {
+      id
+      name
+      posts {
+        nodes {
+          date
+          title
+          excerpt
+          uri
+          categories {
+            nodes {
+              name
+              uri
+            }
+          }
+          featuredImage {
+            node {
+              srcSet
+              sourceUrl
+              altText
+              mediaDetails {
+                height
+                width
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
             `,
             variables: {
                 uri: uri
@@ -249,7 +278,7 @@ export async function getAllUris(){
 
 
   const response = await fetch(import.meta.env.PUBLIC_WORDPRESS_API_HOST + '/graphql', {
-      method: 'post', 
+      method: 'post',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
           query: `query GetAllUris {

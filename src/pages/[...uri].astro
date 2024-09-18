@@ -23,7 +23,6 @@ if(!uri || uri == '/undefined/'){
             { headers, status: 404 },
         );
 }
-console.log(new Date().toString());
 console.log("getNodeByURI ->>>> "+ uri)
 const data = await getNodeByURI(uri);
 const node = data.nodeByUri;
@@ -32,6 +31,8 @@ const { title, description } = Astro.props;
 import type { BaseHeadProps } from '@/components/BaseHead.astro';
 
 if(!node?.__typename){
+        console.log("node?.__typename ->>>> "+ node?.__typename)
+
         return new Response("Not found", { status: 404 });
 }
 
@@ -39,22 +40,23 @@ export async function getStaticPaths(){
     return await getAllUris();
 }
 
-function resolveContentTemplate(node){ 
+function resolveContentTemplate(node){
     let template;
+console.log("node?.__typename ->>>> "+ node?.__typename)
     switch(node.__typename){
         case 'Post':
             template = Single;
-            break; 
+            break;
         case 'Page':
             template = Single;
-            break; 
+            break;
         case 'Category':
             template = Archive;
-            break; 
+            break;
         case 'Tag':
             template = Archive;
-            break; 
-        default: 
+            break;
+        default:
             template = Single;
     }
 
