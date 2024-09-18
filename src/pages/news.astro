@@ -1,8 +1,5 @@
 ---
 // must be at top
-import '@/assets/styles/github-markdown.css';
-
-import { Markdown } from 'astro-remote';
 
 import List from '@/layouts/List.astro';
 import Anchor from '@/components/astro-remote/Anchor.astro';
@@ -22,28 +19,37 @@ const { GITHUB_MARKDOWN_BODY_ID } = SELECTORS;
 import { homePagePostsQuery } from "../libs/wpapi";
 import Centered from "../layouts/Centered.astro";
 
-
+import { getAllNews  } from "../libs/wpapi";
+import NewsCardItem from "../components/news/NewsCardItem.astro";
+import {ROUTES} from "../constants/routes";
+import Link from "../components/Link.astro";
+const data = await getAllNews(0, 36);
 ---
 
 <Centered  metadata >
-    <article class="my-prose">
+    <article class="px-4 my-prose divide-y divide-gray-400">
+
+        <div class="flex justify-between">
+            <h1 class="b-h1">Лента новостей</h1>
+            <span class="mt-2 md:mt-4">все новости</span>
+        </div>
+
+
+
+        <div class="divide-y-4">
+        <div class="mt-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {data.posts.map(post => {
+
+                return (
+                        <NewsCardItem post={post}/>
+                )
+            })}
+        </div>
 
     </article>
 </Centered>
 
 
-<style is:global>
-  #markdown-body-id {
-    /* set transparent bg-color */
-    @apply !bg-transparent;
-
-    /* fix list style */
-    ul,
-    ol {
-      list-style: revert;
-    }
-  }
-</style>
 
 <script>
   import { SELECTORS } from '@/constants/dom';

@@ -1,0 +1,30 @@
+
+<div id="dynamic-content">
+    <!-- Здесь будет загружен HTML -->
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const loadContent = async () => {
+        try {
+            const response = await fetch('/rightSideBar');
+            const html = await response.text();
+            document.getElementById('dynamic-content').innerHTML = html;
+        } catch (error) {
+            console.error('Error loading content:', error);
+        }
+    };
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            if (entries[0].isIntersecting) {
+                loadContent();
+                observer.disconnect();
+            }
+        },
+        { threshold: 1.0 }
+    );
+
+    observer.observe(document.getElementById('dynamic-content'));
+});
+</script>
+

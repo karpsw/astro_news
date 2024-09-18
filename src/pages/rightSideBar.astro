@@ -1,0 +1,11 @@
+---
+// must be at top
+import '@/assets/styles/github-markdown.css';
+
+
+
+const readmeContent = await fetch('https://telegraf.news/sidebar_ajax1').then((response) => response.text());
+
+---
+
+<div id="content" set:html={readmeContent}></div>

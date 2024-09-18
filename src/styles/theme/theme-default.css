@@ -13,7 +13,7 @@
     --th-captions: var(--var-color-slate-500);
 
     --th-primary: var(--var-color-blue-500);
-    --th-primary-hover: var(--var-color-blue-700);
+    --th-primary-hover: var(--var-color-dark-slate-800);
     --th-primary-content: var(--var-color-white);
 
     --th-primary-base-200: var(--var-color-blue-100);
@@ -55,7 +55,7 @@
     --th-captions: var(--var-color-dark-slate-400);
 
     --th-primary: var(--var-color-blue-300);
-    --th-primary-hover: var(--var-color-blue-500);
+    --th-primary-hover: var(--var-color-white);
     --th-primary-content: var(--var-color-white);
 
     --th-primary-base-200: var(--var-color-blue-600);

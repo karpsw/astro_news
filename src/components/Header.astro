@@ -12,14 +12,14 @@ import { NAVIGATION_ITEMS } from '@/constants/navigation';
 import { ROUTES } from '@/constants/routes';
 import { CONFIG_CLIENT } from '@/config/client';
 import { getActiveNavItemPath } from '@/utils/navigation';
-
+import Link from "./Link.astro";
 import Avatar from '@/assets/icons/a-logo-32.png';
 
 const { SCROLL_TO_TOP_ID } = SELECTORS;
 
 const { pathname: routePathname } = Astro.url;
 const activeNavItemPath = getActiveNavItemPath(routePathname);
-
+export const { SEARCH_URL  } = CONFIG_CLIENT;
 // group-[.menu-open]: increases specificity everywhere
 // group-[.menu-open]:flex-col md:!flex-row, both on flex-direction
 ---
@@ -29,7 +29,7 @@ const activeNavItemPath = getActiveNavItemPath(routePathname);
     class={clsx(
       'flex gap-2',
       'group-[.menu-open]:flex-col md:!flex-row md:justify-between md:items-center',
-      'max-w-6xl py-2 px-4 md:mx-auto'
+      'max-w-screen-xl py-2 px-4 md:mx-auto'
     )}
   >
     {/* mobile nav */}
@@ -38,7 +38,7 @@ const activeNavItemPath = getActiveNavItemPath(routePathname);
         <Image
           {...IMAGE_SIZES.FIXED.AVATAR}
           loading="eager"
-          class="shrink-0 select-none rounded-md border border-base-300"
+          class=""
           src={Avatar}
           alt="Profile picture"
         />
@@ -46,6 +46,11 @@ const activeNavItemPath = getActiveNavItemPath(routePathname);
           {CONFIG_CLIENT.AUTHOR_NAME}
         </span>
       </HeaderLink>
+
+      <Link href={SEARCH_URL} class="link-nav ml-auto mr-6 ml-6">
+        <Icon name="mdi:magnify" class="inline h-7 w-7  " />
+      </Link>
+
       <mobile-button class="md:hidden">
         <button
           aria-expanded="false"

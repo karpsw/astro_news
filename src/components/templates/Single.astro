@@ -1,32 +1,63 @@
 ---
 const { node } = Astro.props;
---- 
+import SideBar from '../SideBarAjax.astro';
+---
 
- <h1>{node.title}</h1>
+ <h1 class="mb-2 pb-4 border-b-2">{node.title}</h1>
 <!-- Display categories links if node has terms -->
- { node.categories ?
-    node.categories.nodes.map(category => (<a class='term-link' href={category.uri}>{category.name}</a>)) :     
-    null 
- }
+
 <!-- Only show date if node is a Post -->
  {
     node.__typename === 'Post' ? 
-    (<p class='post-details'>
-        Posted on <time datetime={node.date}>{new Date(node.date).toLocaleDateString()}</time>
-    </p>):
+    (
+
+    <div class="md:flex">
+        <div class="md:flex-1">
+            <!-- Левый блок -->
+            <p class='post-details' set:html={node.excerpt}> </p>
+            <img class='featured-image'
+                 src={node.featuredImage?.node?.mediaItemUrl}
+                 srcset={node.featuredImage?.node?.srcSet}
+                 alt={node.featuredImage?.node?.altText}
+                 loading='lazy'
+                 width={node.featuredImage?.node?.mediaDetails?.width}
+                 height={node.featuredImage?.node?.mediaDetails?.height}
+            >
+            <div class="bg-base-100">
+                <span class='post-details'>
+                    <time datetime={node.date}>{new Date(node.date).toLocaleDateString()}</time>
+                </span>
+                { node.categories ?
+                    node.categories.nodes.map(category => (<a class='' href={category.uri}>{category.name}</a>)) :
+                    null
+                }
+            </div>
+
+            <article set:html={node.content}>
+            </article>
+        </div>
+        <div  class="md:w-96 right-0 top-0 h-full ml-4">
+            <!-- Правый сайдбар -->
+
+                <!-- Здесь будет загружен HTML -->
+                <SideBar/>
+
+
+        </div>
+    </div>
+    ):
     null
  }
- <img class='featured-image' 
-    src={node.featuredImage?.node?.mediaItemUrl} 
-    srcset={node.featuredImage?.node?.srcSet} 
-    alt={node.featuredImage?.node?.altText}
-    loading='lazy'
-    width={node.featuredImage?.node?.mediaDetails?.width}
-    height={node.featuredImage?.node?.mediaDetails?.height}
- >
- 
- <article set:html={node.content}>
- </article>
+
+
+<script pt type="text/partytown" >
+
+</script>
+
+
+
+
+
 
  <style is:global>
     .wp-block-image img {

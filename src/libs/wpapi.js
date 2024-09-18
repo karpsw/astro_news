@@ -1,4 +1,27 @@
 
+
+const _postFragment = `
+    fragment Post on Post {
+      id
+      title
+      urlPath
+      dateStr(format: "Y.m.d H:i")
+      excerpt
+      categories {
+        name
+        urlPath
+      }
+      tags {
+        name
+        urlPath
+      }
+      featuredImage {
+        height
+        width
+        srcPath
+      }
+    }
+`;
 export async function mainPageQuery(){
 
 
@@ -41,8 +64,31 @@ export async function mainPageQuery(){
   
 }
 
+` + _postFragment
+        })
+    })
+
+    const{ data } = await query.json();
+    return data;
+}
+
+
+export async function getAllNews(page, limit){
+
+
+    const response = await fetch(import.meta.env.PUBLIC_WORDPRESS_API_HOST + '/graphql/internal/', {
+        method: 'post',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            query: `query MyQuery($skip: Numeric!, $limit: Numeric!)  {
+  posts(sort: {order: DESC, by: DATE}, pagination: {limit: $limit, offset: $skip}){
+    ...Post
+  }
+}
+
+
 fragment Post on Post {
-  id
+    id
   title
   urlPath
   dateStr(format: "Y.m.d H:i")
@@ -61,16 +107,16 @@ fragment Post on Post {
     srcPath
   }
 }
-
-
-            `
+            `,
+            variables: {
+                skip: (page -1) *24,
+                limit: limit
+            }
         })
-    })
-
-    const{ data } = await query.json();
+    });
+    const{ data } = await response.json();
     return data;
 }
-
 
 
 export async function homePagePostsQuery(){

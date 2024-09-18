@@ -7,7 +7,7 @@ import { getPageMetadata } from '@/utils/metadata';
 import Layout from "../layouts/MyBase.astro";
 
 import { mainPageQuery  } from "../libs/wpapi";
-import NewsCardOne from "../components/news/mob/NewsCardOne.astro";
+import NewsCardOne from "../components/news/NewsCardOne.astro";
 import {getImageUrl, getAbsoluteSiteUrl} from "../libs/utils";
 import {Image} from "astro:assets";
 import Link from "../components/Link.astro";
@@ -53,6 +53,7 @@ let usedIds: number[] = [];
                     </div>
             )
         })}
+
 
         {dataResult.top_news_lenta.filter((p)=> p?.featuredImage?.srcPath && usedIds.indexOf(p.id) == -1 ).slice(0,3).map(post => {
             usedIds.push(post.id);

@@ -2,10 +2,8 @@
 import { Icon } from 'astro-icon/components';
 
 import BaseHead from '@/components/BaseHead.astro';
-import BaseHeadMobile from '@/components/BaseHeadMobile.astro';
 import Footer from '@/components/Footer.astro';
 import Header from '@/components/Header.astro';
-import HeaderMobile from '@/components/HeaderMobile.astro';
 import ScrollToTop from '@/components/react/ScrollToTop';
 import { DEFAULT_METADATA } from '@/constants/metadata';
 const { title,  description, passedTitle='' } = DEFAULT_METADATA;
@@ -21,17 +19,11 @@ console.log("isMobile: "+isMobile);
 ---
 
 <html lang="en">
-{
-  isMobile ?
-      (<BaseHeadMobile metadata />):
-      (<BaseHead metadata />)
-}
+  <BaseHead metadata />
 
 <body class="relative flex flex-col min-h-screen bg-base-100 transition-colors duration-500">
 {
-  isMobile ?
-      (<HeaderMobile />):
-      (<Header />)
+      <Header />
 }
 
 <main id="main" class="flex-grow flex flex-col ml-1 mr-1">

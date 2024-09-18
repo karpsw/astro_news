@@ -1,0 +1,78 @@
+---
+import {cn} from "../../utils/styles";
+import {IMAGE_SIZES} from "../../constants/image";
+import {TRANSITION_ELEMENT_IDS} from "../../constants/transitions";
+import {ROUTES} from "../../constants/routes";
+import {formatDate, formatDateIso} from "../../utils/datetime";
+import {DRAFT_TEXT} from "../../constants/data";
+import Link from "../Link.astro";
+import {Image} from "astro:assets";
+import TagList from "../TagList.astro";
+import {Icon} from "astro-icon/components";
+const { post } = Astro.props;
+import { setTransitionSlug, TRANSITION_ELEMENT_IDS } from '../../constants/transitions';
+import Tag from "../Tag.astro";
+
+const getTransitionNameFromElementId = setTransitionSlug({ pageSlug: post.uri });
+import { getImageUrl } from "../../libs/utils.js";
+import {getAbsoluteSiteUrl} from "../../libs/utils";
+
+
+
+---
+
+<div class="card-item">
+
+
+        {
+            post?.featuredImage?.srcPath && (
+                <div class="md:shrink-0 ">
+                        <Link href={getAbsoluteSiteUrl(post.urlPath)}   >
+                                <Image src={getImageUrl(post.featuredImage.srcPath,400,230)} width={400}  height={230} alt="" />
+                        </Link>
+                </div>
+            )
+        }
+
+        <Link href={getAbsoluteSiteUrl(post.urlPath)} class="link-no-underline" set:html={post.title}>
+        </Link>
+
+        <div class="dt pt-1">
+             {post.dateStr}
+        </div>
+        {
+            post?.tags && (
+                <div class="dt pt-1">
+
+                        {post.tags.map(tag => {
+
+                                return (
+                                    <Link href={getAbsoluteSiteUrl(tag.urlPath)} class="link-no-underline mr-1 tags" set:html={('#'+tag.name)}> </Link>
+                                )
+                        })}
+
+
+                </div>
+            )
+        }
+
+
+
+</div>
+
+
+<style>
+        .card-item a.link{
+                color: var(--th-headings);
+                line-height: 12px !important;
+        }
+        .card-item img{
+                margin-bottom: .6em;
+        }
+        .card-item .dt{
+                font-size: 0.8em;
+        }
+        .card-item .tags{
+                color:var(--tw-prose-body) !important;
+        }
+</style>

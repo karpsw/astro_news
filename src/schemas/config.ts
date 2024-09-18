@@ -4,7 +4,7 @@ export const nodeEnvValues = ['development', 'test', 'production'] as const;
 export const booleanValues = ['true', 'false', ''] as const;
 
 export const modeValues = ['light', 'dark'] as const;
-export const themeValues = ['default-light', 'default-dark', 'green-light', 'green-dark'] as const;
+export const themeValues = ['default-light', 'default-dark' ] as const;
 
 export const processEnvSchema = z.object({
   NODE_ENV: z.enum(nodeEnvValues),
