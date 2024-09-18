@@ -9,7 +9,7 @@ var featureImgSrcSet = ''
 let ratio = 1;
 let imgSrc = node.featuredImage?.node?.sourceUrl;
 if(imgSrc){
-    imgSrc = imgSrc.replace(import.meta.env.PUBLIC_WORDPRESS_API_HOST, import.meta.env.PUBLIC_IMG_HOST)
+    imgSrc = imgSrc.replace(import.meta.env.PUBLIC_IMG_REPLACE_HOST, import.meta.env.PUBLIC_IMG_HOST)
 }
 if(node.featuredImage?.node?.sourceUrl
     && node.featuredImage?.node?.mediaDetails?.width >0
