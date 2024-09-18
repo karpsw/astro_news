@@ -1,6 +1,6 @@
 ---
 const { node } = Astro.props;
-import SideBar from '../SideBarAjax.astro';
+import SideBar from '../../pages/rightSideBar.astro';
 import { useUserAgent } from "astro-useragent";
 let content = node.content;
 const { source, isMobile } = useUserAgent(Astro.request.headers.get("user-agent"));
