@@ -139,7 +139,7 @@ services:
       
   elasticsearch:
     container_name: ${DOCKER_APP_NAME}-elastic
-    image: elasticsearch:8.8.2
+    image: elasticsearch:8.15.1
 #    restart: always
     environment:
       - discovery.type=single-node
