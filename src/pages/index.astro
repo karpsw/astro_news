@@ -12,6 +12,7 @@ import {getImageUrl, getAbsoluteSiteUrl} from "../libs/utils";
 import {Image} from "astro:assets";
 import Link from "../components/Link.astro";
 import {Icon} from "astro-icon/components";
+import Centered from "../layouts/Centered.astro";
 
 export const prerender = false;
 export const output = "server";
@@ -21,7 +22,7 @@ const dataResult = await mainPageQuery();
 let usedIds: number[] = [];
 ---
 
-<Layout  metadata >
+<Centered  metadata >
     <article class="my-prose">
 
         {dataResult.main_top_news.map(post => {
@@ -89,7 +90,7 @@ let usedIds: number[] = [];
 
 
     </article>
-</Layout>
+</Centered>
 
 
 <style>
