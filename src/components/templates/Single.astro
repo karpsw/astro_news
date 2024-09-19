@@ -2,6 +2,8 @@
 const { node } = Astro.props;
 import SideBar from '../../pages/rightSideBar.astro';
 import { useUserAgent } from "astro-useragent";
+//import SplideGallery from '../SplideGallery.astro';
+
 let content = node.content;
 const { source, isMobile } = useUserAgent(Astro.request.headers.get("user-agent"));
 
@@ -31,7 +33,7 @@ if(node.featuredImage?.node?.sourceUrl
 
 <!-- Only show date if node is a Post -->
  {
-    node.__typename === 'Post' ? 
+    node.__typename === 'Post' ?
     (
 
     <div class="md:flex">
@@ -58,6 +60,11 @@ if(node.featuredImage?.node?.sourceUrl
 
             <article set:html={content}>
             </article>
+
+            <hr/>
+
+
+
         </div>
         <div  class="md:w-96 right-0 top-0 h-full ml-4">
             <!-- Правый сайдбар -->
@@ -85,7 +92,7 @@ if(node.featuredImage?.node?.sourceUrl
  <style is:global>
     .wp-block-image img {
             width: 100%;
-            height: auto;  
+            height: auto;
     }
 </style>
 <style>

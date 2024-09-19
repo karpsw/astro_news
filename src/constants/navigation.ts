@@ -3,43 +3,27 @@ import { ROUTES } from '@/constants/routes';
 /** Doesn't contain Home nav item. */
 export const NAVIGATION_ITEMS = [
   {
-    title: 'News',
+    title: 'Новости',
     path: ROUTES.NEWS,
   },
   {
-    title: 'Blog',
-    path: ROUTES.BLOG,
+    title: 'Беларусь',
+    path: ROUTES.BELARUS,
   },
   {
-    title: 'Explore',
-    path: ROUTES.EXPLORE,
-  },
-  // {
-  //   title: 'Tags',
-  //   path: ROUTES.TAGS,
-  // },
-  // {
-  //   title: 'Categories',
-  //   path: ROUTES.CATEGORIES,
-  // },
-  {
-    title: 'Projects',
-    path: ROUTES.PROJECTS,
+    title: 'Мир',
+    path: ROUTES.WORLD,
   },
   {
-    title: 'About',
-    path: ROUTES.ABOUT,
+    title: 'Политика',
+    path: ROUTES.POLITICA,
   },
   {
-    title: 'Gallery',
-    path: ROUTES.GALLERY,
+    title: 'Общество',
+    path: ROUTES.OBSHESTVO,
   },
   {
-    title: 'Links',
-    path: ROUTES.LINKS,
-  },
-  // {
-  //   title: 'Resume',
-  //   path: ROUTES.RESUME,
-  // },
+    title: 'Технологии',
+    path: ROUTES.IT,
+  }
 ] as const;

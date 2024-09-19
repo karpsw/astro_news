@@ -1,0 +1,113 @@
+---
+// components/SplideGallery.astro
+
+import { useEffect } from 'react';
+import '@splidejs/splide/dist/css/splide.min.css';
+
+const images = [
+{ src: 'https://wp-astronews.ror.ru/wp-content/uploads/2024/09/2024-09-07_11-25-22.jpg', thumb: 'https://astronews.ror.ru/wp-content/uploads/2024/09/2024-09-07_11-25-22.jpg' },
+{ src: 'https://wp-astronews.ror.ru/wp-content/uploads/2024/09/7863bec7e593869b6558a788a98eb265.jpg', thumb: 'https://astronews.ror.ru/wp-content/uploads/2024/09/7863bec7e593869b6558a788a98eb265.jpg?w' },
+{ src: 'https://wp-astronews.ror.ru/wp-content/uploads/2024/09/5a63c169f0821f20ebbe0bd41b618585.jpg', thumb: 'https://astronews.ror.ru/wp-content/uploads/2024/09/5a63c169f0821f20ebbe0bd41b618585.jpg' },
+{ src: 'https://wp-astronews.ror.ru/wp-content/uploads/2024/09/7cef0a643148b4a24da9a29e53e682d3.jpg', thumb: 'https://astronews.ror.ru/wp-content/uploads/2024/09/7cef0a643148b4a24da9a29e53e682d3.jpg' },
+{ src: 'https://wp-astronews.ror.ru/wp-content/uploads/2024/09/2ecab1ca1deb0771f7c6922f23a4873a.jpg', thumb: 'https://astronews.ror.ru/wp-content/uploads/2024/09/2ecab1ca1deb0771f7c6922f23a4873a.jpg' },
+{ src: 'https://wp-astronews.ror.ru/wp-content/uploads/2024/09/1d74f2d239e77c38c467a335906c16dc.jpg', thumb: 'https://astronews.ror.ru/wp-content/uploads/2024/09/1d74f2d239e77c38c467a335906c16dc.jpg' },
+{ src: 'https://wp-astronews.ror.ru/wp-content/uploads/2024/09/33a487d06103bcf193d5f9ba3117ac77.jpg', thumb: 'https://astronews.ror.ru/wp-content/uploads/2024/09/33a487d06103bcf193d5f9ba3117ac77.jpg' },
+{ src: 'https://wp-astronews.ror.ru/wp-content/uploads/2024/09/74a4b7278e85c5240961633589a5596f.jpg', thumb: 'https://astronews.ror.ru/wp-content/uploads/2024/09/74a4b7278e85c5240961633589a5596f.jpg' },
+// Добавьте больше изображений по необходимости
+];
+
+---
+<div class="splide">
+    <div class="splide__track">
+        <ul class="splide__list">
+            {images.map((image, index) => (
+                    <li class="splide__slide" key={index}>
+                        <img src={image.src} alt={image.alt} />
+                    </li>
+            ))}
+        </ul>
+    </div>
+</div>
+
+
+<section id="main-carousel" class="splide" aria-label="My Awesome Gallery">
+    <div class="splide__track">
+        <ul class="splide__list">
+            {images.map((image, index) => (
+                    <li class="splide__slide" key={index}>
+                        <img src={image.src}   />
+                    </li>
+            ))}
+        </ul>
+    </div>
+</section>
+
+<ul id="thumbnails" class="thumbnails">
+
+    {images.map((image, index) => (
+            <li class="thumbnail" key={index}>
+                <img src={image.thumb}   />
+            </li>
+    ))}
+
+</ul>
+
+<script>
+    import Splide from '@splidejs/splide';
+
+    var splide = new Splide( '#main-carousel', {
+        pagination: false,
+    } );
+
+    var thumbnails = document.getElementsByClassName( 'thumbnail' );
+    var current;
+
+    for ( var i = 0; i < thumbnails.length; i++ ) {
+        initThumbnail( thumbnails[ i ], i );
+    }
+
+    function initThumbnail( thumbnail, index ) {
+        thumbnail.addEventListener( 'click', function () {
+            splide.go( index );
+        } );
+    }
+
+    splide.on( 'mounted move', function () {
+        var thumbnail = thumbnails[ splide.index ];
+
+        if ( thumbnail ) {
+            if ( current ) {
+                current.classList.remove( 'is-active' );
+            }
+
+            thumbnail.classList.add( 'is-active' );
+            current = thumbnail;
+        }
+    } );
+
+    splide.mount();
+
+</script>
+
+<style>
+    .thumbnails {
+        display: flex;
+        margin: 1rem auto 0;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .thumbnail {
+        width: 70px;
+        height: 70px;
+        overflow: hidden;
+        list-style: none;
+        margin: 0 0.2rem;
+        cursor: pointer;
+    }
+
+    .thumbnail img {
+        width: 100%;
+        height: auto;
+    }
+</style>

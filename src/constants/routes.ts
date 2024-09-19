@@ -6,6 +6,11 @@
 export const ROUTES = {
   HOME: '/',
   NEWS: '/news/',
+  BELARUS: '/tag/belarus/',
+  WORLD: '/world-news/',
+  POLITICA: '/politika/',
+  OBSHESTVO: '/obshhestvo/',
+  IT: '/it-news/',
   BLOG: '/blog/',
   PROJECTS: '/projects/',
   ABOUT: '/about/',
