@@ -1,0 +1,45 @@
+---
+// must be at top
+
+import List from '@/layouts/List.astro';
+import Anchor from '@/components/astro-remote/Anchor.astro';
+import Heading from '@/components/astro-remote/Heading.astro';
+import { BOOKMARKS } from '@/constants/data';
+import { SELECTORS } from '@/constants/dom';
+import { getPageMetadata } from '@/utils/metadata';
+
+const { README_RAW_URL, REPO } = BOOKMARKS;
+
+const readmeContent = await fetch(README_RAW_URL).then((response) => response.text());
+
+const metadata = getPageMetadata('lists/links');
+
+const { GITHUB_MARKDOWN_BODY_ID } = SELECTORS;
+
+import { homePagePostsQuery } from "../libs/wpapi";
+import Centered from "../layouts/Centered.astro";
+
+import { getAllNews  } from "../libs/wpapi";
+import NewsCardItem from "../components/news/NewsCardItem.astro";
+import {ROUTES} from "../constants/routes";
+import Link from "../components/Link.astro";
+const data = await getAllNews(0, 36);
+
+export const prerender = false;
+export const output = "server";
+import Counter from '@/components/react/Counter';
+import ScrollToTop from "../components/react/ScrollToTop";
+---
+
+<Centered  metadata >
+    <article class="px-4 my-prose divide-y divide-gray-400">
+
+    <Counter client:only="react"></Counter>
+
+
+
+    </article>
+</Centered>
+
+
+
