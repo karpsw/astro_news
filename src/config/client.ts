@@ -9,8 +9,8 @@ const configClientData: ConfigClientType = {
   /** all urls without '/' */
   SITE_URL,
   SEARCH_URL:'/search',
-  SITE_TITLE: 'Nemanja Mitic',
-  SITE_DESCRIPTION: 'I am Nemanja, full stack developer',
+  SITE_TITLE: 'Новости Беларуси и мира сегодня: последние, свежие и главные новости часа - Telegraf.news',
+  SITE_DESCRIPTION: 'Горячие новости Беларуси и мира ✅ Только свежие и последние актуальные белорусские и мировые новости ✅ Видеоролики и фотографии.',
   PLAUSIBLE_SCRIPT_URL,
   PAGE_SIZE_POST_CARD: 3,
   PAGE_SIZE_POST_CARD_SMALL: 6,

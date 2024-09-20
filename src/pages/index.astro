@@ -1,10 +1,9 @@
 ---
 // must be at top
-import List from '@/layouts/List.astro';
 import { getPageMetadata } from '@/utils/metadata';
 
 
-import Layout from "../layouts/MyBase.astro";
+import MainLayout from "../layouts/MainLayout.astro";
 
 import { mainPageQuery  } from "../libs/wpapi";
 import NewsCardOne from "../components/news/NewsCardOne.astro";
@@ -19,10 +18,12 @@ export const output = "server";
 
 const dataResult = await mainPageQuery();
 
-let usedIds: number[] = [];
+//let usedIds: number[] = [];
+//let usedIds: number[] = Array();
+let usedIds = Array() as number[];
 ---
 
-<Centered  metadata >
+<MainLayout  metadata >
     <article class="my-prose">
 
         {dataResult.main_top_news.map(post => {
@@ -90,7 +91,7 @@ let usedIds: number[] = [];
 
 
     </article>
-</Centered>
+</MainLayout>
 
 
 <style>

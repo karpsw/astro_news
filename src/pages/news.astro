@@ -1,23 +1,13 @@
 ---
+import MainLayout from "../layouts/MainLayout.astro";
+import {DEFAULT_METADATA} from "../constants/metadata";
+import {Metadata} from "../types/common";
 // must be at top
 
-import List from '@/layouts/List.astro';
-import Anchor from '@/components/astro-remote/Anchor.astro';
-import Heading from '@/components/astro-remote/Heading.astro';
-import { BOOKMARKS } from '@/constants/data';
 import { SELECTORS } from '@/constants/dom';
-import { getPageMetadata } from '@/utils/metadata';
 
-const { README_RAW_URL, REPO } = BOOKMARKS;
 
-const readmeContent = await fetch(README_RAW_URL).then((response) => response.text());
 
-const metadata = getPageMetadata('lists/links');
-
-const { GITHUB_MARKDOWN_BODY_ID } = SELECTORS;
-
-import { homePagePostsQuery } from "../libs/wpapi";
-import Centered from "../layouts/Centered.astro";
 
 import { getAllNews  } from "../libs/wpapi";
 import NewsCardItem from "../components/news/NewsCardItem.astro";
@@ -28,9 +18,16 @@ const data = await getAllNews(0, 36);
 export const prerender = false;
 export const output = "server";
 
+const { title: defaultTitle, defaultDescription, defaultImage } = DEFAULT_METADATA;
+let metadata: Metadata = {
+    title: defaultTitle,
+    description: defaultDescription,
+    image: defaultImage
+    };
+
 ---
 
-<Centered  metadata >
+<MainLayout  metadata >
     <article class="px-4 my-prose divide-y divide-gray-400">
 
         <div class="flex justify-between">
@@ -51,7 +48,7 @@ export const output = "server";
         </div>
 
     </article>
-</Centered>
+</MainLayout>
 
 
 

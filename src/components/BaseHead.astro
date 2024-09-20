@@ -15,12 +15,13 @@ import type { Metadata } from '@/types/common';
 
 const { AUTHOR_NAME, PLAUSIBLE_SCRIPT_URL } = CONFIG_CLIENT;
 
-export interface BaseHeadProps {
-  metadata: Metadata;
-}
+
 
 // set defualt metadata in this component
-const { metadata } = Astro.props as BaseHeadProps;
+const { metadata } = Astro.props as Metadata;
+
+
+
 
 // site: SITE_URL var + '/'
 // url: full page url, cannonical url, per page
@@ -118,11 +119,11 @@ const ogImageUrl = new URL(image, url);
 
   <ViewTransitions  fallback="none" />
 
-  <!-- 
+  <!--
     <style>
       @view-transition {
         navigation: auto; /* enabled! */
       }
-    </style> 
+    </style>
   -->
 </head>

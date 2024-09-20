@@ -1,16 +1,6 @@
 User-agent: *
-Disallow:
-
-#
-# Disallow decidedly bad actors…
-#
-User-agent: undici
-User-agent: GPTBot
-User-agent: ChatGPT-User
-User-agent: CCBot
-User-agent: Google-Extended
-User-agent: Omgilibot
-User-Agent: FacebookBot
 Disallow: /
 
-Sitemap: https://nemanjamitic.com/sitemap-index.xml
+
+
+Sitemap: https://astronews.ror.ru/sitemap-index.xml

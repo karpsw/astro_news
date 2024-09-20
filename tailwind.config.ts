@@ -9,6 +9,7 @@ const config: Config = {
   // activates only dark: modifier, not color theme
   darkMode: ['selector'],
   plugins: [
+    require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
     plugin(({ addVariant }) => {
       addVariant('not-first', '&:not(:first-child)');

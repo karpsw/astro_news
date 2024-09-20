@@ -1,0 +1,40 @@
+---
+import type {Metadata} from "../types/common";
+import { Icon } from 'astro-icon/components';
+
+import BaseHead from '@/components/BaseHead.astro';
+import Footer from '@/components/Footer.astro';
+import Header from '@/components/Header.astro';
+import ScrollToTop from '@/components/react/ScrollToTop';
+
+
+import {cn} from "../utils/styles";
+import Centered from "./Centered.astro";
+
+
+const { metadata } = Astro.props as Metadata;
+const { class: className } = Astro.props;
+
+
+
+---
+
+<html lang="en">
+<BaseHead {metadata} />
+<body class="relative flex flex-col min-h-screen bg-base-100 transition-colors duration-500">
+<Header />
+<main
+        id="main"
+        class={cn('flex-grow flex flex-col centered-px max-w-7xl py-4 lg:py-8', className)}
+>
+    <slot />
+</main>
+
+
+<Footer />
+
+<ScrollToTop client:only="react">
+    <Icon name="mdi:arrow-up-thin" class="h-10 w-10 text-content hover:text-links-hover" />
+</ScrollToTop>
+</body>
+</html>

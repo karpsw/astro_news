@@ -1,11 +1,14 @@
 ---
-import Centered from "../layouts/Centered.astro";
+import {DEFAULT_METADATA} from "../constants/metadata";
 
-import MainLayout from "../layouts/Base.astro";
+
+import MainLayout from "../layouts/MainLayout.astro";
 import Archive from "../components/templates/Archive.astro";
 import Single from "../components/templates/Single.astro";
 import { getNodeByURI, getAllUris } from "../libs/wpapi";
 import MyBase from "../layouts/MyBase.astro";
+import {Metadata} from "../types/common";
+import { DEFAULT_METADATA, PAGE_METADATA, titleSeparator } from '@/constants/metadata';
 const uri = `/${Astro.params.uri}/`;
 export const prerender = false;
 export const output = "server";
@@ -27,8 +30,8 @@ console.log("getNodeByURI ->>>> "+ uri)
 const data = await getNodeByURI(uri);
 const node = data.nodeByUri;
 const props = Astro.props;
-const { title, description } = Astro.props;
-import type { BaseHeadProps } from '@/components/BaseHead.astro';
+
+
 
 if(!node?.__typename){
         console.log("node?.__typename ->>>> "+ node?.__typename)
@@ -67,14 +70,44 @@ console.log("node?.__typename ->>>> "+ node?.__typename)
 
 const Template = resolveContentTemplate(node)
 
-export interface BaseProps extends BaseHeadProps {}
+function resolveMetadata(node): Metadata {
+    const { title: defaultTitle, defaultDescription, defaultImage } = DEFAULT_METADATA;
+        let metadata: Metadata = {
+                title: defaultTitle,
+                description: defaultDescription,
+                image: defaultImage
+        };
 
-const { metadata } = Astro.props as BaseProps;
+    switch (node.__typename) {
+        case 'Post':
+               metadata.title = node.title;
+
+            break;
+        case 'Page':
+
+            break;
+        case 'Category':
+                metadata.title = node.name;
+            break;
+        case 'Tag':
+                metadata.title = node.name;
+            break;
+        default:
+
+    }
+    return metadata;
+}
+
+
+
+
+const metadata: Metadata = resolveMetadata(node);
+
 
 ---
 
-<Centered  metadata >
+<MainLayout  {metadata} >
         <article class="my-prose">
                 <Template node={node}></Template>
         </article>
-</Centered>
+</MainLayout>
