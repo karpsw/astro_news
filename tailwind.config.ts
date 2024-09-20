@@ -10,7 +10,6 @@ const config: Config = {
   darkMode: ['selector'],
   plugins: [
 
-    require('@tailwindcss/typography'),
     plugin(({ addVariant }) => {
       addVariant('not-first', '&:not(:first-child)');
       addVariant('not-last', '&:not(:last-child)');
