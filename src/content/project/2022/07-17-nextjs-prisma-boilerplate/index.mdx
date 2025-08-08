@@ -1,0 +1,61 @@
+---
+title: Nextjs Prisma boilerplate
+description: Full stack boilerplate with Next.js and Prisma.
+heroImage: '../../../../content/project/2022/07-17-nextjs-prisma-boilerplate/_images/nextjs-prisma-boilerplate.png'
+heroAlt: Homepage Nextjs Prisma boilerplate
+publishDate: 2022-07-17
+---
+
+import { Image } from 'astro:assets';
+import Link from '../../../../components/Link.astro';
+import LinkWithLabel from '../../../../components/LinkWithLabel.astro';
+import { IMAGE_SIZES } from '../../../../constants/image';
+import NextjsPrismaBoilerplateImage from '../../../../content/project/2022/07-17-nextjs-prisma-boilerplate/_images/nextjs-prisma-boilerplate.png';
+
+# Nextjs Prisma boilerplate
+
+<Image {...IMAGE_SIZES.RESPONSIVE.POST_HERO} src={NextjsPrismaBoilerplateImage} class="shadow-lg shadow-base-300" alt="Homepage Nextjs Prisma boilerplate" />
+
+## Overview
+
+Full stack boilerplate with Next.js and Prisma.
+
+## Goals
+
+Make a solid foundation for a modern full stack Next.js server side rendered app. Get practical experience configuring everything from scratch, especially code structure, testing and automation.
+
+## Tech stack
+
+- Next.js, Prisma, Next-auth, PostgreSQL, Typescript, TailwindCSS
+- React Query, React Hook Form, Zod
+- Jest, Testing Library React, Cypress, msw
+- Docker, Github Actions, Traefik
+
+## Features
+
+- Comprehensive full stack Next.js app boilerplate project
+- Frontend and backend unit and integration tests
+- End to end tests with Cypress
+- Development, production and testing environments with Docker
+- Deployment with Github Actions and Traefik
+
+## Implementation details
+
+It is a boilerplate project that aims to establish good practices from the beginning. Frontend code is organized into the following layers `pages` -> `layouts` -> `views` -> `components` suitable for unit and integration testing. Similarly backend code is organized into `controllers` -> `middleware` -> `services` layers for easy testing. Styling code uses BEM and Tailwind. Theming and dark mode are implemented as Tailwind plugin. React Query is used for data fetching along with Suspense and ErrorBoundary.
+
+Frontend tests are done with Jest, Testing Library, Mock Service Worker, backend tests use Supertest client, E2E tests are done with Cypress. All tests are configured to run locally on the host, in Docker and in Github Actions.
+
+App is built as a Docker image inside Github Actions and deployed to VPS behind the Traefik reverse proxy.
+
+You can find more implementation details in the <Link href="https://github.com/nemanjam/nextjs-prisma-boilerplate#documentation-1" variant="markdown" target="_blank" title="Documentation">Documentation</Link> section on Github.
+
+## Lessons learned 
+
+ - A thorough research is essential for building successful projects. 
+ - Be careful with using the latest versions of frameworks and libraries while they are still not battle tested and documented properly.
+
+## Links
+
+
+- <LinkWithLabel label="Demo" href="https://nextjs-prisma-boilerplate.arm1.nemanjamitic.com" title="Nextjs Prisma boilerplate demo" />
+- <LinkWithLabel label="Repository" href="https://github.com/nemanjam/nextjs-prisma-boilerplate" title="Nextjs Prisma boilerplate repository" />

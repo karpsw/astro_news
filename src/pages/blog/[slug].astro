@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { render } from 'astro:content';
 
 import { getAllPostsWithReadingTime } from '@/modules/post/common';
 import { getRandomPosts } from '@/modules/post/random';
@@ -20,7 +21,7 @@ import { getOpenGraphImagePath } from '@/libs/api/open-graph/image-path';
 
 import type { Metadata } from '@/types/common';
 import type { Post } from '@/types/post';
-export const prerender = true;
+
 const { SITE_URL } = CONFIG_CLIENT;
 
 export async function getStaticPaths() {
@@ -39,7 +40,7 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { data, render, readingTime, randomPosts } = Astro.props;
+const { data, readingTime, randomPosts } = Astro.props;
 const {
   draft,
   title,
@@ -57,7 +58,7 @@ const {
 const { slug } = Astro.params;
 const { pathname } = Astro.url;
 
-const { Content, headings: postHeadings } = await render();
+const { Content, headings: postHeadings } = await render(Astro.props);
 const headings = getHeadingsForTableOfContents(postHeadings);
 
 const postMetaProps = {
@@ -84,6 +85,7 @@ const metadata: Metadata = { title, description, image };
 <PostLayout {metadata}>
   <Fragment slot="hero-image">
     {/* hero image 1280x720 max, 16:9 */}
+    {/* aspect-[16/8] should stay to prevent too tall image */}
     {
       !noHero && (
         <Image
@@ -93,7 +95,7 @@ const metadata: Metadata = { title, description, image };
           fetchpriority="high"
           loading="eager"
           itemprop="image"
-          class="block max-w-full h-auto aspect-[16/8] object-cover"
+          class="block max-w-full h-auto aspect-[16/8] object-cover border border-base-300"
           transition:name={getTransitionNameFromElementId({
             elementId: TRANSITION_ELEMENT_IDS.POST_CARD.HERO_IMAGE,
           })}

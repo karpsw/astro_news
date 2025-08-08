@@ -31,7 +31,7 @@ export const PAGE_METADATA = {
   'lists/blog': {
     title: 'Blog',
     description:
-      'Est aliquip reprehenderit eu esse duis laboris cillum adipisicing reprehenderitvoluptate ex aute voluptate.',
+      'Here I share my coding experiments and thoughts on React.js, Next.js, Node.js, Astro, Python, DevOps, and more. Feel free to read, explore, and comment.',
   },
   'lists/blog/tags': {
     title: 'Tags',
@@ -52,7 +52,7 @@ export const PAGE_METADATA = {
   // src/pages/blog/categories/[category]/[...page].astro
   'lists/projects': {
     title: 'Projects',
-    description: 'Ad duis incididunt reprehenderit elit in enim amet dolor.',
+    description: 'Projects I have built over the past years.',
   },
   'lists/links': {
     title: 'Links',

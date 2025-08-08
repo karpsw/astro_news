@@ -1,165 +1,29 @@
-version: '3'
+# run production locally
+
+version: '3.8'
+
 services:
-
-  web-app:
-    container_name: ${DOCKER_APP_NAME}-web-app
- #   restart: always
-    build: .
-    ports:
-      - "4001:4000"
-#    volumes:
-#      - .:/app
-#      - node_modules:/app/node_modules
- #   working_dir: /app
-    command: node ./dist/server/entry.mjs
-    networks:
-      - wordpress
-
-  nginx:
-    container_name: ${DOCKER_APP_NAME}-nginx-purge-img
+  nmc-docker:
+    container_name: nmc-docker
+    # image: nemanjamitic/nemanjam.github.io:latest
     build:
-      context: ./docker/nginx
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        ARG_SITE_URL_AMD64: 'http://localhost:8080'
+        # make separate script with localhost enabled
+        ARG_PLAUSIBLE_SCRIPT_URL: 'https://plausible.arm1.nemanjamitic.com/js/script.js'
+        # will trigger analytics
+        ARG_PLAUSIBLE_DOMAIN: 'nemanjamitic.com'
+
+    # platform: linux/arm64
+    platform: linux/amd64
+    restart: unless-stopped
     ports:
-      - "${NGINX_PORT}:80"
-      - "8055:8055"
-    depends_on:
-      - web-app
-      - wordpress
-      - phpmyadmin
-    command: nginx -g "daemon off;"
-    links:
-      - wordpress
-      - phpmyadmin
-      - web-app
-    volumes:
-      - ${VOLUME_PATH}/logs/nginx:/var/log/nginx
-      - ${VOLUME_PATH}/cache/nginx:/var/cache/nginx
+      - '8080:8080'
     networks:
-      - wordpress
-
-
-  wordpress:
-    container_name: ${DOCKER_APP_NAME}-wordpress
-    depends_on:
-      - mysql
-      - elasticsearch
-    links:
-      - mysql
-      - elasticsearch
-
-    image: wordpress:latest
-    restart: always
-
-    networks:
-      - wordpress
-#    ports:
-#      - "3003:80"
-    volumes:
-      - ${VOLUME_PATH}/wordpress/plugins:/var/www/html/wp-content/plugins
-      - ${VOLUME_PATH}/wordpress/themes:/var/www/html/wp-content/themes
-      - ${VOLUME_PATH}/wordpress/uploads:/var/www/html/wp-content/uploads
-#      - ${VOLUME_PATH}/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
-      - type: bind
-        source: ${VOLUME_PATH}/wordpress/uploads.ini
-        target: /usr/local/etc/php/conf.d/uploads.ini
-
-#      - ${VOLUME_PATH}/wordpress/wp-content/plugins:/var/www/html/wp-content/plugins:cached
-#      - ${VOLUME_PATH}/wordpress/wp-content/uploads:/var/www/html/wp-content/uploads:cached
-#      - ${VOLUME_PATH}/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
-
-    environment:
-      WORDPRESS_DB_HOST: mysql:3306
-      WORDPRESS_DB_USER: ${MYSQL_USER}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
-      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
-      WORDPRESS_TABLE_PREFIX: asdiuas_
-      #WORDPRESS_DEBUG: 0
-
-      WORDPRESS_CONFIG_EXTRA: |
-
-        /* development parameters */
-        define('WP_CACHE', false);
-        define('ENVIRONMENT', 'local');
-        define('WP_DEBUG', false);
-
-
-        define( 'WP_HOME', '${WP_HOME}' );
-        define( 'WP_SITEURL', '${WP_SITEURL}' );
-        
-        /* configure mail server */
-        define('WORDPRESS_SMTP_AUTH', false);
-        define('WORDPRESS_SMTP_SECURE', '');
-        define('WORDPRESS_SMTP_HOST', 'mailhog');
-        define('WORDPRESS_SMTP_PORT', '1025');
-        define('WORDPRESS_SMTP_USERNAME', null);
-        define('WORDPRESS_SMTP_PASSWORD', null);
-        define('WORDPRESS_SMTP_FROM', 'whoever@example.com');
-        define('WORDPRESS_SMTP_FROM_NAME', 'Whoever');
-        define('FORCE_SSL_ADMIN', false);
-
-        /* add anymore custom configs here... */
-
-#  mailhog:
-#    container_name: ${DOCKER_APP_NAME}-mailhog
-#    image: mailhog/mailhog:latest
-#    ports:
-#      - "8025:8025"
-#    networks:
-#      - wordpress
-
-  mysql:
-    image: ${MYSQL_IMAGE}
-    container_name: ${DOCKER_APP_NAME}-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD:  ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - ${VOLUME_PATH}/db/mysql:/var/lib/mysql
-    command: '--default-authentication-plugin=mysql_native_password'
-#    command: ["mysqld", "--mysql-native-password=ON"]
-    networks:
-      - wordpress
-
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: ${DOCKER_APP_NAME}-pma
-    links:
-      - mysql
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_ARBITRARY: 1
-    restart: always
-#    ports:
-#      - 8085:80
-    networks:
-      - wordpress
-
-  elasticsearch:
-    container_name: ${DOCKER_APP_NAME}-elastic
-    image: elasticsearch:8.15.1
-#    restart: always
-    environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    networks:
-      - wordpress
-    volumes:
-      - ${VOLUME_PATH}/db/elasticsearch:/usr/share/elasticsearch/data
+      - default
 
 networks:
-  wordpress:
-    driver: bridge
-
-volumes:
-  node_modules:
+  default:
+    name: nmc-default

@@ -1,0 +1,41 @@
+---
+import Markdown from 'astro-remote/lib/Markdown.astro';
+
+import { getMarkdown } from '@/modules/post/getArchive';
+import FullWidth from '@/layouts/FullWidth.astro';
+import NewsMeta from '@/components/NewsMeta.astro';
+
+import type { BaseHeadProps } from '@/components/BaseHead.astro';
+
+const { slug } = Astro.params;
+
+const { data, content } = await getMarkdown(slug!);
+
+const metadata = { metadata: { title: 'test md' } } as BaseHeadProps;
+
+const postMetaProps = {
+  publishDate: data.date,
+  category: data.category,
+  category_slug: data.category_slug,
+  tags: data.tags,
+};
+---
+
+<FullWidth {...metadata}>
+  <section class="centered-px max-w-3xl b-h2-my">
+    <h1 class="b-h1">{data.title}</h1>
+  </section>
+
+  <section class="centered-px max-w-3xl b-h2-my">
+    <NewsMeta {...postMetaProps} />
+    <article class="m-2 p-2 bg-slate-200">
+      <Markdown content={data.lid} />
+    </article>
+  </section>
+
+  <section class="my-prose centered-px max-w-3xl b-h2-my">
+    <article class="">
+      <Markdown content={content} />
+    </article>
+  </section>
+</FullWidth>

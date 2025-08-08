@@ -1,0 +1,69 @@
+---
+title: HackerNews new jobs
+description: Insights into HackerNews "Who's Hiring" thread. 
+heroImage: '../../../../content/project/2024/12-09-hackernews-new-jobs/_images/hackernews-new-jobs.png'
+heroAlt: Homepage HackerNews new jobs
+publishDate: 2024-12-09
+---
+
+import { Image } from 'astro:assets';
+import Link from '../../../../components/Link.astro';
+import LinkWithLabel from '../../../../components/LinkWithLabel.astro';
+import LinkWithLabel2 from '../../../../components/LinkWithLabel2.astro';
+import { IMAGE_SIZES } from '../../../../constants/image';
+import HackerNewsNewJobsImage from '../../../../content/project/2024/12-09-hackernews-new-jobs/_images/hackernews-new-jobs.png';
+
+# HackerNews new jobs
+
+<Image {...IMAGE_SIZES.RESPONSIVE.POST_HERO} src={HackerNewsNewJobsImage} class="shadow-lg shadow-base-300" alt="Homepage HackerNews new jobs" />
+
+## Overview
+
+Job ads aggregator for the HackerNews "Who’s Hiring" threads with focus on fresh and recurring job opportunities.
+
+## Goals
+
+Evaluate the potential of the idea and the level of interest for a website of this type. Build MVP quickly.
+
+## Tech stack
+
+- Next.js, ShadcnUI, TailwindCSS
+- SQLite, better-sqlite3
+- Keyv, Keyv LRU, node-cron, Docker
+
+## Features
+
+- Group companies into 3 categories: 1. First time, 2. New, 3. Old
+- Visualize data with graphs 
+- Link and sort ads chronologically
+- Search company posting history
+- Automate parsing with cron jobs
+- Improve performance with caching and server side rendering
+- Deploy with Docker
+
+## Implementation details
+
+This is a Next.js server side rendered app with default ShadcnUI components. Algolia API is used as a data source because HackerNews webserver has a very strict scraping policy. Minimal relevant data is stored in SQLite database which is used for fast and precise queuing. The query results are cached with Keyv LRU in memory cache to improve performance. 
+
+The app requires zero maintenance, the only insert query to parse a new month is automated using a `node-cron` scheduled task. The app is packed as a Docker image, either in Github Actions or locally, and is available for both x86 and ARM platforms. It also has Winston logger and Plausible analytics.
+
+You can find more implementation details in the <Link href="https://github.com/nemanjam/hn-new-jobs/tree/main#implementation-details" variant="markdown" target="_blank" title="README.md file">README.md</Link> file on Github.
+
+## Lessons learned 
+
+- Idea and project got most attention on HackerNews because the public is already profiled and familiar with "Who’s Hiring" threads.
+- HackerNews is very strict with scraping their pages, best to use alternative data sources.
+- Keyv cache instance is available only within the original Next.js app process, and `cache.clear()` call from the cron script that runs in a separate Node.js process does not have any effect. Solved by detecting database change and clearing cache in the original Next.js app. Cache that runs as a standalone process like Redis would also work.
+- It is not possible to run cron in Docker as non-root user, so it is best to use Node.js or Go package for scheduling tasks inside Docker.
+
+## Links
+
+- <LinkWithLabel label="HackerNews" href="https://news.ycombinator.com/item?id=42373936" title="HackerNews ShowHN thread" />
+- <LinkWithLabel label="Demo" href="https://hackernews-new-jobs.arm1.nemanjamitic.com" title="HackerNews new jobs demo" />
+- <LinkWithLabel label="Repository" href="https://github.com/nemanjam/hn-new-jobs" title="HackerNews new jobs repository" />
+
+## Tests
+
+- <LinkWithLabel2 label="Repository" href="https://github.com/nemanjam/hn-new-jobs" title="HackerNews new jobs repository" />
+
+

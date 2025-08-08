@@ -1,4 +1,8 @@
 import mdx from '@astrojs/mdx';
+//
+// all relative imports in subtree
+// any of these files must not import CONFIG with env vars
+import node from '@astrojs/node';
 import partytown from '@astrojs/partytown';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
@@ -6,35 +10,31 @@ import icon from 'astro-icon';
 import { defineConfig } from 'astro/config';
 
 // must use relative imports, and their entire import subtrees
+import { rehypeExternalLinks } from './plugins/rehype-external-links';
 import { remarkReadingTime } from './plugins/remark-reading-time.mjs';
-//
-// all relative imports in subtree
-// any of these files must not import CONFIG with env vars
 import { envSchema, PROCESS_ENV } from './src/config/process-env';
 import { expressiveCodeIntegration } from './src/libs/integrations/expressive-code';
 import { sitemapIntegration } from './src/libs/integrations/sitemap';
 
-import node from '@astrojs/node';
-
 const { SITE_URL } = PROCESS_ENV;
+
 const remarkPlugins = [remarkReadingTime];
+const rehypePlugins = [rehypeExternalLinks];
 
 export default defineConfig({
-  output: 'hybrid',
   site: SITE_URL,
-  experimental: { env: envSchema },
   trailingSlash: 'ignore',
-
+  env: envSchema,
   // default
   compressHTML: true,
-
-  server: { port: 4000, host:true },
+  server: { port: 3000, host: '0.0.0.0' },
+  output: 'server',
   devToolbar: { enabled: false },
-
   integrations: [
     expressiveCodeIntegration(),
     sitemapIntegration(),
     react(),
+    // don't pass any plugins here, it will disable all mdx integrations, e.g. expressive-code above
     mdx(),
     // applyBaseStyles: false prevents double loading of tailwind
     tailwind({ applyBaseStyles: false }),
@@ -43,20 +43,22 @@ export default defineConfig({
       config: { forward: ['dataLayer.push'] },
     }),
   ],
-
-  markdown: { remarkPlugins },
-
+  // pass rehype plugins only here, mdx will reuse them
+  markdown: { remarkPlugins, rehypePlugins },
   vite: {
     build: {
       sourcemap: false,
     },
+    server: {
+      // applies only to Vite dev server
+      allowedHosts: ['localhost', 'preview1.amd1.nemanjamitic.com'],
+    },
   },
-
   adapter: node({
     mode: 'standalone',
   }),
 
   prefetch: {
-    prefetchAll: false
-  }
+    prefetchAll: false,
+  },
 });

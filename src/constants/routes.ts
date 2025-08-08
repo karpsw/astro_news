@@ -5,12 +5,6 @@
 
 export const ROUTES = {
   HOME: '/',
-  NEWS: '/news/',
-  BELARUS: '/tag/belarus/',
-  WORLD: '/world-news/',
-  POLITICA: '/politika/',
-  OBSHESTVO: '/obshhestvo/',
-  IT: '/it-news/',
   BLOG: '/blog/',
   PROJECTS: '/projects/',
   ABOUT: '/about/',
@@ -37,5 +31,6 @@ export const ROUTES = {
     OG_IMAGES: '/api/open-graph/',
     FEED_JSON: '/api/feed.json',
     FEED_RSS: '/api/feed.xml',
+    GALLERY: '/api/gallery/',
   },
 } as const;

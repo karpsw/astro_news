@@ -3,12 +3,7 @@ import { html } from 'satori-html';
 import { getRandomGradient } from '@/utils/gradients';
 import { limitString } from '@/utils/strings';
 
-export interface TemplateProps {
-  title: string;
-  heroImageUrl: string;
-  avatarImageUrl: string;
-  siteUrl: string;
-}
+import type { TemplateProps } from '@/types/open-graph';
 
 const templateHtml = ({ title, heroImageUrl, avatarImageUrl, siteUrl }: TemplateProps) => {
   // 2 rows - max 30 chars
@@ -19,6 +14,8 @@ const templateHtml = ({ title, heroImageUrl, avatarImageUrl, siteUrl }: Template
   const limitedTitle = limitString(title, 70);
 
   const randomGradient = getRandomGradient();
+
+  // important: <img src="..." /> must have quotes, and all attributes too, or build will fail
 
   return html`
     <div class="flex p-8 h-full" style="${randomGradient}">
@@ -31,7 +28,7 @@ const templateHtml = ({ title, heroImageUrl, avatarImageUrl, siteUrl }: Template
           <!-- avatar and site -->
           <div class="flex items-center ${isLongSiteUrl ? 'flex-col justify-end items-start' : ''}">
             <img
-              src=${avatarImageUrl}
+              src="${avatarImageUrl}"
               width="120"
               height="120"
               class="rounded-full mr-8 border-2 border-gray-300"

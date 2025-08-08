@@ -10,6 +10,21 @@ This is the repository for my coding blog [nemanjamitic.com](https://nemanjamiti
 | Github Pages | https://nemanjam.github.io               |
 | Docker       | https://nmc-docker.arm1.nemanjamitic.com |
 
+#### Self hosted mirrors
+
+These mirrors are hosted at my home, in my homelab and are not always online.
+
+| Method             | Url                                       |
+| :----------------- | :---------------------------------------- |
+| OrangePi Nginx     | https://pi.nemanjamitic.com               |
+| OrangePi Docker    | https://nmc-docker.pi.nemanjamitic.com    |
+| ThinkCentre Nginx  | https://local.nemanjamitic.com            |
+| ThinkCentre Docker | https://nmc-docker.local.nemanjamitic.com |
+
+#### Plausible analytics
+
+https://plausible.arm1.nemanjamitic.com/nemanjamitic.com
+
 ## Screenshots
 
 https://github.com/user-attachments/assets/5bf85aee-a3bd-4ca0-9b6d-d5b4f555934b
@@ -203,9 +218,9 @@ After that you can build and push multi-platform images locally.
 docker login my-user my-pass
 
 # replace "nemanjamitic/nemanjam.github.io" with your image name
-# set ARG_SITE_URL to your production url
+# set ARG_SITE_URL_ARM64 to your production url
 # set correct architecture for your production server --platform linux/arm64 or linux/amd64
-"docker:build:push:arm": "docker buildx build -f ./docker/Dockerfile -t nemanjamitic/nemanjam.github.io --build-arg ARG_SITE_URL='https://nmc-docker.arm1.nemanjamitic.com' --platform linux/arm64 --push .",
+"docker:build:push:arm": "docker buildx build -f ./docker/Dockerfile -t nemanjamitic/nemanjam.github.io --build-arg ARG_SITE_URL_ARM64='https://nmc-docker.arm1.nemanjamitic.com' --platform linux/arm64 --progress=plain --push .",
 
 # build and push Docker image, replace "arm" with your architecture
 yarn docker:build:push:arm
@@ -277,16 +292,20 @@ Latest git commit info is included in the website footer for easy identification
 
 ## Roadmap
 
-- Component to float text around images
+- Re-architecture CSS for Tailwind v4
 - Add accessibility attributes
-- Fix View transitions flash in Firefox dark theme
-- Add analytics
-- Add image gallery page
-- Add remote markdown page
-- Validate config with `astro:env`
+- Improve visual design
+- Add semantic release and Docker tags
+- Component to float text around images - done
+- Fix View transitions flash in Firefox dark theme - done
+- Add analytics - done
+- Add image gallery page - done
+- Add remote markdown page - done
+- Validate config with `astro:env` - done
 - Render `.mdx` for RSS using component containers
 - Review and improve ESLint, (strictest) Typescript and Prettier configs
-- Improve visual design
+- Restructure content folders - done
+- Update to Astro content layer - done
 
 ## Credits
 

@@ -3,7 +3,6 @@ dist/
 
 # dependencies
 node_modules/
-volumes/
 
 # logs
 npm-debug.log*
@@ -33,6 +32,4 @@ pnpm-debug.log*
 .netlify
 
 .astro/*
-.idea/
-.astro/
 !.astro/types.d.ts

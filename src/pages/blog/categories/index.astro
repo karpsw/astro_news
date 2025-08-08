@@ -14,9 +14,22 @@ const posts = await getAllPosts();
 const categoryLinks = getCategoryLinks(posts);
 
 const metadata = getPageMetadata('lists/blog/categories');
+
+function sleep(time, callback) {
+  var stop = new Date().getTime();
+  while (new Date().getTime() < stop + time) {}
+  callback();
+}
+
+console.log(`execution start`);
+sleep(5000, function () {
+  console.log(`execution end`);
+});
+const dt = new Date().toString().replace(/T/, ':').replace(/\.\w*/, '');
 ---
 
 <List {metadata}>
+  <div class="bg-gray-400 mb-3 mt-2">TIME: {dt}</div>
   <section>
     <FilterList class="mb-4" itemLinks={categoryLinks}>
       {

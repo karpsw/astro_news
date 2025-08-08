@@ -1,0 +1,52 @@
+---
+title: MERN boilerplate
+description: Full stack boilerplate with React, Redux, Express and MongoDB.
+heroImage: '../../../../content/project/2020/04-12-mern-boilerplate/_images/mern-boilerplate.png'
+heroAlt: Homepage MERN boilerplate
+publishDate: 2020-04-12
+---
+
+import { Image } from 'astro:assets';
+import Link from '../../../../components/Link.astro';
+import LinkWithLabel from '../../../../components/LinkWithLabel.astro';
+import { IMAGE_SIZES } from '../../../../constants/image';
+import MernBoilerplateImage from '../../../../content/project/2020/04-12-mern-boilerplate/_images/mern-boilerplate.png';
+
+# MERN boilerplate
+
+<Image {...IMAGE_SIZES.RESPONSIVE.POST_HERO} src={MernBoilerplateImage} class="shadow-lg shadow-base-300" alt="Homepage MERN boilerplate" />
+
+## Overview
+
+Full stack boilerplate with React, Redux, Express and MongoDB.
+
+## Goals
+
+Get practical experience with Redux and Express with Mongoose.
+
+## Tech stack
+
+- React, Redux, Redux Thunk, Passport, Formik
+- Express, Mongoose
+
+## Features
+
+- State management with Redux and Redux Thunk
+- Auth with Passport
+- CRUD operations, server and client side validation
+
+## Implementation details
+
+It is a client side rendered React app that uses Redux for storing server state. That method was popular at the time but today is replaced with server side rendering, server components, React Query and similar. Auth is done with Passport middleware, endpoints with Express and data is stored in MongoDB with Mongoose. Babel is used for unified ES syntax across frontend and backend code.
+
+You can find more implementation details in the <Link href="https://github.com/nemanjam/mern-boilerplate" variant="markdown" target="_blank" title="README.md">README.md</Link> file on Github.
+
+## Lessons learned 
+
+- How to structure a full stack app and what are the common challenges to expect.
+- Work in practice and debug with Redux.
+
+## Links
+
+- <LinkWithLabel label="Demo" href="https://mern-boilerplate.arm1.nemanjamitic.com" title="MERN boilerplate demo" />
+- <LinkWithLabel label="Repository" href="https://github.com/nemanjam/mern-boilerplate" title="MERN boilerplate repository" />

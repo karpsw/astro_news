@@ -15,8 +15,6 @@ import { getPathnameFromFilterParams } from '@/utils/paths';
 import type { FilterParams, FilterType, Post } from '@/types/post';
 import type { GetStaticPathsOptions } from 'astro';
 
-export const prerender = true;
-
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const posts: Post[] = await getAllPostsWithReadingTime();
   const pageSize = CONFIG_CLIENT.PAGE_SIZE_POST_CARD_SMALL;

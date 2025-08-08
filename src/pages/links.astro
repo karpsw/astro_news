@@ -18,9 +18,23 @@ const readmeContent = await fetch(README_RAW_URL).then((response) => response.te
 const metadata = getPageMetadata('lists/links');
 
 const { GITHUB_MARKDOWN_BODY_ID } = SELECTORS;
+
+function sleep(time, callback) {
+  var stop = new Date().getTime();
+  while (new Date().getTime() < stop + time) {}
+  callback();
+}
+
+console.log(`execution start`);
+sleep(5000, function () {
+  console.log(`execution end`);
+});
+const dt = new Date().toString().replace(/T/, ':').replace(/\.\w*/, '');
 ---
 
 <List {metadata}>
+  <div class="bg-gray-400 mb-3 mt-2">TIME: {dt}</div>
+
   <div id={GITHUB_MARKDOWN_BODY_ID} class="markdown-body">
     <p>
       My personal bookmarks collection which is hosted in this repo: <a href={REPO} target="_blank"

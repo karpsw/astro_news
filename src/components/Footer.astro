@@ -4,32 +4,37 @@ import { Icon } from 'astro-icon/components';
 import Link from '@/components/Link.astro';
 import { ROUTES } from '@/constants/routes';
 import { CONFIG_CLIENT } from '@/config/client';
-//import { getLatestCommitInfo } from '@/libs/git';
+import { getLatestCommitInfo } from '@/libs/git';
 import { shortDate } from '@/utils/datetime';
 import { limitString, trimHttpProtocol } from '@/utils/strings';
 
-const { SITE_URL, AUTHOR_LINKEDIN, AUTHOR_GITHUB, REPO_URL } = CONFIG_CLIENT;
+const { SITE_URL, AUTHOR_EMAIL, AUTHOR_GITHUB, AUTHOR_LINKEDIN, AUTHOR_NAME, REPO_URL } =
+  CONFIG_CLIENT;
 const domain = trimHttpProtocol(SITE_URL);
-const messageLength = 20 as const;
+const messageLength = 15 as const;
 
-//const { time, fullHash, message } = getLatestCommitInfo();
+const { time, fullHash, message } = getLatestCommitInfo();
 
-//const commitUrl = `${REPO_URL}/commit/${fullHash}`;
+const commitUrl = `${REPO_URL}/commit/${fullHash}`;
 
-//const shortDateStr = shortDate(new Date(time));
-//const trimmedMessage = limitString(message, messageLength);
+const shortDateStr = shortDate(new Date(time));
+const trimmedMessage = limitString(message, messageLength);
+
+const firstName = AUTHOR_NAME.split(' ')[0];
 
 // footer is full width for border, div has max-w
 ---
 
 <footer class="border-t border-base-300 py-8 px-4">
   <div class="max-w-6xl md:mx-auto flex justify-center md:justify-start">
-    <div class="flex justify-between gap-4 flex-col-reverse md:flex-row md:w-full">
+    <div class="flex justify-between gap-4 flex-col-reverse md:flex-row md:w-full min-w-0">
       <!-- left column -->
       <div class="flex items-center gap-2 flex-wrap text-sm text-content whitespace-nowrap">
         <div class="flex items-center gap-2">
           <label class="font-bold">Latest commit:</label>
-
+          <Link href={commitUrl} title={shortDateStr} target="_blank">
+            {trimmedMessage}
+          </Link>
         </div>
         <div class="flex items-center gap-2">
           <label class="font-bold">Design system:</label>
@@ -38,15 +43,30 @@ const messageLength = 20 as const;
       </div>
 
       <!-- right column -->
-      <ul class="flex gap-2 flex-wrap xs:flex-nowrap lg:items-center">
+      <ul
+        class="flex gap-16 xs:gap-2 flex-wrap xs:flex-nowrap lg:items-center [&_span]:hidden [&_span]:xs:block"
+      >
+        <li>
+          <Link
+            href={`mailto:${AUTHOR_EMAIL}`}
+            title={`${firstName}'s email`}
+            target="_blank"
+            rel="me noreferrer noopener"
+            class="flex items-center gap-2 text-base xs:text-lg"
+            variant="nav"
+          >
+            <Icon name="mdi:email-outline" class="h-6 w-6 fill-current" />
+            <span>Email</span>
+          </Link>
+        </li>
         <li>
           <Link
             href={AUTHOR_GITHUB}
             target="_blank"
             rel="me noreferrer noopener"
-            title="@nemanjam on Github"
+            title={`${firstName} on Github`}
             class="flex items-center gap-2 text-base xs:text-lg"
-            variant="link-nav"
+            variant="nav"
           >
             <Icon name="mdi:github" class="h-6 w-6 fill-current" />
             <span>Github</span>
@@ -57,9 +77,9 @@ const messageLength = 20 as const;
             href={AUTHOR_LINKEDIN}
             target="_blank"
             rel="me noreferrer noopener"
-            title="Nemanja on LinkedIn"
+            title={`${firstName} on LinkedIn`}
             class="flex items-center gap-2 text-base xs:text-lg"
-            variant="link-nav"
+            variant="nav"
           >
             <Icon name="mdi:linkedin" class="h-6 w-6 fill-current" />
             <span>LinkedIn</span>
@@ -68,9 +88,10 @@ const messageLength = 20 as const;
         <li>
           <Link
             href={ROUTES.API.FEED_RSS}
+            target="_blank"
             title={`RSS feed for ${domain}`}
             class="flex items-center gap-2 text-base xs:text-lg"
-            variant="link-nav"
+            variant="nav"
           >
             <Icon name="mdi:rss" class="h-6 w-6 fill-current" />
             <span>RSS Feed</span>
@@ -80,34 +101,3 @@ const messageLength = 20 as const;
     </div>
   </div>
 </footer>
-
-{
-    import.meta.env.MODE === 'production' ?
-        (
-            <>
-
-              <!-- Yandex.Metrika counter -->
-              <script pt type="text/partytown" >
-                (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-                  m[i].l=1*new Date();
-                  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-                  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-                (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-                ym(98370111, "init", {
-                  clickmap:true,
-                  trackLinks:true,
-                  accurateTrackBounce:true,
-                  webvisor:true
-                });
-              </script>
-              <noscript><div><img src="https://mc.yandex.ru/watch/98370111" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-              <!-- /Yandex.Metrika counter -->
-
-
-            </>
-            ):
-            null
-    }
-
-

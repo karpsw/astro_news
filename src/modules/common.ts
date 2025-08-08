@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 
+import { isProd } from '@/utils/environment';
 import { isPreviewMode } from '@/utils/preview';
 
 import type { CollectionEntry, CollectionKey } from 'astro:content';
@@ -24,7 +25,7 @@ export const getAllEntries = async <T extends CollectionKey>(
   const { skipSort = false, includeDrafts = isPreviewMode() } = options ?? {};
 
   const entries = await getCollection<T>(collectionName, ({ data }) => {
-    const isProdAndDraft = import.meta.env.PROD && data.draft;
+    const isProdAndDraft = isProd && data.draft;
     return !isProdAndDraft || includeDrafts;
   });
 
@@ -65,3 +66,10 @@ export const getPublishedOrUpdatedDate = ({
 
   return result;
 };
+
+/*------------------------- for content layer -----------------------*/
+
+export const idToSlug = <T extends { id: unknown }>(item: T): T & { slug: T['id'] } => ({
+  ...item,
+  slug: item.id,
+});

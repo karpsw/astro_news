@@ -1,0 +1,55 @@
+---
+title: Audio Twitter
+description: Twitter clone with audio messages.
+heroImage: '../../../../content/project/2020/02-16-audio-twitter/_images/audio-twitter.png'
+heroAlt: Homepage Audio Twitter
+publishDate: 2020-02-16
+---
+
+import { Image } from 'astro:assets';
+import Link from '../../../../components/Link.astro';
+import LinkWithLabel from '../../../../components/LinkWithLabel.astro';
+import { IMAGE_SIZES } from '../../../../constants/image';
+import AudioTwitterImage from '../../../../content/project/2020/02-16-audio-twitter/_images/audio-twitter.png';
+
+# Audio Twitter
+
+<Image {...IMAGE_SIZES.RESPONSIVE.POST_HERO} src={AudioTwitterImage} class="shadow-lg shadow-base-300" alt="Homepage Audio Twitter" />
+
+## Overview
+
+Twitter clone with audio messages.
+
+## Goals
+
+Get practical experience with Apollo GraphQL. Work with audio.
+
+## Tech stack
+
+- React, Apollo GraphQL, MaterialUI
+- Wavesurfer, Mongoose
+
+## Features
+
+- Record, play, auto-play, delete, like, retweet audio messages
+- Auth, edit profile, real time notifications
+- Responsive design, color themes and dark mode
+
+## Implementation details
+
+React Mic is used for recording the audio and Wavesurfer for rendering waveform and playing. The UI is build with default MaterialUI components. It has a number of Apollo CRUD operations, real time subscriptions and client side resolvers for managing state. It has social network functionalities like follow, like, retweet, notifications.
+
+Data is stored in MongoDB using Mongoose and audio files are served via static folder.
+
+For more implementation details check the <Link href="https://github.com/nemanjam/audio-twitter" variant="markdown" target="_blank" title="README.md">README.md</Link> file on Github.
+
+## Lessons learned 
+
+- Working with multimedia content is much more challenging than with text.
+- In-depth work with Apollo GraphQL, schemas, both server and client side resolvers, queries, subscriptions.
+
+## Links
+
+- <LinkWithLabel label="Repository" href="https://github.com/nemanjam/audio-twitter" title="Audio Twitter repository" />
+
+

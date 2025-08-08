@@ -1,0 +1,53 @@
+---
+title: Redux ecommerce
+description: E-commerce website with React and Redux.
+heroImage: '../../../../content/project/2019/09-29-redux-ecommerce/_images/redux-ecommerce.png'
+heroAlt: Homepage Redux ecommerce
+publishDate: 2019-09-29
+---
+
+import { Image } from 'astro:assets';
+import Link from '../../../../components/Link.astro';
+import LinkWithLabel from '../../../../components/LinkWithLabel.astro';
+import { IMAGE_SIZES } from '../../../../constants/image';
+import ReduxEcommerceImage from '../../../../content/project/2019/09-29-redux-ecommerce/_images/redux-ecommerce.png';
+
+# Redux ecommerce
+
+<Image {...IMAGE_SIZES.RESPONSIVE.POST_HERO} src={ReduxEcommerceImage} class="shadow-lg shadow-base-300" alt="Reddit unread comments browser extension" />
+
+## Overview
+
+E-commerce website with React and Redux.
+
+## Goals
+
+Build a basic e-commerce website. 
+
+## Tech stack
+
+- React, Redux, Redux Thunk, React Bootstrap, Faker
+
+## Features
+
+- Responsive e-commerce pages
+- Products filtering, sorting, pagination with infinite scroll
+- Static app with fake backend
+
+## Implementation details
+
+It is a static, client side app that uses Promise based fake backend for simulating data fetching. The UI is build using React Bootstrap components. The state for products filtering, sorting, infinite scroll pagination and cart is managed using Redux. Images use load event for displaying a spinner.
+
+For more implementation details see the <Link href="https://github.com/nemanjam/redux-ecommerce" variant="markdown" target="_blank" title="README.md">README.md</Link> file on Github.
+
+## Lessons learned 
+
+- Get practical experience with Redux.
+
+## Links
+
+
+- <LinkWithLabel label="Demo" href="https://nemanjam.github.io/redux-ecommerce" title="Redux ecommerce demo" />
+- <LinkWithLabel label="Repository" href="https://github.com/nemanjam/redux-ecommerce" title="Redux ecommerce repository" />
+
+

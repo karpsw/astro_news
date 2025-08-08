@@ -42,7 +42,7 @@ const getTransitionNameFromElementId = setTransitionSlug({ pageSlug: slug });
     {...IMAGE_SIZES.FIXED.POST_CARD_SMALL}
     src={heroImage}
     alt={heroAlt}
-    class="object-cover rounded-box hidden xs:block w-[142px] h-[80px] md:size-auto"
+    class="object-cover rounded-box hidden xs:block w-[142px] h-[80px] md:size-auto shadow shadow-base-300"
     transition:name={getTransitionNameFromElementId({
       elementId: TRANSITION_ELEMENT_IDS.POST_CARD.HERO_IMAGE,
     })}
@@ -54,7 +54,7 @@ const getTransitionNameFromElementId = setTransitionSlug({ pageSlug: slug });
         elementId: TRANSITION_ELEMENT_IDS.POST_CARD.TITLE,
       })}
     >
-      <Link variant="link-heading" href={`${ROUTES.BLOG}${slug}`}>
+      <Link variant="heading" href={`${ROUTES.BLOG}${slug}`}>
         {draft && <sup class="text-sm text-red-500 mr-1">{DRAFT_TEXT}</sup>}
         {title}
       </Link>

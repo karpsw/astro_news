@@ -3,6 +3,11 @@ import { DEFAULT_METADATA } from '@/constants/metadata';
 import DefaultPostHeroImage from '@/assets/images/default/default-post-hero-image.jpg';
 import DefaultProjectHeroImage from '@/assets/images/default/default-project-hero-image.jpg';
 
+export const BASE_FOLDERS = {
+  POST: 'src/content/post',
+  PROJECT: 'src/content/project',
+} as const;
+
 export const COLLECTIONS = {
   POST: 'post',
   PROJECT: 'project',
@@ -17,6 +22,7 @@ export const TAGS = [
   'css',
   'python',
   'devops',
+  'docker',
   'self-hosting',
 ] as const;
 
@@ -51,6 +57,10 @@ export const CATEGORIES = [
   {
     name: 'resources',
     icon: 'mdi:book-open-variant-outline',
+  },
+  {
+    name: 'homelab',
+    icon: 'mdi:flask-empty-outline',
   },
 ] as const;
 

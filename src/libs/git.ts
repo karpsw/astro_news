@@ -9,7 +9,7 @@ export interface GitResult {
 
 export const getLatestCommitInfo = (): GitResult => {
   const separator = '___';
-  const command = `git log -1 --pretty=format:"%ad${separator}%h${separator}%H${separator}%s" --date=format:'%Y-%m-%d %H:%M:%S'`;
+  const command = `git log -1 --pretty=format:"%ad${separator}%h${separator}%H${separator}%s" `;
   const output = execSync(command).toString().trim().split(separator);
 
   if (output.length !== 4) {

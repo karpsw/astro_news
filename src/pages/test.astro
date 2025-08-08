@@ -1,0 +1,64 @@
+---
+// must be at top
+import '@/assets/styles/github-markdown.css';
+
+import { Markdown } from 'astro-remote';
+
+import List from '@/layouts/List.astro';
+import Anchor from '@/components/astro-remote/Anchor.astro';
+import Heading from '@/components/astro-remote/Heading.astro';
+import { BOOKMARKS } from '@/constants/data';
+import { SELECTORS } from '@/constants/dom';
+import { getPageMetadata } from '@/utils/metadata';
+
+const { README_RAW_URL, REPO } = BOOKMARKS;
+
+const readmeContent = await fetch(README_RAW_URL).then((response) => response.text());
+
+const metadata = getPageMetadata('lists/links');
+
+const { GITHUB_MARKDOWN_BODY_ID } = SELECTORS;
+
+function sleep(time, callback) {
+  var stop = new Date().getTime();
+  while (new Date().getTime() < stop + time) {}
+  callback();
+}
+
+console.log(`execution start`);
+sleep(5000, function () {
+  console.log(`execution end`);
+});
+const dt = new Date().toString().replace(/T/, ':').replace(/\.\w*/, '');
+---
+
+<List {metadata}>
+  <div class="bg-gray-400 mb-3 mt-2">v2. TIME: {dt}</div>
+
+  <div id={GITHUB_MARKDOWN_BODY_ID} class="markdown-body">
+    <p>
+      My personal bookmarks collection which is hosted in this repo: <a href={REPO} target="_blank"
+        >{REPO}</a
+      >
+    </p>
+
+    <Markdown
+      content={readmeContent}
+      sanitize={{ dropElements: ['h1'], allowComponents: true }}
+      components={{ Heading, a: Anchor }}
+    />
+  </div>
+</List>
+
+<style is:global>
+  #markdown-body-id {
+    /* set transparent bg-color */
+    @apply !bg-transparent;
+
+    /* fix list style */
+    ul,
+    ol {
+      list-style: revert;
+    }
+  }
+</style>
