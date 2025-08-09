@@ -1,8 +1,11 @@
 import { z } from 'astro:content';
 
 export const newsSchema = z.object({
+  id: z.number(),
   title: z.string(),
   date: z.coerce.date().optional(),
+  featured_img_url: z.string().optional(),
+  featured_img_caption: z.string().optional(),
   category: z.string().optional(),
   category_slug: z.string().optional(),
   lid: z.string().optional(),

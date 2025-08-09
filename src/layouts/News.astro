@@ -27,6 +27,18 @@ const postMetaProps = {
   <section class="centered-px max-w-3xl b-h2-my">
     <h1 class="b-h1">{data.title}</h1>
   </section>
+  <figure class="centered max-w-4xl">
+    {
+      data.featured_img_url && (
+        <img
+          src={data.featured_img_url}
+          alt={data.featured_img_caption}
+          loading="eager"
+          class="block max-w-full h-auto aspect-[16/8] object-cover border border-base-300"
+        />
+      )
+    }
+  </figure>
 
   <section class="centered-px max-w-3xl b-h2-my">
     <NewsMeta {...postMetaProps} />
