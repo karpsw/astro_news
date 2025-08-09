@@ -1,18 +1,20 @@
 ---
-import Markdown from 'astro-remote/lib/Markdown.astro';
+//import Markdown from 'astro-remote/lib/Markdown.astro';
 
 import { getMarkdown } from '@/modules/post/getArchive';
 import FullWidth from '@/layouts/FullWidth.astro';
 import NewsMeta from '@/components/NewsMeta.astro';
+import { renderMarkdown } from '@/utils/markdown';
 
 import type { BaseHeadProps } from '@/components/BaseHead.astro';
 
 const { slug } = Astro.params;
 
 const { data, content } = await getMarkdown(slug!);
-
-const metadata = { metadata: { title: 'test md' } } as BaseHeadProps;
-
+const metadata = { metadata: { title: data.title } } as BaseHeadProps;
+//const html = await renderMarkdown(rawMd);
+const { code: contentHtml } = await renderMarkdown(content);
+const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
 const postMetaProps = {
   publishDate: data.date,
   category: data.category,
@@ -28,14 +30,10 @@ const postMetaProps = {
 
   <section class="centered-px max-w-3xl b-h2-my">
     <NewsMeta {...postMetaProps} />
-    <article class="m-2 p-2 bg-slate-200">
-      <Markdown content={data.lid} />
-    </article>
+    <article class="m-2 p-2 bg-slate-200" set:html={lidtHtml} />
   </section>
 
   <section class="my-prose centered-px max-w-3xl b-h2-my">
-    <article class="">
-      <Markdown content={content} />
-    </article>
+    <article class="" set:html={contentHtml} />
   </section>
 </FullWidth>

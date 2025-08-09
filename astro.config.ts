@@ -11,6 +11,7 @@ import { defineConfig } from 'astro/config';
 
 // must use relative imports, and their entire import subtrees
 import { rehypeExternalLinks } from './plugins/rehype-external-links';
+import remarkEmbed from './plugins/remark-embed.mjs';
 import { remarkReadingTime } from './plugins/remark-reading-time.mjs';
 import { envSchema, PROCESS_ENV } from './src/config/process-env';
 import { expressiveCodeIntegration } from './src/libs/integrations/expressive-code';
@@ -18,7 +19,7 @@ import { sitemapIntegration } from './src/libs/integrations/sitemap';
 
 const { SITE_URL } = PROCESS_ENV;
 
-const remarkPlugins = [remarkReadingTime];
+const remarkPlugins = [remarkReadingTime, remarkEmbed];
 const rehypePlugins = [rehypeExternalLinks];
 
 export default defineConfig({
@@ -35,7 +36,7 @@ export default defineConfig({
     sitemapIntegration(),
     react(),
     // don't pass any plugins here, it will disable all mdx integrations, e.g. expressive-code above
-    mdx(),
+    mdx({ remarkPlugins: [remarkEmbed] }),
     // applyBaseStyles: false prevents double loading of tailwind
     tailwind({ applyBaseStyles: false }),
     icon({ iconDir: 'src/assets/icons' }),

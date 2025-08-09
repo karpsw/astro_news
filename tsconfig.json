@@ -26,6 +26,6 @@
       "@/config/*": ["config/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.astro", ".astro/types.d.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.astro", ".astro/types.d.ts", "plugins/remark-embed.mjs"],
   "exclude": ["dist", "docs", "node_modules"]
 }
