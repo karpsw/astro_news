@@ -1,0 +1,53 @@
+---
+import { SELECTORS } from '@/constants/dom';
+import { getActiveNavItemPath } from '@/utils/navigation';
+
+const { SCROLL_TO_TOP_ID } = SELECTORS;
+
+const { pathname: routePathname } = Astro.url;
+const activeNavItemPath = getActiveNavItemPath(routePathname);
+
+// group-[.menu-open]: increases specificity everywhere
+// group-[.menu-open]:flex-col md:!flex-row, both on flex-direction
+---
+
+<header class="bg-[#f8f9fa] border-b border-gray-200 sticky top-0 z-50 text-[15px] font-sans">
+  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-14">
+      <!-- Логотип -->
+      <!-- Логотип -->
+      <div class="flex-shrink-0">
+        <a href="/" class="text-[18px] font-bold text-gray-900">Telegraf.news</a>
+      </div>
+
+      <!-- Навигация -->
+      <nav class="hidden md:flex space-x-4 text-gray-800 font-medium">
+        <a href="/category/belarus" class="hover:text-blue-600">Беларусь</a>
+        <a href="/category/world" class="hover:text-blue-600">Мир</a>
+        <a href="/category/society" class="hover:text-blue-600">Общество</a>
+        <a href="/category/politics" class="hover:text-blue-600">Политика</a>
+        <a href="/category/economy" class="hover:text-blue-600">Экономика</a>
+        <a href="/category/health" class="hover:text-blue-600">Здоровье</a>
+        <a href="/category/lifehacks" class="hover:text-blue-600">Лайфхаки</a>
+        <a href="/category/auto" class="hover:text-blue-600">Авто</a>
+        <a href="/category/incidents" class="hover:text-blue-600">Происшествия</a>
+      </nav>
+
+      <!-- Иконка поиска -->
+      <div class="flex items-center space-x-3">
+        <button class="text-gray-500 hover:text-blue-600">
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
