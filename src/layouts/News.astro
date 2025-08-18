@@ -2,8 +2,10 @@
 //import Markdown from 'astro-remote/lib/Markdown.astro';
 
 import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
 
 import { getMarkdown } from '@/modules/post/getArchive';
+import Telepicture from '@/components/Telepicture.astro';
 import { formatDate, formatDateIso } from '@/utils/datetime';
 import { renderMarkdown } from '@/utils/markdown';
 import NewsBase from './NewsBase.astro';
@@ -73,17 +75,25 @@ const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
 
       <!-- 🖼️ Image Placeholder -->
       <div class="w-full bg-gray-200 rounded-md flex items-center justify-center">
-        <!-- Картинка -->
-        {
-          data.featured_img_url && (
-            <img
-              src={data.featured_img_url}
-              alt={data.featured_img_caption}
-              loading="eager"
-              class="block max-w-full h-auto aspect-[16/8] object-cover border border-base-300"
-            />
-          )
-        }
+        <!-- Картинка
+        <Image
+          src=`${data.featured_img_url}?w=891&h=501&crop=1`
+          alt={data.featured_img_caption}
+          layout="constrained"
+          width={891}
+          height={501}
+          class="aspect-[16/9] max-w-full block"
+        /> -->
+
+        <Telepicture
+          desktopImgUrl={data.featured_img_url}
+          alt={data.featured_img_caption}
+          loading="eager"
+          layout="constrained"
+          wImg={891}
+          hImg={501}
+          class="aspect-[16/9] max-w-full block"
+        />
       </div>
 
       <!--  Subscribe Block -->
