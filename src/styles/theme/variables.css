@@ -2,6 +2,8 @@
   :root {
     /* unique colors */
 
+    --var-color-tel-black: #0c0c0c;
+
     /* from prose-slate */
     /* background */
     --var-color-white: theme('colors.white');

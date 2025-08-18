@@ -34,8 +34,8 @@ export const IMAGE_SIZES = {
       height: 36,
     },
     AVATAR: {
-      width: 48,
-      height: 48,
+      width: 140,
+      height: 20,
     },
     POST_CARD_SMALL: {
       width: 215,

@@ -13,6 +13,7 @@ const config: Config = {
     plugin(({ addVariant }) => {
       addVariant('not-first', '&:not(:first-child)');
       addVariant('not-last', '&:not(:last-child)');
+      addVariant('menu-open', '.menu-open &');
     }),
   ],
   theme: {
@@ -22,10 +23,18 @@ const config: Config = {
       4: '4',
       8: '8',
     },
+
+    container: {
+      center: true,
+      padding: '1rem',
+    },
     // must not use extend, will add xs to the end
     screens: {
-      xs: '475px',
-      ...defaultTheme.screens,
+      sm: '600px',
+      md: '728px',
+      lg: '984px',
+      xl: '1240px',
+      xs: '1400px',
     },
     extend: {
       fontFamily: {
@@ -33,6 +42,7 @@ const config: Config = {
       },
       colors: {
         // background
+        'tel-black': 'var(--th-tel-black)',
         'base-100': 'var(--th-base-100)',
         'base-200': 'var(--th-base-200)',
         'base-300': 'var(--th-base-300)',
