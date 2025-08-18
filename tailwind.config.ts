@@ -43,6 +43,7 @@ const config: Config = {
       colors: {
         // background
         'tel-black': 'var(--th-tel-black)',
+        'tel-red': 'var(--th-tel-red)',
         'base-100': 'var(--th-base-100)',
         'base-200': 'var(--th-base-200)',
         'base-300': 'var(--th-base-300)',
