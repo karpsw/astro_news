@@ -1,0 +1,60 @@
+---
+import '@fontsource-variable/inter/index.css';
+import '@/styles/main.css';
+
+import { Seo } from 'astro-seo-meta';
+import { ClientRouter } from 'astro:transitions';
+
+import ThemeScript from '@/components/ThemeScript.astro';
+import { CONFIG_CLIENT } from '@/config/client';
+
+import type { Metadata } from '@/types/common';
+
+const { SITE_URL_CANONICAL, AUTHOR_NAME, PLAUSIBLE_SCRIPT_URL, PLAUSIBLE_DOMAIN } = CONFIG_CLIENT;
+
+export interface BaseHeadProps {
+  metadata: Metadata;
+}
+
+// set defualt metadata in this component
+const { metadata } = Astro.props as BaseHeadProps;
+---
+
+<head>
+  {/* Global Metadata */}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  {/* wrong, set from theme toggle */}
+  <meta name="theme-color" content="" />
+
+  {/* Analytics */}
+  {
+    PLAUSIBLE_SCRIPT_URL && (
+      <>
+        <link rel="preconnect" href={PLAUSIBLE_SCRIPT_URL} />
+        {/* PLAUSIBLE_DOMAIN must be the same for all mirrors */}
+        <script
+          defer
+          type="text/partytown"
+          src={PLAUSIBLE_SCRIPT_URL}
+          data-domain={PLAUSIBLE_DOMAIN}
+        />
+      </>
+    )
+  }
+
+  {/* Theme */}
+  {/* MUST be inside <head /> to avoid white flash, IMPORTANT */}
+  <ThemeScript />
+
+  <ClientRouter fallback="none" />
+
+  <!-- 
+    <style>
+    @view-transition {
+      navigation: auto; /* enabled! */
+    }
+    </style> 
+  -->
+</head>
