@@ -6,7 +6,6 @@ import { visit } from 'unist-util-visit';
 // Основная функция обработки шорткодов
 function baseShortcodeProcessor() {
   return (tree) => {
-    // Обрабатываем все шорткоды в текстовых узлах
     visit(tree, 'text', (node, index, parent) => {
       const shortcodeRegex = /\[(\w+)(?:\s+([^\]]+))?\](.*?)\[\/\1\]|\[(\w+)(?:\s+([^\]]+))?\]/gs;
       let match;
@@ -14,18 +13,24 @@ function baseShortcodeProcessor() {
       let lastIndex = 0;
       let text = node.value;
 
+      // Пропускаем пустые текстовые узлы
+      if (!text.trim()) return;
+
       while ((match = shortcodeRegex.exec(text)) !== null) {
         const [fullMatch, tag1, attrs1, content1, tag2, attrs2] = match;
         const tag = tag1 || tag2;
         const attrs = attrs1 || attrs2;
         const content = content1;
 
-        // Текст до шорткода
+        // Текст до шорткода (только если не пустой)
         if (match.index > lastIndex) {
-          newNodes.push({
-            type: 'text',
-            value: text.slice(lastIndex, match.index),
-          });
+          const beforeText = text.slice(lastIndex, match.index);
+          if (beforeText.trim()) {
+            newNodes.push({
+              type: 'text',
+              value: beforeText,
+            });
+          }
         }
 
         // Обрабатываем разные типы шорткодов
@@ -74,15 +79,18 @@ function baseShortcodeProcessor() {
         lastIndex = match.index + fullMatch.length;
       }
 
-      // Текст после последнего шорткода
+      // Текст после последнего шорткода (только если не пустой)
       if (lastIndex < text.length) {
-        newNodes.push({
-          type: 'text',
-          value: text.slice(lastIndex),
-        });
+        const afterText = text.slice(lastIndex);
+        if (afterText.trim()) {
+          newNodes.push({
+            type: 'text',
+            value: afterText,
+          });
+        }
       }
 
-      // Заменяем оригинальный узел новыми узлами
+      // Заменяем оригинальный узел новыми узлами только если есть изменения
       if (newNodes.length > 0) {
         parent.children.splice(index, 1, ...newNodes);
       }
@@ -90,21 +98,39 @@ function baseShortcodeProcessor() {
   };
 }
 
-// Функция для обработки содержимого галереи
+// Упрощенная обработка галереи
 function handleGalleryContent() {
   return (tree) => {
     visit(tree, 'html', (node, index, parent) => {
       if (node.value === '<!-- GALLERY_PLACEHOLDER -->') {
         // Ищем следующий узел с содержимым галереи
-        const nextNode = parent.children[index + 1];
-        if (nextNode && nextNode.type === 'text') {
-          const galleryContent = parseGalleryContent(nextNode.value);
+        let galleryItems = [];
+        let nextIndex = index + 1;
+
+        while (nextIndex < parent.children.length) {
+          const nextNode = parent.children[nextIndex];
+          if (nextNode.type === 'text' && nextNode.value.includes('- url:')) {
+            const items = parseGalleryContent(nextNode.value);
+            galleryItems = galleryItems.concat(items);
+            // Удаляем обработанный узел
+            parent.children.splice(nextIndex, 1);
+          } else {
+            break;
+          }
+        }
+
+        if (galleryItems.length > 0) {
+          const galleryHtml = galleryItems
+            .map(
+              (item) =>
+                `<div class="gallery-item"><img src="${item.url}" alt="${item.caption}"><div class="gallery-caption">${item.caption}</div></div>`
+            )
+            .join('');
+
           parent.children[index] = {
             type: 'html',
-            value: galleryContent,
+            value: `<div class="gallery">${galleryHtml}</div>`,
           };
-          // Удаляем узел с содержимым галереи
-          parent.children.splice(index + 1, 1);
         }
       }
     });
@@ -118,11 +144,26 @@ export default function remarkShortcodes() {
     baseShortcodeProcessor()(tree);
     // Затем обрабатываем содержимое галереи
     handleGalleryContent()(tree);
+
+    // Удаляем пустые paragraph узлы
+    visit(tree, 'paragraph', (node, index, parent) => {
+      const hasContent = node.children.some((child) => {
+        if (child.type === 'text') return child.value.trim().length > 0;
+        if (child.type === 'html') return child.value.trim().length > 0;
+        return true;
+      });
+
+      if (!hasContent) {
+        parent.children.splice(index, 1);
+      }
+    });
   };
 }
 
-// Функции-обработчики для разных типов шорткодов
+// Функции-обработчики
 function handleInfp(content, attrs) {
+  if (!content?.trim()) return null;
+
   const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
 
   return {
@@ -132,15 +173,19 @@ function handleInfp(content, attrs) {
 }
 
 function handleInfb(content, attrs) {
+  if (!content?.trim()) return null;
+
   const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
 
   return {
     type: 'html',
-    value: `<div class="infb">${htmlContent}</div>`,
+    value: `<div class="alert--info">${htmlContent}</div>`,
   };
 }
 
 function handleInfg(content, attrs) {
+  if (!content?.trim()) return null;
+
   const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
 
   return {
@@ -150,6 +195,8 @@ function handleInfg(content, attrs) {
 }
 
 function handleInf(content, attrs) {
+  if (!content?.trim()) return null;
+
   const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
 
   return {
@@ -159,6 +206,8 @@ function handleInf(content, attrs) {
 }
 
 function handleScrytB(content, attrs) {
+  if (!content?.trim()) return null;
+
   const params = parseAttributes(attrs);
   const title = params.title ? params.title.trim() : 'Скрытый блок';
   const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
@@ -170,17 +219,21 @@ function handleScrytB(content, attrs) {
 }
 
 function handleObnovlenoB(content, attrs) {
+  if (!content?.trim()) return null;
+
   const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
 
   return {
     type: 'html',
-    value: `<div class="obnovleno-b">${htmlContent}</div>`,
+    value: `<div class="alert--warning">${htmlContent}</div>`,
   };
 }
 
 function handlePostimage(attrs) {
   const params = parseAttributes(attrs);
   const id = params.id || '';
+  if (!id) return null;
+
   const caption = params.caption ? `<div class="postimage-caption">${params.caption}</div>` : '';
   const align = params.align ? ` style="text-align: ${params.align}"` : '';
 
@@ -200,6 +253,7 @@ function handleGallery(attrs) {
 function handleVidget(attrs) {
   const params = parseAttributes(attrs);
   const url = params.url || '';
+  if (!url) return null;
 
   if (url.includes('tiktok.com')) {
     return {
@@ -221,6 +275,11 @@ function handleVidget(attrs) {
       type: 'html',
       value: `<div class="vidget-telegram"><iframe src="${getTelegramEmbedUrl(url)}" loading="lazy" allowfullscreen></iframe></div>`,
     };
+  } else if (url.includes('threads.com')) {
+    return {
+      type: 'html',
+      value: `<div class="vidget-threads"><iframe src="${getThreadsEmbedUrl(url)}" loading="lazy" allowfullscreen></iframe></div>`,
+    };
   } else {
     return {
       type: 'html',
@@ -234,27 +293,21 @@ function parseGalleryContent(content) {
   const lines = content.split('\n');
 
   for (const line of lines) {
-    if (line.trim().startsWith('- url:')) {
-      const urlMatch = line.match(/url:\s*([^\s]+)/);
-      const captionMatch = line.match(/caption:\s*([^"]+)/);
+    const trimmedLine = line.trim();
+    if (trimmedLine.startsWith('- url:')) {
+      const urlMatch = trimmedLine.match(/url:\s*([^\s]+)/);
+      const captionMatch = trimmedLine.match(/caption:\s*([^"]+)/);
 
-      if (urlMatch) {
+      if (urlMatch && urlMatch[1]) {
         items.push({
-          url: urlMatch[1],
-          caption: captionMatch ? captionMatch[1] : '',
+          url: urlMatch[1].trim(),
+          caption: captionMatch ? captionMatch[1].trim() : '',
         });
       }
     }
   }
 
-  const galleryHtml = items
-    .map(
-      (item) =>
-        `<div class="gallery-item"><img src="${item.url}" alt="${item.caption}"><div class="gallery-caption">${item.caption}</div></div>`
-    )
-    .join('');
-
-  return `<div class="gallery">${galleryHtml}</div>`;
+  return items;
 }
 
 // Вспомогательная функция для парсинга атрибутов
@@ -274,7 +327,8 @@ function parseAttributes(attrsString) {
 
 // Функции для получения embed URL
 function getTikTokEmbedUrl(url) {
-  return `https://www.tiktok.com/embed/v2/${url.split('/video/')[1]?.split('?')[0]}`;
+  const videoId = url.split('/video/')[1]?.split('?')[0];
+  return videoId ? `https://www.tiktok.com/embed/v2/${videoId}` : url;
 }
 
 function getTwitterEmbedUrl(url) {
@@ -289,5 +343,10 @@ function getYouTubeEmbedUrl(url) {
 }
 
 function getTelegramEmbedUrl(url) {
-  return `https://t.me/${url.split('/').pop()}`;
+  const postId = url.split('/').pop();
+  return postId ? `https://t.me/${postId}` : url;
+}
+
+function getThreadsEmbedUrl(url) {
+  return `https://www.threads.com/embed/post/${url.split('/post/')[1]?.split('?')[0]}`;
 }

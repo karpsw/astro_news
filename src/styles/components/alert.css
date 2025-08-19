@@ -25,6 +25,10 @@
     @apply bg-red-100 border border-red-200 dark:border-red-800 dark:bg-red-900;
   }
 
+  .scryt-b {
+    @apply bg-red-100 border border-red-200 dark:border-red-800 dark:bg-red-900;
+  }
+
   .alert__title {
     /* <p> has line-height: 1.7, h4 needs higher mt-1 */
     @apply flex items-center gap-1 mt-1;
