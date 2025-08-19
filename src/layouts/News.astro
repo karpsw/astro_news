@@ -16,13 +16,12 @@ const { slug } = Astro.params;
 
 const { data, content } = await getMarkdown(slug!);
 const { tags } = data;
-const metadata = { metadata: { title: data.title } } as BaseHeadProps;
 //const html = await renderMarkdown(rawMd);
 const { code: contentHtml } = await renderMarkdown(content);
 const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
 ---
 
-<NewsBase {...metadata}>
+<NewsBase {data}>
   <!-- 📰 Main Content-->
   <main class="container grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
     <!-- 📄 Article Section -->
