@@ -40,8 +40,8 @@ export const newsSchema = z.object({
   head_og_updated_time: z.coerce.date().optional(),
   head_og_image: z.string().optional(),
   head_og_image_secure_url: z.string().optional(),
-  head_og_image_width: z.number(),
-  head_og_image_height: z.number(),
+  head_og_image_width: z.number().optional(),
+  head_og_image_height: z.number().optional(),
   head_og_image_alt: z.string().optional(),
   head_og_image_type: z.string().optional(),
   tags: z
