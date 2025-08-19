@@ -2,15 +2,13 @@
 //import Markdown from 'astro-remote/lib/Markdown.astro';
 
 import { Icon } from 'astro-icon/components';
-import { Image } from 'astro:assets';
 
 import { getMarkdown } from '@/modules/post/getArchive';
+import LabelPost from '@/components/Labelpost.astro';
 import Telepicture from '@/components/Telepicture.astro';
-import { formatDate, formatDateIso, telDate } from '@/utils/datetime';
+import { telDate } from '@/utils/datetime';
 import { renderMarkdown } from '@/utils/markdown';
 import NewsBase from './NewsBase.astro';
-
-import type { BaseHeadProps } from '@/components/BaseHead.astro';
 
 const { slug } = Astro.params;
 
@@ -19,6 +17,12 @@ const { tags } = data;
 //const html = await renderMarkdown(rawMd);
 const { code: contentHtml } = await renderMarkdown(content);
 const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
+
+// автор
+
+const authorName = data.avtor_name?.trim() ? data.avtor_name : 'Редакция';
+
+const authorUrl = 'https://telegraf.news/redakciya/';
 ---
 
 <NewsBase {data}>
@@ -26,20 +30,22 @@ const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
   <main class="container grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
     <!-- 📄 Article Section -->
     <article class="">
-      <header class="mb-4">
+      <header class="">
         <h1
-          class="md:text-4xl text-2xl font-bold text-tel-black border-b border-gray-200 my-6 pb-5"
+          class="md:text-4xl text-3xl font-bold text-tel-black border-b border-gray-200 mt-6 mb-4 pb-5"
         >
           {data.title}
         </h1>
         <div class="flex flex-wrap justify-between items-center text-xs">
-          <div class="group flex mb-2 md:mb-0 flex-wrap items-center">
+          <div
+            class="group mb-2 md:mb-0 items-center w-full md:w-auto grid grid-cols-3 auto-cols-max"
+          >
             {
               data.date && (
                 <time
                   itemprop="datePublished"
                   datetime={telDate(data.date)}
-                  class="bg-cyan-700 mr-0 p-1 items-center text-white"
+                  class="bg-cyan-700 mr-0 p-1 items-center text-white "
                 >
                   {telDate(data.date)}
                 </time>
@@ -47,72 +53,59 @@ const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
             }
             <!-- добавить имя автора в апи -->
             <a
-              href="https://telegraf.news/redakciya/"
-              class="bg-slate-500 p-1 items-center text-white mr-2">Редакция</a
+              href={authorUrl}
+              class="bg-slate-500 px-3 py-1 text-white hover:bg-slate-600 transition-colors overflow-x-hidden truncate"
             >
+              {authorName}
+            </a>
+            <LabelPost label={data.label} />
           </div>
           <div class="text-xs text-gray-900 font-medium flex flex-wrap items-center">
             <div class="bg-tel-red p-1 items-center text-white mr-1">Темы:</div>
-            <a
-              rel="tag"
-              class="bg-slate-100 hover:bg-slate-200 p-1 mt-1 rounded-sm mr-1"
-              href={data.category_slug}>#{data.category}</a
+            <a rel="tag" class="bg-slate-100 hover:bg-slate-200 p-1 mr-1" href={data.category_slug}
+              >#{data.category}</a
             >
             {
               tags.map((tag) => (
-                <a
-                  rel="tag"
-                  href={tag.slug}
-                  class="bg-slate-100 p-1 hover:bg-slate-200 mt-1 mr-1 rounded-sm"
-                >
+                <a rel="tag" href={tag.slug} class="bg-slate-100 p-1 hover:bg-slate-200 mr-1 ">
                   #{tag.name}
                 </a>
               ))
             }
           </div>
         </div>
+
+        <!-- Мета-информация -->
+
+        <!-- Image Placeholder -->
+        <div class="w-full bg-gray-200 rounded-md flex items-center justify-center mt-4">
+          <!-- Картинка -->
+
+          <Telepicture
+            desktopImgUrl={data.featured_img_url}
+            loading="eager"
+            layout="constrained"
+            wImg={891}
+            hImg={501}
+            class="aspect-[16/9] max-w-full block"
+            posttitle={data.title}
+          />
+        </div>
+
+        <!--  Subscribe Block -->
+        <div class="bg-blue-50 border border-blue-200 p-4 mt-4 flex items-center space-x-4">
+          <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center"></div>
+          <div>
+            <h2 class="text-blue-700 font-semibold text-sm">Подпишитесь на Telegraf</h2>
+            <p class="text-blue-600 text-sm">Новости в Telegram, Viber и других платформах.</p>
+          </div>
+        </div>
       </header>
-      <!-- Мета-информация -->
-
-      <!-- Image Placeholder -->
-      <div class="w-full bg-gray-200 rounded-md flex items-center justify-center">
-        <!-- Картинка -->
-
-        <Telepicture
-          desktopImgUrl={data.featured_img_url}
-          loading="eager"
-          layout="constrained"
-          wImg={891}
-          hImg={501}
-          class="aspect-[16/9] max-w-full block"
-          posttitle={data.title}
-        />
-      </div>
-
-      <!--  Subscribe Block -->
-      <div class="bg-blue-50 border border-blue-200 p-4 rounded-md flex items-center space-x-4">
-        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-          <svg
-            class="w-5 h-5 text-white"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"><path d="M4 4h16v16H4z"></path></svg
-          >
-        </div>
-        <div>
-          <h2 class="text-blue-700 font-semibold text-sm">Подпишитесь на Telegraf</h2>
-          <p class="text-blue-600 text-sm">Новости в Telegram, Viber и других платформах.</p>
-        </div>
-      </div>
-
-      <div
-        class="border border-blue-200 p-4 rounded-md flex items-center space-x-4"
-        set:html={lidtHtml}
-      />
-      <!-- 📝 Article Text -->
-      <div class="prose max-w-none prose-blue" set:html={contentHtml} />
-
+      <section class="prose max-w-none prose-blue">
+        <div id="lead-post" set:html={lidtHtml} />
+        <!-- 📝 Article Text -->
+        <div id="post-text" set:html={contentHtml} />
+      </section>
       <section class="bg-white border-t border-gray-200 mt-12 pt-6">
         <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 class="text-xl font-bold text-gray-900 mb-4">Подобрали для вас</h2>

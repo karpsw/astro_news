@@ -9,7 +9,7 @@ import { decode } from 'html-entities';
 import ThemeScript from '@/components/ThemeScript.astro';
 import { CONFIG_CLIENT } from '@/config/client';
 
-import type { WebSite, WithContext } from 'schema-dts';
+import type { NewsArticle, WithContext } from 'schema-dts';
 
 const { PLAUSIBLE_SCRIPT_URL, PLAUSIBLE_DOMAIN } = CONFIG_CLIENT;
 
@@ -24,6 +24,9 @@ function decodeHtml(html) {
   return plainText;
 }
 
+const authorName = data.avtor_name?.trim() ? data.avtor_name : 'Редакция Telegraf.news';
+const authortype = data.avtor_name?.trim() ? 'Person' : 'Organization';
+
 const structuredData: WithContext<NewsArticle> = {
   '@context': 'https://schema.org',
   '@type': 'NewsArticle',
@@ -36,8 +39,8 @@ const structuredData: WithContext<NewsArticle> = {
   datePublished: data.date,
   articleSection: data.category,
   author: {
-    '@type': 'Organization',
-    name: 'Редакция Telegraf.news',
+    '@type': authortype,
+    name: authorName,
     url: 'https://telegraf.news/redakciya/',
   },
   publisher: {
