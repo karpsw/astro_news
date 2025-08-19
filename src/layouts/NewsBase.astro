@@ -6,17 +6,15 @@ import BaseHead from '@/components/NewsHead.astro';
 import { SELECTORS } from '@/constants/dom';
 import { IMAGE_SIZES } from '@/constants/image';
 
-import type { BaseProps } from './Base.astro';
-
 import Avatar from '@/assets/images/logotelegrafbel.svg';
 
-const { metadata } = Astro.props as BaseProps;
+const { data } = Astro.props;
 
 const { SCROLL_TO_TOP_ID } = SELECTORS;
 ---
 
 <html lang="ru-BY">
-  <BaseHead {metadata} />
+  <BaseHead {data} />
   <body class="bg-white text-tel-black font-sans text-[16px]">
     <!--   Header -->
     <header id={SCROLL_TO_TOP_ID} class="bg-tel-black sticky top-0 z-50">

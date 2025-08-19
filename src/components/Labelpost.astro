@@ -1,0 +1,69 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  label?: string; // Делаем опциональным
+}
+
+const { label } = Astro.props;
+
+// Проверяем, существует ли label и он не пустой
+const hasLabel = label && label.trim().length > 0;
+
+// Функция для проверки содержания слов в label
+const getLabelInfo = (labelText: string) => {
+  const lowerLabel = labelText.toLowerCase();
+
+  let iconName = null;
+  let searchWord = '';
+
+  if (lowerLabel.includes('полезно')) {
+    iconName = 'mdi:exclamation-thick';
+    searchWord = 'Полезно';
+  } else if (lowerLabel.includes('фото')) {
+    iconName = 'mdi:camera';
+    searchWord = 'Фото';
+  } else if (lowerLabel.includes('видео')) {
+    iconName = 'mdi:video';
+    searchWord = 'Видео';
+  } else if (lowerLabel.includes('обновлено')) {
+    iconName = 'mdi:sync-circle';
+    searchWord = 'Обновлено';
+  } else if (lowerLabel.includes('официально')) {
+    iconName = 'mdi:brief-case-variant';
+    searchWord = 'Официально';
+  } else if (lowerLabel.includes('неофициально')) {
+    iconName = 'mdi:incognito-circle';
+    searchWord = 'Неофициально';
+  } else if (lowerLabel.includes('срочно')) {
+    iconName = 'mdi:fire-circle';
+    searchWord = 'Срочно';
+  } else if (lowerLabel.includes('анализ')) {
+    iconName = 'mdi:chart-bar';
+    searchWord = 'Анализ';
+  } else if (lowerLabel.includes('партнёрский') || lowerLabel.includes('партнерский')) {
+    iconName = 'mdi:hand-shake';
+    searchWord = 'Партнёрский';
+  } else if (lowerLabel.includes('мнение')) {
+    iconName = 'mdi:microphone';
+    searchWord = 'Мнение';
+  } else if (lowerLabel.includes('тест')) {
+    iconName = 'mdi:head-question';
+    searchWord = 'Тест';
+  }
+
+  return { iconName, searchWord };
+};
+
+// Получаем информацию о label только если он существует
+const labelInfo = hasLabel ? getLabelInfo(label) : { iconName: null, searchWord: '' };
+---
+
+{
+  hasLabel && (
+    <div class="bg-tel-red px-3 py-1 text-white flex flex-nowrap">
+      {labelInfo.iconName && <Icon name={labelInfo.iconName} class="text-base mr-1" />}
+      {labelInfo.searchWord}
+    </div>
+  )
+}

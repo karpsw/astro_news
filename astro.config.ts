@@ -24,7 +24,7 @@ const rehypePlugins = [rehypeExternalLinks];
 
 export default defineConfig({
   site: SITE_URL,
-  trailingSlash: 'ignore',
+  trailingSlash: 'always',
   env: envSchema,
   // default
   compressHTML: true,

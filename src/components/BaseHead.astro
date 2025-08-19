@@ -35,7 +35,7 @@ const handledMetadata = handleTitle(metadata);
 const filteredMetadata = filterUndefined(handledMetadata);
 const mergedMetadata: Required<Metadata> = { ...DEFAULT_METADATA, ...filteredMetadata };
 
-const { title, description, image } = mergedMetadata;
+const { title, description, image } = metadata;
 
 const ogImageUrl = new URL(image, url);
 ---
