@@ -9,6 +9,19 @@ export const newsSchema = z.object({
   category: z.string().optional(),
   category_slug: z.string().optional(),
   lid: z.string().optional(),
+  permalink: z.string().optional(),
+  meta_description: z.string().optional(),
+  meta_title: z.string().optional(),
+  schema_type: z.string().optional(),
+  label: z.string().optional(),
+  showpost: z.number().optional(),
+  vyklreklama: z.number().optional(),
+  showphoto: z.number().optional(),
+  avtor_show: z.number().optional(),
+  avtor_name: z.string().optional(),
+  avtor_bio: z.string().optional(),
+  avtor_avatar: z.string().optional(),
+  tocontent: z.number().optional(),
   tags: z
     .array(
       z.object({

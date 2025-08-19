@@ -6,7 +6,7 @@ import { Image } from 'astro:assets';
 
 import { getMarkdown } from '@/modules/post/getArchive';
 import Telepicture from '@/components/Telepicture.astro';
-import { formatDate, formatDateIso } from '@/utils/datetime';
+import { formatDate, formatDateIso, telDate } from '@/utils/datetime';
 import { renderMarkdown } from '@/utils/markdown';
 import NewsBase from './NewsBase.astro';
 
@@ -28,7 +28,9 @@ const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
     <!-- 📄 Article Section -->
     <article class="">
       <header class="mb-4">
-        <h1 class="text-4xl font-bold text-tel-black border-b border-gray-200 my-6 pb-5">
+        <h1
+          class="md:text-4xl text-2xl font-bold text-tel-black border-b border-gray-200 my-6 pb-5"
+        >
           {data.title}
         </h1>
         <div class="flex flex-wrap justify-between items-center text-xs">
@@ -37,10 +39,10 @@ const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
               data.date && (
                 <time
                   itemprop="datePublished"
-                  datetime={formatDateIso(data.date)}
+                  datetime={telDate(data.date)}
                   class="bg-cyan-700 mr-0 p-1 items-center text-white"
                 >
-                  {formatDate(data.date)}
+                  {telDate(data.date)}
                 </time>
               )
             }
