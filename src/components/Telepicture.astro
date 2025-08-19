@@ -1,6 +1,8 @@
 ---
 import { getImage } from 'astro:assets';
 
+import sanitizeHtml from 'sanitize-html';
+
 import type { ImageMetadata } from 'astro';
 
 interface Props {
@@ -15,11 +17,13 @@ interface Props {
   decoding?: string;
   layout?: string;
   imgclass?: string;
+  caption?: string;
+  posttitle?: string;
 }
 
 const {
   desktopImgUrl,
-  alt,
+  alt = '',
   wImg = '891',
   hImg = '501',
   loading = 'lazy',
@@ -27,7 +31,12 @@ const {
   decoding = 'async',
   layout = 'constrained',
   imgclass = 'w-full',
+  caption,
+  posttitle = '',
 } = Astro.props;
+
+// Определяем alt-текст с очисткой
+const finalAlt = sanitizeHtml(alt || caption || posttitle);
 
 const mobileImg = await getImage({
   src: desktopImgUrl + '?w=382&h=221&crop=1',
@@ -35,7 +44,7 @@ const mobileImg = await getImage({
   height: 221,
 });
 
-const mediumImgUrl = await getImage({
+const mediumImg = await getImage({
   src: desktopImgUrl + '?w=690&h=397&crop=1',
   width: 690,
   height: 397,
@@ -43,21 +52,42 @@ const mediumImgUrl = await getImage({
 
 const desktopImg = await getImage({
   src: desktopImgUrl + '?w=' + wImg + '&h=' + hImg + '&crop=1',
-  width: wImg,
-  height: hImg,
+  width: parseInt(wImg),
+  height: parseInt(hImg),
 });
 ---
 
-<picture>
-  <source media="(max-width: 799px)" srcset={mobileImg.src} />
-  <source media="(min-width: 800px) and (max-width: 1200px)" srcset={mediumImgUrl.src} />
-  <source media="(min-width: 1201px)" srcset={desktopImg.src} />
-  <img
-    src={desktopImg.src}
-    alt={alt}
-    loading={loading}
-    decoding={decoding}
-    fetchpriority={fetchpriority}
-    class={imgclass}
-  />
-</picture>
+{
+  !caption ? (
+    <picture>
+      <source media="(max-width: 799px)" srcset={mobileImg.src} />
+      <source media="(min-width: 800px) and (max-width: 1200px)" srcset={mediumImg.src} />
+      <source media="(min-width: 1201px)" srcset={desktopImg.src} />
+      <img
+        src={desktopImg.src}
+        alt={finalAlt}
+        loading={loading}
+        decoding={decoding}
+        fetchpriority={fetchpriority}
+        class={imgclass}
+      />
+    </picture>
+  ) : (
+    <figure>
+      <picture>
+        <source media="(max-width: 799px)" srcset={mobileImg.src} />
+        <source media="(min-width: 800px) and (max-width: 1200px)" srcset={mediumImg.src} />
+        <source media="(min-width: 1201px)" srcset={desktopImg.src} />
+        <img
+          src={desktopImg.src}
+          alt={finalAlt}
+          loading={loading}
+          decoding={decoding}
+          fetchpriority={fetchpriority}
+          class={imgclass}
+        />
+      </picture>
+      <figcaption>{cleanText(caption)}</figcaption>
+    </figure>
+  )
+}
