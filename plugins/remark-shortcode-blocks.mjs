@@ -13,6 +13,12 @@ function parseVidgetBlock(newChildren, shortcode, attrs) {
 						data-width="100%"></script>
 		</div>`,
       });
+    } else if (attrs.url.includes('tiktok.com')) {
+      const filnaltweeturl = attrs.url.replace('x.com', 'twitter.com');
+      newChildren.push({
+        type: 'html',
+        value: `<div class="widget-tiktok flex justify-center"><iframe class="w-100 tiktok-embed mb-4" loading="lazy" src="https://www.tiktok.com/player/v1/${attrs.url}" allow="fullscreen"></iframe></div>`,
+      });
     } else if (attrs.url.includes('x.com') || attrs.url.includes('twitter.com')) {
       const filnaltweeturl = attrs.url.replace('x.com', 'twitter.com');
       newChildren.push({
@@ -21,13 +27,9 @@ function parseVidgetBlock(newChildren, shortcode, attrs) {
       });
     } else if (attrs.url.includes('threads.com')) {
       const cleanUrl = attrs.url.replace(/\?.*/, '');
-      const postIdMatch = cleanUrl.match(/\/post\/([^\/]+)/);
-      const postId = postIdMatch ? postIdMatch[1] : '';
-
-      const url = `https://www.threads.com/embed/post/${postId}`;
       newChildren.push({
         type: 'html',
-        value: `<div class="widget-threads"><blockquote class="threads-embed" data-text-post-permalink="${cleanUrl}" data-text-post-version="0"></blockquote> <script async src="//www.threads.com/embed.js"></script></div>`,
+        value: `<div class="widget-threads"><blockquote class="text-post-media threads-embed" data-text-post-permalink="${cleanUrl}" data-text-post-version="0"></blockquote> <script async src="//www.threads.com/embed.js"></script></div>`,
       });
     } else if (attrs.url.includes('youtube.com') || attrs.url.includes('youtu.be')) {
       const videoId = attrs.url.match(
@@ -35,7 +37,7 @@ function parseVidgetBlock(newChildren, shortcode, attrs) {
       );
       newChildren.push({
         type: 'html',
-        value: `<div class="vidget-youtube"><iframe src="${videoId}" loading="lazy" allowfullscreen></iframe></div>`,
+        value: `<div class="widget-youtube"><iframe src="${videoId}" loading="lazy" allowfullscreen></iframe></div>`,
       });
     }
   }
