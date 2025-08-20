@@ -2,8 +2,11 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
 
+import Telepicture from '@/components/Telepicture.astro';
+
 function parseVidgetBlock(newChildren, shortcode, attrs) {
   if (attrs.url) {
+    //telegram
     if (attrs.url.startsWith('https://t.me/')) {
       newChildren.push({
         type: 'html',
@@ -13,24 +16,63 @@ function parseVidgetBlock(newChildren, shortcode, attrs) {
 						data-width="100%"></script>
 		</div>`,
       });
+
+      //tiktok
     } else if (attrs.url.includes('tiktok.com')) {
-      const filnaltweeturl = attrs.url.replace('x.com', 'twitter.com');
-      newChildren.push({
-        type: 'html',
-        value: `<div class="widget-tiktok flex justify-center"><iframe class="w-100 tiktok-embed mb-4" loading="lazy" src="https://www.tiktok.com/player/v1/${attrs.url}" allow="fullscreen"></iframe></div>`,
-      });
+      const processTikTok = async () => {
+        let finalUrl = attrs.url;
+
+        // Обработка коротких ссылок vm.tiktok.com
+        if (finalUrl.includes('vm.tiktok') || finalUrl.includes('vt.tiktok')) {
+          try {
+            const response = await fetch(finalUrl, { redirect: 'manual' });
+            const location = response.headers.get('Location');
+            if (location) {
+              finalUrl = location;
+            }
+          } catch (error) {
+            console.error('Error processing short TikTok link:', error);
+          }
+        }
+
+        // Убираем параметры
+        finalUrl = finalUrl.replace(/\?.*/, '');
+
+        // Извлекаем ID
+        const idMatch = finalUrl.match(/\/(\d+)(?:\/|$)/);
+        const id_tiktok = idMatch ? idMatch[1] : null;
+
+        if (id_tiktok) {
+          newChildren.push({
+            type: 'html',
+            value: `<div class="widget-tiktok flex justify-center"><iframe class="w-full tiktok-embed h-[400]" loading="lazy" src="https://www.tiktok.com/player/v1/${id_tiktok}" allow="fullscreen"></iframe></div>`,
+          });
+        }
+      };
+
+      processTikTok();
+      // x - Twitter
     } else if (attrs.url.includes('x.com') || attrs.url.includes('twitter.com')) {
       const filnaltweeturl = attrs.url.replace('x.com', 'twitter.com');
       newChildren.push({
         type: 'html',
         value: `<div class="widget-twitter flex justify-center"><blockquote class="twitter-tweet"><a href="${filnaltweeturl}">Загрузка Твиттера</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></div>`,
       });
+      // threads
     } else if (attrs.url.includes('threads.com')) {
       const cleanUrl = attrs.url.replace(/\?.*/, '');
       newChildren.push({
         type: 'html',
         value: `<div class="widget-threads"><blockquote class="text-post-media threads-embed" data-text-post-permalink="${cleanUrl}" data-text-post-version="0"></blockquote> <script async src="//www.threads.com/embed.js"></script></div>`,
       });
+      // instagram
+    } else if (attrs.url.includes('instagram.com')) {
+      const cleanUrl = attrs.url.replace(/\?.*/, '');
+      newChildren.push({
+        type: 'html',
+        value: `<div class="widget-instagram"><blockquote class="instagram-media instagram-embed" data-instgrm-permalink="${cleanUrl}" data-instgrm-version="14"></blockquote> <script async src="//www.instagram.com/embed.js"></script></div>`,
+      });
+      // youtube
     } else if (attrs.url.includes('youtube.com') || attrs.url.includes('youtu.be')) {
       const videoId = attrs.url.match(
         /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
@@ -64,9 +106,71 @@ function parseInfBlock(newChildren, content, shortcode, attrs) {
 
 function parsePostImageBlock(newChildren, shortcode, attrs) {
   if (attrs?.url) {
+    const originalUrl = attrs.url.split('?')[0];
+    const paramsString = attrs.url.split('?')[1] || '';
+    const params = new URLSearchParams(paramsString);
+
+    const originalWidth = parseInt(params.get('w')) || 891;
+    const originalHeight = parseInt(params.get('h')) || 501;
+    const aspectRatio = originalHeight / originalWidth;
+
+    const getSizedUrl = (width) => {
+      const height = Math.round(width * aspectRatio);
+      const urlWithParams = new URL(originalUrl);
+      urlWithParams.searchParams.set('w', width);
+      urlWithParams.searchParams.set('h', height);
+      urlWithParams.searchParams.set('crop', 1);
+      return urlWithParams.toString();
+    };
+
+    // Генерируем URL только если ширина достаточна
+    const mobileImgUrl = originalWidth >= 382 ? getSizedUrl(382) : null;
+    const mediumImgUrl = originalWidth >= 690 ? getSizedUrl(690) : null;
+    const desktopImgUrl = getSizedUrl(originalWidth);
+
+    const finalAlt = attrs.caption || 'Изображение';
+    const alignClass = attrs.align ? ` post-img ${attrs.align}` : '';
+    const widthClass = originalWidth >= 891 ? ' w-full' : '';
+
+    // Формируем теги <source> только для подходящих размеров
+    const mobileSource = mobileImgUrl
+      ? `<source media="(max-width: 799px)" srcset="${mobileImgUrl}">`
+      : '';
+    const mediumSource = mediumImgUrl
+      ? `<source media="(min-width: 800px) and (max-width: 1200px)" srcset="${mediumImgUrl}">`
+      : '';
+
+    const pictureHtml = `
+      <picture>
+        ${mobileSource}
+        ${mediumSource}
+        <source media="(min-width: 1201px)" srcset="${desktopImgUrl}">
+        <img
+          src="${desktopImgUrl}"
+          alt="${finalAlt}"
+          loading="lazy"
+          decoding="async"
+          fetchpriority="auto"
+          class="${alignClass}${widthClass}"
+        >
+      </picture>
+    `;
+
+    let finalHtml;
+    if (attrs.caption) {
+      finalHtml = `
+        <figure class="post-img-container${alignClass}">
+          ${pictureHtml}
+          <figcaption class="post-img-caption">${attrs.caption}</figcaption>
+        </figure>
+      `;
+    } else {
+      finalHtml = pictureHtml;
+    }
+
     newChildren.push({
       type: 'html',
-      value: `<img class="post-img" src="${attrs.url}" alt="${attrs.caption ?? ''}"/>`,
+      value: finalHtml,
     });
   }
 }

@@ -11,7 +11,7 @@ export default function remarkEmbed() {
       const ytMatch = url.match(/youtube\.com\/watch\?v=([\w-]+)/);
       if (ytMatch) {
         const videoId = ytMatch[1];
-        html = `<iframe width="100%" height="400"
+        html = `<iframe class="youtube-embed"
           src="https://www.youtube.com/embed/${videoId}"
           frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen loading="lazy"></iframe>`;
