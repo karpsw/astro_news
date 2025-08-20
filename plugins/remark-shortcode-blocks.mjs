@@ -62,6 +62,15 @@ function parseInfBlock(newChildren, content, shortcode, attrs) {
   });
 }
 
+function parsePostImageBlock(newChildren, shortcode, attrs) {
+  if (attrs?.url) {
+    newChildren.push({
+      type: 'html',
+      value: `<img class="post-img" src="${attrs.url}" alt="${attrs.caption ?? ''}"/>`,
+    });
+  }
+}
+
 function parseOblovlenoBlock(newChildren, content, shortcode, attrs) {
   const parsed = fromMarkdown(content, {
     extensions: [gfm()],
@@ -218,6 +227,10 @@ export function remarkShortcodeBlocks() {
       {
         name: 'Vidget',
         parser: parseVidgetBlock,
+      },
+      {
+        name: 'postimage',
+        parser: parsePostImageBlock,
       },
 
       // можно добавить другие блоки:
