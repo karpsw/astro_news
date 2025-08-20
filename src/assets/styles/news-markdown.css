@@ -29,6 +29,13 @@
   @apply flex justify-center;
 }
 
+.prose div,
+.prose img,
+.prose figure,
+.prose blockquote {
+  margin-bottom: 1.25em;
+}
+
 .scryt_b-wrapper {
   .scryt_b-title {
     @apply text-red-700;
