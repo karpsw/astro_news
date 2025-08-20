@@ -1,60 +1,42 @@
 ---
-import {
-  FacebookShareButton,
-  HackerNewsShareButton,
-  LinkedInShareButton,
-  RedditShareButton,
-  SocialShare,
-  TwitterShareButton,
-} from 'astro-social-share';
-
-import { DEFAULT_METADATA } from '@/constants/metadata';
-import { CONFIG_CLIENT } from '@/config/client';
-import { cn } from '@/utils/styles';
-
-import type { ComponentProps } from 'astro/types';
-
-type SocialShareProps = Omit<ComponentProps<typeof SocialShare>, 'buttons'>;
-export interface Props extends SocialShareProps {
-  class?: string;
-}
-const { class: className, ...shareProps } = Astro.props;
-
-const { title, description } = DEFAULT_METADATA;
-const { AUTHOR_TWITTER } = CONFIG_CLIENT;
-
-// via is only for twitter
-const defaultProps = { description, title, via: AUTHOR_TWITTER };
-
-// dont change order because of colors
-const buttons = [
-  TwitterShareButton,
-  FacebookShareButton,
-  RedditShareButton,
-  LinkedInShareButton,
-  HackerNewsShareButton,
-];
-
-const props = { ...defaultProps, ...shareProps };
-
-// todo: change package
+import { Icon } from 'astro-icon/components';
 ---
 
-<div class={cn('inline-flex items-center gap-2', className)}>
-  <span class="font-bold text-base">Share:</span>
-  <SocialShare {...props} {buttons} />
+<div class="share-buttons flex items-center justify-start">
+  <div class="flex items-center justify-between mr-2 px-2 h-[40px] bg-stone-100">
+    <span class="mr-2 text-gray-600 text-sm">Репосты:</span>
+    <span class="count-share font-semibold">10</span>
+  </div>
+  <button
+    class="share-general mr-2 flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
+    ><Icon name="mdi:share-variant" class="text-3xl" /></button
+  >
+  <a
+    class="share-telegram mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"><Icon name="simple-icons:telegram" class="text-3xl" /></a
+  >
+  <a
+    class="share-viber mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
+    href="#"><Icon name="simple-icons:viber" class="text-3xl" /></a
+  >
+  <a
+    class="share-vk mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"><Icon name="simple-icons:vk" class="text-3xl" /></a
+  >
+  <a
+    class="share-ok mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"><Icon name="simple-icons:odnoklassniki" class="text-3xl" /></a
+  >
+  <a
+    class="share-whatsapp mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"><Icon name="simple-icons:whatsapp" class="text-3xl" /></a
+  >
 </div>
-
-{/* his slot is broken */}
-<style is:global slot="astro-social-share-css">
-  .astro-social-share {
-    @apply my-0;
-  }
-
-  .social-share-btn {
-    @apply inline-block w-6 h-6 !mr-4;
-    svg {
-      @apply w-full h-full fill-captions;
-    }
-  }
-</style>
