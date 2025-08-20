@@ -1,4 +1,9 @@
+import { toHtml } from 'hast-util-to-html';
+import { fromMarkdown } from 'mdast-util-from-markdown';
+import { gfmFromMarkdown } from 'mdast-util-gfm';
+import { toHast } from 'mdast-util-to-hast';
 import { toString } from 'mdast-util-to-string';
+import { gfm } from 'micromark-extension-gfm';
 
 function parseGalleryBlock(paragraphs) {
   const rawText = toString({ type: 'paragraph', children: paragraphs.flatMap((n) => n.children) });
@@ -38,14 +43,111 @@ ${images
   };
 }
 
-function parseInfbBlock(paragraphs) {
+function parseInfBlock(paragraphs, blockName) {
   const children = paragraphs.flatMap((n) => n.children);
   const rawText = toString({ type: 'paragraph', children });
-  const content = rawText.slice(rawText.indexOf('[infb]') + 6, rawText.indexOf('[/infb]')).trim();
+  const content = rawText
+    .slice(
+      rawText.indexOf(`[${blockName}]`) + blockName.length + 2,
+      rawText.indexOf(`[/${blockName}]`)
+    )
+    .trim();
 
   return {
     type: 'html',
-    value: `<div class="infb bg-yellow-100 p-4 border-l-4 border-yellow-400">${content}</div>`,
+    value: `<div class="${blockName}">${content}</div>`,
+  };
+}
+
+function parseInfBlock2(paragraphs, blockName) {
+  const children = paragraphs.flatMap((n) => n.children);
+  const rawText = toString({ type: 'paragraph', children });
+
+  const startTag = `[${blockName}]`;
+  const endTag = `[/${blockName}]`;
+
+  const startIndex = rawText.indexOf(startTag);
+  const endIndex = rawText.indexOf(endTag);
+
+  if (startIndex === -1 || endIndex === -1) return null;
+
+  const content = rawText.slice(startIndex + startTag.length, endIndex).trim();
+
+  const parsed = fromMarkdown(content, {
+    extensions: [gfm()],
+    mdastExtensions: [gfmFromMarkdown()],
+  });
+
+  return {
+    type: 'containerDirective',
+    name: blockName,
+    children: parsed.children,
+  };
+}
+
+function parseInfBlockWithAttrs(paragraphs, blockName) {
+  const children = paragraphs.flatMap((n) => n.children);
+  const rawText = toString({ type: 'paragraph', children });
+
+  const openTagMatch = rawText.match(new RegExp(`\\[${blockName}(.*?)\\]`));
+  const closeTag = `[/${blockName}]`;
+
+  if (!openTagMatch || !rawText.includes(closeTag)) return null;
+
+  const attrString = openTagMatch[1] ?? '';
+  const content = rawText
+    .slice(rawText.indexOf(openTagMatch[0]) + openTagMatch[0].length, rawText.indexOf(closeTag))
+    .trim();
+
+  const attrs = {};
+  attrString.replace(/(\w+)="(.*?)"/g, (_, key, value) => {
+    attrs[key] = value;
+    return '';
+  });
+
+  const mdast = fromMarkdown(content, {
+    extensions: [gfm()],
+    mdastExtensions: [gfmFromMarkdown()],
+  });
+
+  const hast = toHast(mdast, { allowDangerousHtml: true });
+  const innerHtml = toHtml(hast, { allowDangerousHtml: true });
+
+  const attrHtml = Object.entries(attrs)
+    .map(([key, value]) => `data-${key}="${value}"`)
+    .join(' ');
+
+  return {
+    type: 'html',
+    value: `<div class="${blockName}" ${attrHtml}>${innerHtml}</div>`,
+  };
+}
+
+function parseScrytBlock(paragraphs, blockName) {
+  const children = paragraphs.flatMap((n) => n.children);
+  const rawText = toString({ type: 'paragraph', children });
+
+  const openTagMatch = rawText.match(new RegExp(`\\[${blockName}(.*?)\\]`));
+  const closeTag = `[/${blockName}]`;
+
+  const attrString = openTagMatch?.[1] ?? '';
+  const content = rawText
+    .slice(rawText.indexOf(openTagMatch[0]) + openTagMatch[0].length, rawText.indexOf(closeTag))
+    .trim();
+
+  const attrs = {};
+  attrString.replace(/(\w+)="(.*?)"/g, (_, key, value) => {
+    attrs[key] = value;
+    return '';
+  });
+
+  const attrHtml = Object.entries(attrs)
+    .map(([key, value]) => `data-${key}="${value}"`)
+    .join(' ');
+
+  return {
+    type: 'html',
+    value: `<div class="${blockName}" ${attrHtml}>${content}</div>`,
   };
 }
 
@@ -54,6 +156,36 @@ export default function remarkWpShortCodes() {
     const newChildren = [];
     let buffer = [];
     let insideBlock = false;
+
+    const wpBlockTypes = [
+      {
+        name: 'gallery',
+        parser: parseGalleryBlock,
+      },
+      {
+        name: 'infb',
+        parser: parseInfBlockWithAttrs,
+      },
+      {
+        name: 'infg',
+        parser: parseInfBlock,
+      },
+      {
+        name: 'infp',
+        parser: parseInfBlock,
+      },
+      {
+        name: 'inf',
+        parser: parseInfBlock,
+      },
+      {
+        name: 'scryt_b',
+        parser: parseScrytBlock,
+      },
+
+      // можно добавить другие блоки:
+      // { name: 'scryt_b', open: '[scryt_b]', close: '[/scryt_b]', parser: parseScrytBlock }
+    ];
 
     for (const node of tree.children) {
       if (node.type !== 'paragraph') {
@@ -64,14 +196,24 @@ export default function remarkWpShortCodes() {
 
       const text = toString(node).trim();
 
-      // Начало многострочного блока
-      if (text.startsWith('[gallery]') || text.startsWith('[infb]')) {
-        buffer.push(node);
-        insideBlock = true;
+      // 🔍 Проверка на однострочный завершённый блок
+      const matchedFullBlock = wpBlockTypes.find(
+        (b) => text.startsWith(`[${b.name}]`) && text.includes(`[/${b.name}]`)
+      );
+      if (matchedFullBlock) {
+        newChildren.push(matchedFullBlock.parser([node], matchedFullBlock.name));
         continue;
       }
 
-      // Продолжение блока
+      // 🔍 Проверка на начало многострочного блока
+      const matchedStart = wpBlockTypes.find((b) => text.startsWith(`[${b.name}]`));
+      if (matchedStart) {
+        buffer.push(node);
+        insideBlock = matchedStart;
+        continue;
+      }
+
+      // 🔄 Продолжение многострочного блока
       if (insideBlock) {
         buffer.push(node);
         const joined = toString({
@@ -79,15 +221,8 @@ export default function remarkWpShortCodes() {
           children: buffer.flatMap((n) => n.children),
         }).trim();
 
-        if (joined.includes('[/gallery]')) {
-          newChildren.push(parseGalleryBlock(buffer));
-          buffer = [];
-          insideBlock = false;
-          continue;
-        }
-
-        if (joined.includes('[/infb]')) {
-          newChildren.push(parseInfbBlock(buffer));
+        if (joined.includes(`[/${insideBlock.name}]`)) {
+          newChildren.push(insideBlock.parser(buffer, insideBlock.name));
           buffer = [];
           insideBlock = false;
           continue;
@@ -96,7 +231,7 @@ export default function remarkWpShortCodes() {
         continue;
       }
 
-      // Однострочный Vidget
+      // 🔧 Однострочный Vidget
       const fullText = toString(node).replace(/[“”]/g, '"').trim();
       if (fullText.startsWith('[Vidget ') && fullText.endsWith(']')) {
         const attrMatch = fullText.match(/url="([^"]+?)"/);
@@ -104,7 +239,6 @@ export default function remarkWpShortCodes() {
         if (url) {
           newChildren.push({
             type: 'html',
-            //value: `<div class="vidget"><iframe src="${url}" loading="lazy" allow="fullscreen" style="width:100%; height:400px; border:none;"></iframe></div>`,
             value: `<blockquote class="twitter-tweet"><a href="${url}"></a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>`,
           });
