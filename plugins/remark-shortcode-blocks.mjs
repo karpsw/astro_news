@@ -2,7 +2,44 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
 
-function parseVidgetBlock(newChildren, content, shortcode, attrs) {
+function parseVidgetBlock(newChildren, shortcode, attrs) {
+  if (attrs.url) {
+    if (attrs.url.startsWith('https://t.me/')) {
+      newChildren.push({
+        type: 'html',
+        value: `<div class="vidget-tiktok">
+				<script async src="https://telegram.org/js/telegram-widget.js?7"
+						data-telegram-post="${attrs.url.replace('https://t.me/', '')}"
+						data-width="100%"></script>
+		</div>`,
+      });
+    } else if (attrs.url.includes('x.com') || attrs.url.includes('twitter.com')) {
+      const videoId = attrs.url.split('/video/')[1]?.split('?')[0];
+      const u = videoId ? `https://www.tiktok.com/embed/v2/${videoId}` : attrs.url;
+      const ifr = `https://platform.twitter.com/embed/Tweet.html?url=${encodeURIComponent(attrs.url)}`;
+      newChildren.push({
+        type: 'html',
+        value: `<div class="vidget-tiktok"><iframe src="${ifr}" loading="lazy" allowfullscreen></iframe></div>`,
+      });
+    } else if (attrs.url.includes('threads.com')) {
+      const url = `https://www.threads.com/embed/post/${attrs.url.split('/post/')[1]?.split('?')[0]}`;
+      newChildren.push({
+        type: 'html',
+        value: `<div class="vidget-threads"><iframe src="${url}" loading="lazy" allowfullscreen></iframe></div>`,
+      });
+    } else if (attrs.url.includes('youtube.com') || attrs.url.includes('youtu.be')) {
+      const videoId = attrs.url.match(
+        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+      );
+      newChildren.push({
+        type: 'html',
+        value: `<div class="vidget-youtube"><iframe src="${videoId}" loading="lazy" allowfullscreen></iframe></div>`,
+      });
+    }
+  }
+}
+
+function parseInfBlock(newChildren, content, shortcode, attrs) {
   const parsed = fromMarkdown(content, {
     extensions: [gfm()],
     mdastExtensions: [gfmFromMarkdown()],
@@ -21,7 +58,7 @@ function parseVidgetBlock(newChildren, content, shortcode, attrs) {
   });
 }
 
-function parseInfBlock(newChildren, content, shortcode, attrs) {
+function parseOblovlenoBlock(newChildren, content, shortcode, attrs) {
   const parsed = fromMarkdown(content, {
     extensions: [gfm()],
     mdastExtensions: [gfmFromMarkdown()],
@@ -30,11 +67,33 @@ function parseInfBlock(newChildren, content, shortcode, attrs) {
   newChildren.push({
     type: 'containerDirective',
     name: shortcode,
-    children: parsed.children,
+    children: [
+      {
+        type: 'html',
+        value: `<div class="${shortcode}-head">
+			 
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 512 512">
+    <path d="M290.74 93.24L418.76 221.26L176.37 463.65L48.35 335.63L290.74 93.24ZM497.94 74.17C511.81 88.04 511.81 110.96 497.94 124.83L459.31 163.46L348.54 52.69L387.17 14.06C401.04 0.19 423.96 0.19 437.83 14.06L497.94 74.17ZM0 512L144.52 467.48L44.52 367.48L0 512Z"/>
+  </svg>
+  Обновлено
+</div>`,
+      },
+      {
+        type: 'containerDirective',
+        name: shortcode,
+        children: parsed.children,
+        data: {
+          hName: 'div',
+          hProperties: {
+            className: [shortcode],
+          },
+        },
+      },
+    ],
     data: {
       hName: 'div',
       hProperties: {
-        className: [shortcode],
+        className: [shortcode + `-wrapper`],
       },
     },
   });
@@ -129,7 +188,15 @@ export function remarkShortcodeBlocks() {
         parser: parseScrytBlock,
       },
       {
+        name: 'obnovleno_b',
+        parser: parseOblovlenoBlock,
+      },
+      {
         name: 'inf',
+        parser: parseInfBlock,
+      },
+      {
+        name: 'infb',
         parser: parseInfBlock,
       },
       {
@@ -195,7 +262,27 @@ export function remarkShortcodeBlocks() {
         // const openTag = `[${matchedFullBlock.name}]`;
 
         continue; // не добавляем исходный paragraph
+      } else if (wpBlockTypes.find((b) => raw.startsWith(`[${b.name} `))) {
+        const matchedFullBlockSingle = wpBlockTypes.find((b) => raw.startsWith(`[${b.name}`));
+
+        const openTagRegex = new RegExp(`^\\[(${matchedFullBlockSingle.name})([^\\]]*)\\]`);
+        const match = raw.match(openTagRegex);
+
+        if (match) {
+          const attrString = match[2]; // ' title=" тест скрытого блока" icon="🔒"'
+
+          const attrs = {};
+          attrString.replace(/(\w+)="(.*?)"/g, (_, key, value) => {
+            attrs[key] = value;
+            return '';
+          });
+
+          matchedFullBlockSingle.parser(newChildren, matchedFullBlockSingle.name, attrs);
+        }
+
+        continue;
       }
+
       newChildren.push(node);
     }
 

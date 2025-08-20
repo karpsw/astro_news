@@ -22,6 +22,16 @@
   @apply p-8 bg-gray-100 rounded-lg shadow-md my-2 border-orange-500;
 }
 
-.obnovleno_b {
-  @apply p-8 bg-amber-600 rounded-lg shadow-md my-2;
+.obnovleno_b-wrapper {
+  .obnovleno_b-head {
+    @apply mt-0 border-b border-red-800 text-red-800 font-semibold flex items-center gap-2;
+  }
+
+  @apply p-8 bg-yellow-200 rounded-lg shadow-md my-2;
+}
+
+.vidget-tiktok iframe {
+  width: 100% !important;
+  max-width: 100%;
+  height: 550px;
 }
