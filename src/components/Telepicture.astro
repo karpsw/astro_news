@@ -35,6 +35,11 @@ const {
   posttitle = '',
 } = Astro.props;
 
+// Проверяем наличие desktopImgUrl
+if (!desktopImgUrl) {
+  return null; // Ничего не показываем если нет изображения
+}
+
 // Определяем alt-текст с очисткой
 const finalAlt = sanitizeHtml(alt || caption || posttitle);
 
