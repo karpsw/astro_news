@@ -6,6 +6,7 @@ import '@/assets/styles/news-markdown.css';
 import { getMarkdown } from '@/modules/post/getArchive';
 import LabelPost from '@/components/Labelpost.astro';
 import Telepicture from '@/components/Telepicture.astro';
+import TeleShare from '@/components/TeleShare.astro';
 import { telDate } from '@/utils/datetime';
 import { renderMarkdown } from '@/utils/markdown';
 import NewsBase from './NewsBase.astro';
@@ -93,13 +94,7 @@ const authorUrl = 'https://telegraf.news/redakciya/';
         </div>
 
         <!--  Subscribe Block -->
-        <div class="bg-blue-50 border border-blue-200 p-4 mt-4 flex items-center space-x-4">
-          <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center"></div>
-          <div>
-            <h2 class="text-blue-700 font-semibold text-sm">Подпишитесь на Telegraf</h2>
-            <p class="text-blue-600 text-sm">Новости в Telegram, Viber и других платформах.</p>
-          </div>
-        </div>
+        <TeleShare />
       </header>
       <section class="prose max-w-none prose-blue">
         <div id="lead-post" set:html={lidtHtml} />

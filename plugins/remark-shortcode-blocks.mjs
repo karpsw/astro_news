@@ -7,25 +7,27 @@ function parseVidgetBlock(newChildren, shortcode, attrs) {
     if (attrs.url.startsWith('https://t.me/')) {
       newChildren.push({
         type: 'html',
-        value: `<div class="vidget-tiktok">
+        value: `<div class="widget-telegram flex justify-center">
 				<script async src="https://telegram.org/js/telegram-widget.js?7"
 						data-telegram-post="${attrs.url.replace('https://t.me/', '')}"
 						data-width="100%"></script>
 		</div>`,
       });
     } else if (attrs.url.includes('x.com') || attrs.url.includes('twitter.com')) {
-      const videoId = attrs.url.split('/video/')[1]?.split('?')[0];
-      const u = videoId ? `https://www.tiktok.com/embed/v2/${videoId}` : attrs.url;
-      const ifr = `https://platform.twitter.com/embed/Tweet.html?url=${encodeURIComponent(attrs.url)}`;
+      const filnaltweeturl = attrs.url.replace('x.com', 'twitter.com');
       newChildren.push({
         type: 'html',
-        value: `<div class="vidget-tiktok"><iframe src="${ifr}" loading="lazy" allowfullscreen></iframe></div>`,
+        value: `<div class="widget-twitter flex justify-center"><blockquote class="twitter-tweet"><a href="${filnaltweeturl}">Загрузка Твиттера</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></div>`,
       });
     } else if (attrs.url.includes('threads.com')) {
-      const url = `https://www.threads.com/embed/post/${attrs.url.split('/post/')[1]?.split('?')[0]}`;
+      const cleanUrl = attrs.url.replace(/\?.*/, '');
+      const postIdMatch = cleanUrl.match(/\/post\/([^\/]+)/);
+      const postId = postIdMatch ? postIdMatch[1] : '';
+
+      const url = `https://www.threads.com/embed/post/${postId}`;
       newChildren.push({
         type: 'html',
-        value: `<div class="vidget-threads"><iframe src="${url}" loading="lazy" allowfullscreen></iframe></div>`,
+        value: `<div class="widget-threads"><blockquote class="threads-embed" data-text-post-permalink="${cleanUrl}" data-text-post-version="0"></blockquote> <script async src="//www.threads.com/embed.js"></script></div>`,
       });
     } else if (attrs.url.includes('youtube.com') || attrs.url.includes('youtu.be')) {
       const videoId = attrs.url.match(
