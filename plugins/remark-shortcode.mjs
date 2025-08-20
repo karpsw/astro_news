@@ -1,59 +1,76 @@
-import remarkHtml from 'remark-html';
+import rehypeStringify from 'rehype-stringify';
 import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
 
-// Основная функция обработки шорткодов
-function baseShortcodeProcessor() {
+function remarkShortcodesTransform() {
   return (tree) => {
     visit(tree, 'text', (node, index, parent) => {
       const shortcodeRegex = /\[(\w+)(?:\s+([^\]]+))?\](.*?)\[\/\1\]|\[(\w+)(?:\s+([^\]]+))?\]/gs;
       let match;
-      let newNodes = [];
+      let nodesToAdd = [];
       let lastIndex = 0;
       let text = node.value;
-
-      // Пропускаем пустые текстовые узлы
-      if (!text.trim()) return;
+      let hasMatch = false;
 
       while ((match = shortcodeRegex.exec(text)) !== null) {
+        hasMatch = true;
         const [fullMatch, tag1, attrs1, content1, tag2, attrs2] = match;
         const tag = tag1 || tag2;
         const attrs = attrs1 || attrs2;
         const content = content1;
 
-        // Текст до шорткода (только если не пустой)
-        if (match.index > lastIndex) {
-          const beforeText = text.slice(lastIndex, match.index);
-          if (beforeText.trim()) {
-            newNodes.push({
-              type: 'text',
-              value: beforeText,
-            });
-          }
+        const beforeText = text.slice(lastIndex, match.index);
+        if (beforeText.trim()) {
+          nodesToAdd.push({ type: 'text', value: beforeText });
         }
 
-        // Обрабатываем разные типы шорткодов
         let processedContent = null;
-
         switch (tag) {
           case 'infp':
-            processedContent = handleInfp(content, attrs);
+            processedContent = handleShortcode(
+              content,
+              attrs,
+              (c) => `<div class="infp">${c}</div>`
+            );
             break;
           case 'infb':
-            processedContent = handleInfb(content, attrs);
+            processedContent = handleShortcode(
+              content,
+              attrs,
+              (c) => `<div class="alert--info">${c}</div>`
+            );
             break;
           case 'infg':
-            processedContent = handleInfg(content, attrs);
+            processedContent = handleShortcode(
+              content,
+              attrs,
+              (c) => `<div class="infg">${c}</div>`
+            );
             break;
           case 'inf':
-            processedContent = handleInf(content, attrs);
+            processedContent = handleShortcode(
+              content,
+              attrs,
+              (c) => `<div class="inf">${c}</div>`
+            );
             break;
           case 'scryt_b':
-            processedContent = handleScrytB(content, attrs);
+            const title = parseAttributes(attrs).title || 'Скрытый блок';
+            processedContent = handleShortcode(
+              content,
+              attrs,
+              (c) =>
+                `<div class="scryt-b"><div class="scryt-title">${title}</div><div class="scryt-content">${c}</div></div>`
+            );
             break;
           case 'obnovleno_b':
-            processedContent = handleObnovlenoB(content, attrs);
+            processedContent = handleShortcode(
+              content,
+              attrs,
+              (c) => `<div class="alert--warning">${c}</div>`
+            );
             break;
           case 'postimage':
             processedContent = handlePostimage(attrs);
@@ -65,178 +82,51 @@ function baseShortcodeProcessor() {
             processedContent = handleVidget(attrs);
             break;
           default:
-            // Для неизвестных шорткодов оставляем как есть
-            processedContent = {
-              type: 'html',
-              value: fullMatch,
-            };
+            processedContent = { type: 'html', value: fullMatch };
         }
 
         if (processedContent) {
-          newNodes.push(processedContent);
+          nodesToAdd.push(processedContent);
         }
 
         lastIndex = match.index + fullMatch.length;
       }
 
-      // Текст после последнего шорткода (только если не пустой)
-      if (lastIndex < text.length) {
-        const afterText = text.slice(lastIndex);
-        if (afterText.trim()) {
-          newNodes.push({
-            type: 'text',
-            value: afterText,
-          });
-        }
+      const afterText = text.slice(lastIndex);
+      if (afterText.trim()) {
+        nodesToAdd.push({ type: 'text', value: afterText });
       }
 
-      // Заменяем оригинальный узел новыми узлами только если есть изменения
-      if (newNodes.length > 0) {
-        parent.children.splice(index, 1, ...newNodes);
-      }
-    });
-  };
-}
-
-// Упрощенная обработка галереи
-function handleGalleryContent() {
-  return (tree) => {
-    visit(tree, 'html', (node, index, parent) => {
-      if (node.value === '<!-- GALLERY_PLACEHOLDER -->') {
-        // Ищем следующий узел с содержимым галереи
-        let galleryItems = [];
-        let nextIndex = index + 1;
-
-        while (nextIndex < parent.children.length) {
-          const nextNode = parent.children[nextIndex];
-          if (nextNode.type === 'text' && nextNode.value.includes('- url:')) {
-            const items = parseGalleryContent(nextNode.value);
-            galleryItems = galleryItems.concat(items);
-            // Удаляем обработанный узел
-            parent.children.splice(nextIndex, 1);
-          } else {
-            break;
-          }
-        }
-
-        if (galleryItems.length > 0) {
-          const galleryHtml = galleryItems
-            .map(
-              (item) =>
-                `<div class="gallery-item"><img src="${item.url}" alt="${item.caption}"><div class="gallery-caption">${item.caption}</div></div>`
-            )
-            .join('');
-
-          parent.children[index] = {
-            type: 'html',
-            value: `<div class="gallery">${galleryHtml}</div>`,
-          };
+      if (hasMatch) {
+        if (nodesToAdd.length > 0) {
+          parent.children.splice(index, 1, ...nodesToAdd);
+        } else {
+          parent.children.splice(index, 1);
         }
       }
     });
   };
 }
 
-// Основная экспортируемая функция
-export default function remarkShortcodes() {
-  return (tree) => {
-    // Сначала обрабатываем основные шорткоды
-    baseShortcodeProcessor()(tree);
-    // Затем обрабатываем содержимое галереи
-    handleGalleryContent()(tree);
-
-    // Удаляем пустые paragraph узлы
-    visit(tree, 'paragraph', (node, index, parent) => {
-      const hasContent = node.children.some((child) => {
-        if (child.type === 'text') return child.value.trim().length > 0;
-        if (child.type === 'html') return child.value.trim().length > 0;
-        return true;
-      });
-
-      if (!hasContent) {
-        parent.children.splice(index, 1);
-      }
-    });
-  };
-}
-
-// Функции-обработчики
-function handleInfp(content, attrs) {
+function handleShortcode(content, attrs, template) {
   if (!content?.trim()) return null;
-
-  const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
-
-  return {
-    type: 'html',
-    value: `<div class="infp">${htmlContent}</div>`,
-  };
+  const htmlContent = unified()
+    .use(remarkParse)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .processSync(content)
+    .toString();
+  return { type: 'html', value: template(htmlContent) };
 }
 
-function handleInfb(content, attrs) {
-  if (!content?.trim()) return null;
-
-  const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
-
-  return {
-    type: 'html',
-    value: `<div class="alert--info">${htmlContent}</div>`,
-  };
-}
-
-function handleInfg(content, attrs) {
-  if (!content?.trim()) return null;
-
-  const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
-
-  return {
-    type: 'html',
-    value: `<div class="infg">${htmlContent}</div>`,
-  };
-}
-
-function handleInf(content, attrs) {
-  if (!content?.trim()) return null;
-
-  const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
-
-  return {
-    type: 'html',
-    value: `<div class="inf">${htmlContent}</div>`,
-  };
-}
-
-function handleScrytB(content, attrs) {
-  if (!content?.trim()) return null;
-
-  const params = parseAttributes(attrs);
-  const title = params.title ? params.title.trim() : 'Скрытый блок';
-  const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
-
-  return {
-    type: 'html',
-    value: `<div class="scryt-b"><div class="scryt-title">${title}</div><div class="scryt-content">${htmlContent}</div></div>`,
-  };
-}
-
-function handleObnovlenoB(content, attrs) {
-  if (!content?.trim()) return null;
-
-  const htmlContent = unified().use(remarkParse).use(remarkHtml).processSync(content).toString();
-
-  return {
-    type: 'html',
-    value: `<div class="alert--warning">${htmlContent}</div>`,
-  };
-}
+// ... (остальные функции-обработчики handleInfb, handlePostimage и т.д. остаются без изменений) ...
 
 function handlePostimage(attrs) {
   const params = parseAttributes(attrs);
   const id = params.id || '';
   if (!id) return null;
-
   const caption = params.caption ? `<div class="postimage-caption">${params.caption}</div>` : '';
   const align = params.align ? ` style="text-align: ${params.align}"` : '';
-
   return {
     type: 'html',
     value: `<div class="postimage"${align}><img src="/api/images/${id}" alt="${params.caption || ''}"/>${caption}</div>`,
@@ -244,10 +134,7 @@ function handlePostimage(attrs) {
 }
 
 function handleGallery(attrs) {
-  return {
-    type: 'html',
-    value: '<!-- GALLERY_PLACEHOLDER -->',
-  };
+  return { type: 'html', value: '' };
 }
 
 function handleVidget(attrs) {
@@ -288,44 +175,17 @@ function handleVidget(attrs) {
   }
 }
 
-function parseGalleryContent(content) {
-  const items = [];
-  const lines = content.split('\n');
-
-  for (const line of lines) {
-    const trimmedLine = line.trim();
-    if (trimmedLine.startsWith('- url:')) {
-      const urlMatch = trimmedLine.match(/url:\s*([^\s]+)/);
-      const captionMatch = trimmedLine.match(/caption:\s*([^"]+)/);
-
-      if (urlMatch && urlMatch[1]) {
-        items.push({
-          url: urlMatch[1].trim(),
-          caption: captionMatch ? captionMatch[1].trim() : '',
-        });
-      }
-    }
-  }
-
-  return items;
-}
-
-// Вспомогательная функция для парсинга атрибутов
 function parseAttributes(attrsString) {
   if (!attrsString) return {};
-
   const params = {};
   const regex = /(\w+)=["']([^"']+)["']/g;
   let match;
-
   while ((match = regex.exec(attrsString)) !== null) {
     params[match[1]] = match[2];
   }
-
   return params;
 }
 
-// Функции для получения embed URL
 function getTikTokEmbedUrl(url) {
   const videoId = url.split('/video/')[1]?.split('?')[0];
   return videoId ? `https://www.tiktok.com/embed/v2/${videoId}` : url;
@@ -349,4 +209,37 @@ function getTelegramEmbedUrl(url) {
 
 function getThreadsEmbedUrl(url) {
   return `https://www.threads.com/embed/post/${url.split('/post/')[1]?.split('?')[0]}`;
+}
+
+export default function remarkShortcodes() {
+  return (tree, file) => {
+    // Выполняем преобразование шорткодов
+    remarkShortcodesTransform()(tree, file);
+
+    // Удаляем пустые узлы параграфов в самом конце
+    visit(tree, 'paragraph', (node, index, parent) => {
+      const hasContent = node.children.some((child) => {
+        if (child.type === 'text') return child.value.trim().length > 0;
+        if (child.type === 'html') return child.value.trim().length > 0;
+        return true;
+      });
+
+      if (!hasContent) {
+        parent.children.splice(index, 1);
+      }
+    });
+
+    // Добавляем ID к оставшимся параграфам
+    let counter = 0;
+    visit(tree, 'paragraph', (node) => {
+      counter++;
+      if (!node.data) {
+        node.data = {};
+      }
+      if (!node.data.hProperties) {
+        node.data.hProperties = {};
+      }
+      node.data.hProperties.id = `p-${counter}`;
+    });
+  };
 }

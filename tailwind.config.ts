@@ -8,6 +8,7 @@ const config: Config = {
   content: ['src/**/*.{astro,md,mdx,tsx,ts}', 'astro.config.mjs'],
   // activates only dark: modifier, not color theme
   darkMode: ['selector'],
+  safelist: ['scryt-b'],
   plugins: [
     require('@tailwindcss/typography'),
     plugin(({ addVariant }) => {
