@@ -267,31 +267,62 @@ function parseGalleryBlock(newChildren, content, shortcode, attrs) {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean);
+
   const images = [];
   let current = {};
 
+  // Разбор контента на изображения и подписи
   for (const line of lines) {
     if (line.startsWith('url:')) {
       if (current.url) images.push(current);
-      current = { url: line.slice(5).trim(), alt: '' };
+      current = { url: line.slice(4).trim(), alt: '' };
     } else if (line.startsWith('alt:')) {
-      current.alt = line.slice(line.indexOf(':') + 1).trim();
+      current.alt = line.slice(4).trim();
     }
   }
   if (current.url) images.push(current);
 
+  // Основной слайдер
+  const mainSlides = images
+    .map(
+      (img) => `<li class="splide__slide">
+  <img src="${img.url}" alt="${img.alt ?? ''}" />
+  ${img.alt ? `<div class="caption">${img.alt}</div>` : ''}
+</li>`
+    )
+    .join('\n');
+
+  // Миниатюры (с параметрами для уменьшения)
+  const thumbSlides = images
+    .map(
+      (img) => `<li class="splide__slide">
+  <img src="${img.url}?w=120&h=80&crop=1" alt="${img.alt ?? ''}" />
+</li>`
+    )
+    .join('\n');
+
   newChildren.push({
     type: 'html',
-    value: `<div class="wpgallery bg-red-400 w-full p-5">
-${images
-  .map(
-    (img) => `<figure>
-  <img src="${img.url}" alt="${img.alt ?? ''}" />
-  ${img.alt ? `<figcaption>${img.alt}</figcaption>` : ''}
-</figure>`
-  )
-  .join('\n')}
-</div>`,
+    value: `
+<div id="main-slider" class="splide" aria-label="Фотогалерея"
+     data-splide='{"type":"fade","rewind":true,"pagination":false,"arrows":true}'>
+  <div class="splide__track">
+    <ul class="splide__list">
+      ${mainSlides}
+    </ul>
+  </div>
+</div>
+
+<div id="thumbs" class="splide is-nav" aria-label="Миниатюры"
+     data-splide='{"fixedWidth":100,"fixedHeight":70,"gap":8,"rewind":true,"pagination":false,"arrows":false,"isNavigation":true,"focus":"center"}'>
+  <div class="splide__track">
+    <ul class="splide__list">
+      ${thumbSlides}
+    </ul>
+  </div>
+</div>
+
+`,
   });
 }
 
