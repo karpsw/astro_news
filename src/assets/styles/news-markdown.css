@@ -14,6 +14,14 @@
   @apply p-3 bg-green-100 rounded shadow-md;
 }
 
+.prose .rek_internal {
+  @apply font-semibold text-red-700;
+}
+
+.prose .rek_internal::before {
+  content: 'Читайте также:';
+  @apply text-neutral-900 bg-slate-100 mr-2 p-1 text-sm;
+}
 .scryt_b-wrapper {
   .scryt_b-title {
     @apply text-red-700;
