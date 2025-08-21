@@ -15,11 +15,11 @@ import NewsBase from './NewsBase.astro';
 const { slug } = Astro.params;
 
 const { data, content } = await getMarkdown(slug!);
-const { tags } = data;
+const { tags = [] } = data;
 //const html = await renderMarkdown(rawMd);
 const { code: contentHtml } = await renderMarkdown(content);
 const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
-
+const hasGallery = contentHtml.indexOf('splide') > 0;
 // автор
 
 const authorName = data.avtor_name?.trim() ? data.avtor_name : 'Редакция';
@@ -163,3 +163,21 @@ const authorUrl = 'https://telegraf.news/redakciya/';
     </aside>
   </main>
 </NewsBase>
+
+{hasGallery && (
+ <>
+<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css"
+/>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.splide').forEach((el) => {
+      new Splide(el).mount();
+    });
+  });
+</script>
+	</>
+)}
