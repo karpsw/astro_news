@@ -2,41 +2,48 @@
 import { Icon } from 'astro-icon/components';
 ---
 
-<div class="share-buttons flex items-center justify-start">
-  <div class="flex items-center justify-between mr-2 px-2 h-[40px] bg-stone-100">
-    <span class="mr-2 text-gray-600 text-sm">Репосты:</span>
-    <span class="count-share font-semibold">10</span>
+<div class="w-full flex items-center justify-between mb-3 p-2 bg-sky-50">
+  <span class="font-bold">Как вам новость?</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 justify-between">
+  <div class="sharethis-inline-reaction-buttons justify-start mb-2 md:mb-0"></div>
+
+  <div class="share-buttons flex items-center justify-start md:justify-end">
+    <div class="text-xs flex items-center justify-between mr-2 px-2 h-[40px] bg-stone-100">
+      <span class="mr-2 text-gray-600">Репосты:</span>
+      <span class="count-share font-semibold">10</span>
+    </div>
+    <button
+      class="share-general mr-2 flex items-center justify-center rounded shareb h-[35px] w-[35px]"
+      ><Icon name="mdi:share-variant" class="text-2xl" /></button
+    >
+    <a
+      class="share-telegram bg-tel-telegram text-white mr-2 shareb flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"><Icon name="simple-icons:telegram" class="text-2xl" /></a
+    >
+    <a
+      class="share-viber bg-tel-viber text-white mr-2 shareb flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
+      href="#"><Icon name="simple-icons:viber" class="text-2xl" /></a
+    >
+    <a
+      class="share-vk mr-2 bg-tel-vk text-white shareb flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"><Icon name="simple-icons:vk" class="text-2xl" /></a
+    >
+    <a
+      class="share-ok mr-2 shareb text-white bg-tel-ok flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"><Icon name="simple-icons:odnoklassniki" class="text-2xl" /></a
+    >
+    <a
+      class="share-whatsapp bg-tel-whatsapp text-white mr-2 shareb flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"><Icon name="simple-icons:whatsapp" class="text-2xl" /></a
+    >
   </div>
-  <button
-    class="share-general mr-2 flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
-    ><Icon name="mdi:share-variant" class="text-3xl" /></button
-  >
-  <a
-    class="share-telegram mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
-    href="#"
-    target="_blank"
-    rel="noopener noreferrer"><Icon name="simple-icons:telegram" class="text-3xl" /></a
-  >
-  <a
-    class="share-viber mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
-    href="#"><Icon name="simple-icons:viber" class="text-3xl" /></a
-  >
-  <a
-    class="share-vk mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
-    href="#"
-    target="_blank"
-    rel="noopener noreferrer"><Icon name="simple-icons:vk" class="text-3xl" /></a
-  >
-  <a
-    class="share-ok mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
-    href="#"
-    target="_blank"
-    rel="noopener noreferrer"><Icon name="simple-icons:odnoklassniki" class="text-3xl" /></a
-  >
-  <a
-    class="share-whatsapp mr-2 shareb flex items-center justify-center rounded shareb h-[40px] w-[40px] bg-orange-400"
-    href="#"
-    target="_blank"
-    rel="noopener noreferrer"><Icon name="simple-icons:whatsapp" class="text-3xl" /></a
-  >
 </div>

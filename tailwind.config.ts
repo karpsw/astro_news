@@ -45,6 +45,11 @@ const config: Config = {
         // background
         'tel-black': 'var(--th-tel-black)',
         'tel-red': 'var(--th-tel-red)',
+        'tel-telegram': 'var(--th-tel-telegram)',
+        'tel-viber': 'var(--th-tel-viber)',
+        'tel-vk': 'var( --th-tel-vk)',
+        'tel-ok': 'var( --th-tel-ok)',
+        'tel-whatsapp': 'var( --th-tel-whatsapp)',
         'base-100': 'var(--th-base-100)',
         'base-200': 'var(--th-base-200)',
         'base-300': 'var(--th-base-300)',

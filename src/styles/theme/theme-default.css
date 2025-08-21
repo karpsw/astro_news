@@ -5,6 +5,12 @@
     --th-base-100: #0c0c0c;
     --th-tel-black: #0c0c0c;
     --th-tel-red: #cc0000;
+    --th-tel-telegram: #24a1de;
+    --th-tel-viber: #7360f2;
+    --th-tel-vk: #0077ff;
+    --th-tel-ok: #ff7700;
+    --th-tel-whatsapp: #25d366;
+
     --th-base-200: var(--var-color-slate-100);
     --th-base-300: var(--var-color-slate-300);
     --th-base-code: var(--var-color-slate-400);
