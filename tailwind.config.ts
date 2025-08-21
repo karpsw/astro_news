@@ -87,6 +87,25 @@ const config: Config = {
           css: {
             'code::before': { content: '""' },
             'code::after': { content: '""' },
+            'blockquote p:first-of-type::before': false,
+            'blockquote p:last-of-type::after': false,
+            a: {
+              color: theme('colors.blue.700'),
+              textDecoration: 'none',
+              '&:hover': {
+                color: theme('colors.blue.600'),
+              },
+            },
+            thead: {
+              backgroundColor: 'var(--tw-prose-thead-bg-color, theme(colors.gray.100))', // Example using a CSS variable or direct color
+              // You can also add other styles like color, border, etc.
+            },
+            th: {
+              padding: '0.5rem', // Example using a CSS variable or direct color
+            },
+            td: {
+              padding: '0.5rem', // Example using a CSS variable or direct color
+            },
           },
         },
         // nonsense

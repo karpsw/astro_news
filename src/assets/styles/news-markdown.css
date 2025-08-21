@@ -1,17 +1,33 @@
 .infb {
-  @apply p-8 bg-lime-400 rounded-lg shadow-md my-2;
+  @apply p-3 bg-lime-100 rounded shadow-md;
 }
 .infg {
-  @apply p-8 bg-yellow-300 rounded-lg shadow-md my-2;
+  @apply p-3 bg-yellow-100 rounded shadow-md;
 }
 .infp {
-  @apply p-8 bg-sky-300 rounded-lg shadow-md my-2;
+  @apply p-3 bg-sky-100 rounded shadow-md;
 }
 .inf {
-  @apply p-8 bg-purple-400 rounded-lg shadow-md my-2;
+  @apply p-3 bg-gray-100 rounded shadow-md;
 }
 .scryt_b {
-  @apply p-8 bg-green-400 rounded-lg shadow-md my-2;
+  @apply p-3 bg-green-100 rounded shadow-md;
+}
+
+.scryt_b-wrapper {
+  .scryt_b-title {
+    @apply text-red-700;
+  }
+
+  @apply p-3 bg-gray-100 rounded shadow-md border-orange-500;
+}
+
+.obnovleno_b-wrapper {
+  .obnovleno_b-head {
+    @apply mt-0 border-b border-red-800 text-red-800 font-semibold flex items-center gap-2;
+  }
+
+  @apply p-3 bg-yellow-100 rounded shadow-md;
 }
 
 .tiktok-embed {
@@ -32,22 +48,20 @@
 .prose div,
 .prose img,
 .prose figure,
-.prose blockquote {
+.prose blockquote,
+.prose details {
   margin-bottom: 1.25em;
 }
 
-.scryt_b-wrapper {
-  .scryt_b-title {
-    @apply text-red-700;
-  }
-
-  @apply p-8 bg-gray-100 rounded-lg shadow-md my-2 border-orange-500;
+.prose .shortcode p {
+  margin-bottom: 0.25em;
+  margin-top: 0.25em;
 }
 
-.obnovleno_b-wrapper {
-  .obnovleno_b-head {
-    @apply mt-0 border-b border-red-800 text-red-800 font-semibold flex items-center gap-2;
-  }
+.prose table {
+  @apply min-w-full;
+}
 
-  @apply p-8 bg-yellow-200 rounded-lg shadow-md my-2;
+.responsive-table {
+  @apply overflow-x-auto;
 }

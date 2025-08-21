@@ -2,8 +2,6 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
 
-import Telepicture from '@/components/Telepicture.astro';
-
 function parseVidgetBlock(newChildren, shortcode, attrs) {
   if (attrs.url) {
     //telegram
@@ -98,7 +96,7 @@ function parseInfBlock(newChildren, content, shortcode, attrs) {
     data: {
       hName: 'div',
       hProperties: {
-        className: [shortcode],
+        className: [shortcode + ` shortcode`],
       },
     },
   });
@@ -210,7 +208,7 @@ function parseOblovlenoBlock(newChildren, content, shortcode, attrs) {
     data: {
       hName: 'div',
       hProperties: {
-        className: [shortcode + `-wrapper`],
+        className: [shortcode + `-wrapper shortcode`],
       },
     },
   });
@@ -232,7 +230,7 @@ function parseScrytBlock(newChildren, content, shortcode, attrs) {
       },
     ],
     data: {
-      hName: 'div',
+      hName: 'summary',
       hProperties: {
         className: [shortcode + `-title`],
       },
@@ -256,9 +254,9 @@ function parseScrytBlock(newChildren, content, shortcode, attrs) {
     name: shortcode,
     children: [tagTitle, tagContent],
     data: {
-      hName: 'div',
+      hName: 'details',
       hProperties: {
-        className: [shortcode + `-wrapper`],
+        className: [shortcode + `-wrapper shortcode`],
       },
     },
   });
