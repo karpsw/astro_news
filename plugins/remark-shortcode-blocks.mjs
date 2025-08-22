@@ -126,7 +126,7 @@ function parsePostImageBlock(newChildren, shortcode, attrs) {
     const mediumImgUrl = originalWidth >= 690 ? getSizedUrl(690) : null;
     const desktopImgUrl = getSizedUrl(originalWidth);
 
-    const finalAlt = attrs.caption || 'Изображение';
+    const finalAlt = attrs.caption || ' default-alt-content';
     const alignClass = attrs.align ? ` post-img ${attrs.align}` : '';
     const widthClass = originalWidth >= 891 ? ' w-full' : '';
 
@@ -331,7 +331,7 @@ function parseGalleryBlock(newChildren, content, shortcode, attrs) {
     .map((img) => {
       const { src, alt, srcset } = prepareImage(img);
       return `<li class="splide__slide not-prose relative">
-  <img data-lightbox="${src.split('?')[0]}" src="${src}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 891px) 100vw, 891px"` : ''} alt="${alt}" />
+  <img data-lightbox="${src.split('?')[0]}" src="${src}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 891px) 100vw, 891px"` : ''} alt="${alt ? alt : 'default-alt-content'}" />
   ${alt ? `<div class="caption not-prose">${alt}</div>` : ''}
 </li>`;
     })
