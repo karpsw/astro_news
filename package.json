@@ -63,6 +63,7 @@
     "giscus": "^1.6.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
+    "he": "^1.2.0",
     "html-entities": "^2.6.0",
     "lodash.debounce": "^4.0.8",
     "mdast-util-to-string": "^4.0.0",

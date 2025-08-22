@@ -5,6 +5,7 @@ export type PostCardItem = LinkTitleType & {
   tags?: LinkTitleType[];
   category?: LinkTitleType;
   lid?: string;
+  pubDate?: string;
   img?: ImgType;
 };
 

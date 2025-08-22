@@ -1,7 +1,7 @@
 ---
 import { getHome } from '@/modules/post/getHome';
 import NewsBase from '@/layouts/NewsBase.astro';
-import NewsPostCard from '@/components/NewsPostCard.astro';
+import NewsPostCard, { NewsPostCardLayout } from '@/components/NewsPostCard.astro';
 
 const data = await getHome();
 ---
@@ -11,8 +11,23 @@ const data = await getHome();
     <section class="mt-10">
       <h2 class="text-2xl font-bold mb-4">Подобрали для вас</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {data.newsBlockOne && data.newsBlockOne.map((post) => <NewsPostCard {post} />)}
+        {
+          data.newsBlockOne &&
+            data.newsBlockOne.map((post) => (
+              <NewsPostCard post={post} layout={NewsPostCardLayout.varant1} />
+            ))
+        }
       </div>
     </section>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Карточка новости -->
+      {
+        data.newsBlockOne &&
+          data.newsBlockOne.map((post) => (
+            <NewsPostCard post={post} layout={NewsPostCardLayout.varant2} />
+          ))
+      }
+    </div>
   </main>
 </NewsBase>
