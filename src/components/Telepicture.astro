@@ -1,13 +1,15 @@
 ---
+// Imports
 import { getImage } from 'astro:assets';
 
 import sanitizeHtml from 'sanitize-html';
 
 import type { ImageMetadata } from 'astro';
 
+// Props
 interface Props {
-  mobileImgUrl: string | ImageMetadata;
-  mediumImgUrl: string | ImageMetadata;
+  mobileImgUrl?: string | ImageMetadata;
+  mediumImgUrl?: string | ImageMetadata;
   desktopImgUrl: string | ImageMetadata;
   alt?: string;
   wImg?: string;
@@ -19,6 +21,7 @@ interface Props {
   imgclass?: string;
   caption?: string;
   posttitle?: string;
+  lightbox?: 'yes' | 'no';
 }
 
 const {
@@ -33,30 +36,33 @@ const {
   imgclass = 'w-full',
   caption,
   posttitle = '',
+  lightbox = 'no',
 } = Astro.props;
 
-// Проверяем наличие desktopImgUrl
+// Если нет desktopImgUrl — ничего не показываем
 if (!desktopImgUrl) {
-  return null; // Ничего не показываем если нет изображения
+  return null;
 }
 
-// Определяем alt-текст с очисткой
+// Динамический атрибут lightbox
+const lightboxAttr = lightbox === 'yes' ? { 'data-lightbox': desktopImgUrl as string } : {};
+
+// Alt текст с очисткой
 const finalAlt = sanitizeHtml(alt || caption || posttitle);
 
+// Генерация изображений через Astro
 const mobileImg = await getImage({
   src: desktopImgUrl + '?w=382&h=221&crop=1',
   width: 382,
   height: 221,
 });
-
 const mediumImg = await getImage({
   src: desktopImgUrl + '?w=690&h=397&crop=1',
   width: 690,
   height: 397,
 });
-
 const desktopImg = await getImage({
-  src: desktopImgUrl + '?w=' + wImg + '&h=' + hImg + '&crop=1',
+  src: `${desktopImgUrl}?w=${wImg}&h=${hImg}&crop=1`,
   width: parseInt(wImg),
   height: parseInt(hImg),
 });
@@ -77,7 +83,7 @@ const desktopImg = await getImage({
         decoding={decoding}
         fetchpriority={fetchpriority}
         class={imgclass}
-        data-lightbox={desktopImgUrl}
+        {...lightboxAttr}
       />
     </picture>
   ) : (
@@ -95,7 +101,7 @@ const desktopImg = await getImage({
           decoding={decoding}
           fetchpriority={fetchpriority}
           class={imgclass}
-          data-lightbox={desktopImgUrl}
+          {...lightboxAttr}
         />
       </picture>
       <figcaption>{caption}</figcaption>
