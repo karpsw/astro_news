@@ -9,15 +9,14 @@ import { decode } from 'html-entities';
 import ThemeScript from '@/components/ThemeScript.astro';
 import { CONFIG_CLIENT } from '@/config/client';
 
-import type { zMetaHead } from '@/schemas/meat-head';
+import type { MetaHead } from '@/schemas/meat-head';
 import type { NewsArticle, WithContext } from 'schema-dts';
-import type z from 'zod';
 
 const { PLAUSIBLE_SCRIPT_URL, PLAUSIBLE_DOMAIN } = CONFIG_CLIENT;
 
 // set defualt metadata in this component
 //const { data } = Astro.props;
-const { data } = Astro.props as { data: z.infer<typeof zMetaHead> };
+const { data } = Astro.props as { data: MetaHead };
 const { tags } = data;
 const decodedTitle = decode(data.head_title);
 const decodedTitle2 = decodeHtml(decodedTitle);
