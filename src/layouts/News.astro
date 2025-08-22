@@ -4,6 +4,8 @@
 
 import '@/assets/styles/news-markdown.css';
 
+import { getMarkdown } from '@/modules/post/getArchive';
+import sanitizeHtml from 'sanitize-html';
 import LabelPost from '@/components/Labelpost.astro';
 import Podpiska from '@/components/Podpiska.astro';
 import Share from '@/components/Share.astro';
@@ -15,9 +17,18 @@ import NewsBase from './NewsBase.astro';
 
 const { data, content } = Astro.props;
 
-const { tags = [] } = data;
+const { tags = [] } = data; 
 //const html = await renderMarkdown(rawMd);
-const { code: contentHtml } = await renderMarkdown(content!);
+
+//текст новости
+const { code: contentHtml } = await renderMarkdown(content);
+const safeTitle = sanitizeHtml(data.title || 'Изображение', {
+  allowedTags: [],
+  allowedAttributes: {}
+});
+const finalcontentHtml = contentHtml.replaceAll('default-alt-content', safeTitle);
+
+//лид
 const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
 const hasGallery = contentHtml.indexOf('splide') > 0;
 // автор
@@ -111,6 +122,7 @@ const authorUrl = 'https://telegraf.news/redakciya/';
               hImg={501}
               class="aspect-[16/9] max-w-full block"
               posttitle={data.title}
+              lightbox = "yes"
             />
           </div>
 
@@ -121,7 +133,7 @@ const authorUrl = 'https://telegraf.news/redakciya/';
       <section class="prose max-w-none prose-tel-red">
         <div id="lead-post" set:html={lidtHtml} />
         <!-- 📝 Article Text -->
-        <div id="post-text" set:html={contentHtml} />
+        <div id="post-text" set:html={finalcontentHtml} />
       </section>
       <footer>
         <Share />
