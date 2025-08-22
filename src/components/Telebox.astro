@@ -1,0 +1,120 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<div
+  id="lightbox"
+  class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 overflow-hidden"
+>
+  <div class="absolute top-4 right-4 flex items-center gap-4 text-white z-50">
+    <span id="lightbox-counter" class="font-medium"></span>
+    <button id="lightbox-close" class="px-3 py-1 bg-white/20 hover:bg-white/40 rounded"> ✕ </button>
+  </div>
+
+  <button
+    id="lightbox-prev"
+    class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-3xl z-50"
+  >
+    <Icon name="mdi:arrow-left-drop-circle-outline" />
+  </button>
+  <button
+    id="lightbox-next"
+    class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-3xl z-50"
+  >
+    <Icon name="mdi:arrow-right-drop-circle-outline" />
+  </button>
+
+  <div
+    id="lightbox-container"
+    class="relative max-w-[90%] max-h-[80%] flex items-center justify-center overflow-hidden"
+  >
+    <img
+      id="lightbox-img"
+      src=""
+      alt=""
+      class="rounded shadow-lg transition-transform duration-300 ease-out"
+    />
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const lightbox = document.getElementById('lightbox');
+    const imgEl = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementById('lightbox-close');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+    const counterEl = document.getElementById('lightbox-counter');
+    const container = document.getElementById('lightbox-container');
+
+    const images = Array.from(document.querySelectorAll('[data-lightbox]'));
+    let currentIndex = 0;
+    let isAnimating = false;
+
+    function switchImage(direction) {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const newIndex =
+        direction === 'next'
+          ? (currentIndex + 1) % images.length
+          : (currentIndex - 1 + images.length) % images.length;
+      const newUrl = images[newIndex].getAttribute('data-lightbox');
+
+      // Показываем новое изображение справа или слева
+      imgEl.style.transform = `translateX(${direction === 'next' ? '100%' : '-100%'})`;
+      imgEl.src = newUrl;
+
+      requestAnimationFrame(() => {
+        imgEl.style.transition = 'transform 0.3s ease';
+        imgEl.style.transform = 'translateX(0)';
+      });
+
+      imgEl.onload = () => {
+        currentIndex = newIndex;
+        counterEl.textContent = `[${currentIndex + 1} / ${images.length}]`;
+        isAnimating = false;
+      };
+    }
+
+    function openLightbox(index) {
+      currentIndex = index;
+      imgEl.src = images[currentIndex].getAttribute('data-lightbox');
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden'; // запрет скролла
+      counterEl.textContent = `[${currentIndex + 1} / ${images.length}]`;
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('flex');
+      lightbox.classList.add('hidden');
+      document.body.style.overflow = ''; // восстанавливаем скролл
+    }
+
+    images.forEach((el, i) =>
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        openLightbox(i);
+      })
+    );
+    closeBtn.addEventListener('click', closeLightbox);
+    prevBtn.addEventListener('click', () => switchImage('prev'));
+    nextBtn.addEventListener('click', () => switchImage('next'));
+
+    // Swipe
+    let touchStartX = 0;
+    lightbox.addEventListener('touchstart', (e) => (touchStartX = e.changedTouches[0].screenX));
+    lightbox.addEventListener('touchend', (e) => {
+      const diff = e.changedTouches[0].screenX - touchStartX;
+      if (Math.abs(diff) > 50) switchImage(diff > 0 ? 'prev' : 'next');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.classList.contains('hidden')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') switchImage('prev');
+      if (e.key === 'ArrowRight') switchImage('next');
+    });
+  });
+</script>

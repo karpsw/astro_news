@@ -150,6 +150,7 @@ function parsePostImageBlock(newChildren, shortcode, attrs) {
           decoding="async"
           fetchpriority="auto"
           class="${alignClass}${widthClass}"
+         data-lightbox="${desktopImgUrl.split('?')[0]}"
         >
       </picture>
     `;
@@ -157,7 +158,7 @@ function parsePostImageBlock(newChildren, shortcode, attrs) {
     let finalHtml;
     if (attrs.caption) {
       finalHtml = `
-        <figure class="post-img-container${alignClass}">
+        <figure class="post-img-container ${alignClass}">
           ${pictureHtml}
           <figcaption class="post-img-caption">${attrs.caption}</figcaption>
         </figure>
@@ -282,46 +283,93 @@ function parseGalleryBlock(newChildren, content, shortcode, attrs) {
   }
   if (current.url) images.push(current);
 
-  // Основной слайдер
+  // Подготовка картинок с ресайзом и srcset
+  function prepareImage(img) {
+    try {
+      const urlObj = new URL(img.url);
+
+      let w = parseInt(urlObj.searchParams.get('w'), 10);
+      let h = parseInt(urlObj.searchParams.get('h'), 10);
+
+      if (!w || !h) {
+        return { src: img.url, alt: img.alt ?? '', srcset: '' };
+      }
+
+      // Если ширина больше 891, ограничиваем
+      if (w > 891) {
+        const ratio = h / w;
+        w = 891;
+        h = Math.round(w * ratio);
+      }
+
+      // Основной src
+      urlObj.searchParams.set('w', w);
+      urlObj.searchParams.set('h', h);
+      urlObj.searchParams.set('crop', 1);
+      const src = urlObj.toString();
+
+      // Srcset варианты: 382, 690, 891
+      const srcsetWidths = [382, 690, 891];
+      const srcset = srcsetWidths
+        .map((sw) => {
+          const sh = Math.round(sw * (h / w));
+          const u = new URL(img.url);
+          u.searchParams.set('w', sw);
+          u.searchParams.set('h', sh);
+          u.searchParams.set('crop', 1);
+          return `${u.toString()} ${sw}w`;
+        })
+        .join(', ');
+
+      return { src, alt: img.alt ?? '', srcset };
+    } catch (e) {
+      return { src: img.url, alt: img.alt ?? '', srcset: '' };
+    }
+  }
+
   const mainSlides = images
-    .map(
-      (img) => `<li class="splide__slide">
-  <img src="${img.url}" alt="${img.alt ?? ''}" />
-  ${img.alt ? `<div class="caption">${img.alt}</div>` : ''}
-</li>`
-    )
+    .map((img) => {
+      const { src, alt, srcset } = prepareImage(img);
+      return `<li class="splide__slide not-prose relative">
+  <img data-lightbox="${src.split('?')[0]}" src="${src}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 891px) 100vw, 891px"` : ''} alt="${alt}" />
+  ${alt ? `<div class="caption not-prose">${alt}</div>` : ''}
+</li>`;
+    })
     .join('\n');
 
-  // Миниатюры (с параметрами для уменьшения)
+  // Миниатюры
   const thumbSlides = images
-    .map(
-      (img) => `<li class="splide__slide">
-  <img src="${img.url}?w=120&h=80&crop=1" alt="${img.alt ?? ''}" />
-</li>`
-    )
+    .map((img) => {
+      const u = new URL(img.url);
+      u.searchParams.set('w', 120);
+      u.searchParams.set('h', 80);
+      u.searchParams.set('crop', 1);
+      return `<li class="splide__slide not-prose">
+  <img src="${u.toString()}" alt="${img.alt ?? ''}" />
+</li>`;
+    })
     .join('\n');
 
   newChildren.push({
     type: 'html',
     value: `
-<div id="main-slider" class="splide" aria-label="Фотогалерея"
+<div id="main-slider" class="splide not-prose" aria-label="Фотогалерея"
      data-splide='{"type":"fade","rewind":true,"pagination":false,"arrows":true}'>
-  <div class="splide__track">
-    <ul class="splide__list">
+  <div class="splide__track not-prose">
+    <ul class="splide__list not-prose">
       ${mainSlides}
     </ul>
   </div>
 </div>
 
-<div id="thumbs" class="splide is-nav" aria-label="Миниатюры"
+<div id="thumbs" class="splide is-nav not-prose" aria-label="Миниатюры"
      data-splide='{"fixedWidth":100,"fixedHeight":70,"gap":8,"rewind":true,"pagination":false,"arrows":false,"isNavigation":true,"focus":"center"}'>
-  <div class="splide__track">
-    <ul class="splide__list">
+  <div class="splide__track not-prose">
+    <ul class="splide__list not-prose">
       ${thumbSlides}
     </ul>
   </div>
 </div>
-
 `,
   });
 }

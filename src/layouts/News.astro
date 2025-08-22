@@ -8,6 +8,7 @@ import LabelPost from '@/components/Labelpost.astro';
 import Podpiska from '@/components/Podpiska.astro';
 import Share from '@/components/Share.astro';
 import Telepicture from '@/components/Telepicture.astro';
+import Lightbox from '@/components/Telebox.astro';
 import { telDate } from '@/utils/datetime';
 import { renderMarkdown } from '@/utils/markdown';
 import NewsBase from './NewsBase.astro';
@@ -28,7 +29,7 @@ const authorUrl = 'https://telegraf.news/redakciya/';
 ---
 
 <NewsBase {data}>
-  <!-- 📰 Main Content-->
+  <!-- 📰 Main Content--><Icon name="mdi:arrow-right-drop-circle-outline" />
   <main class="container grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
     <!-- 📄 Article Section -->
     <article class="">
@@ -140,7 +141,7 @@ const authorUrl = 'https://telegraf.news/redakciya/';
         </ul>
       </div>
 
-      <!--   Weather Block -->
+      <!--   Weather Block --><Lightbox />
       <div class="bg-white border border-gray-200 p-4 rounded-md">
         <h2 class="text-lg font-semibold text-gray-700 mb-2">Погода</h2>
         <p class="text-sm text-gray-600">Бобруйск: +24°C, ясно</p>
@@ -163,7 +164,7 @@ const authorUrl = 'https://telegraf.news/redakciya/';
     </aside>
   </main>
 </NewsBase>
-
+<Lightbox />
 {hasGallery && (
  <>
 <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
@@ -174,10 +175,42 @@ const authorUrl = 'https://telegraf.news/redakciya/';
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.splide').forEach((el) => {
-      new Splide(el).mount();
-    });
+    const main = document.querySelector('#main-slider');
+    const thumbs = document.querySelector('#thumbs');
+
+    if (main && thumbs) {
+      const mainSplide = new Splide(main, {
+        type: 'fade',
+        rewind: true,
+        pagination: false,
+        arrows: true,
+      });
+
+      const thumbsSplide = new Splide(thumbs, {
+        fixedWidth: 100,
+        fixedHeight: 70,
+        gap: 8,
+        rewind: true,
+        pagination: false,
+        arrows: false,
+        isNavigation: true,
+        focus: 'center',
+      });
+
+      mainSplide.sync(thumbsSplide);
+
+      thumbsSplide.mount();
+      mainSplide.mount();
+    } else {
+      // fallback: если нет парного слайдера, то просто запускаем все одиночные
+      document.querySelectorAll('.splide').forEach((el) => {
+        if (!el.id) {
+          new Splide(el).mount();
+        }
+      });
+    }
   });
 </script>
+
 	</>
 )}

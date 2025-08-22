@@ -45,6 +45,24 @@
 .youtube-embed {
   @apply w-full h-[250px] md:h-[500px];
 }
+#main-slider {
+  @apply bg-tel-black;
+}
+.splide__slide {
+  @apply h-[250px] md:h-[594px];
+}
+
+.splide__slide img {
+  @apply max-h-full mx-auto object-cover;
+}
+
+.splide__slide .caption {
+  @apply absolute bottom-0  bg-stone-100 px-2 opacity-70;
+}
+
+#thumbs {
+  @apply flex justify-start;
+}
 
 .widget-instagram,
 .widget-twitter,
