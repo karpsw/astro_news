@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 
-import { newsSchema } from '@/schemas/archive';
+import { zNewsPostSchema } from '@/schemas/archive';
 import { postSchema } from '@/schemas/post';
 import { projectSchema } from '@/schemas/project';
 import { BASE_FOLDERS } from '@/constants/collections';
@@ -33,7 +33,7 @@ const archiveCollection = defineCollection({
     pattern: '**/*.mdx',
     base: './src/content/archive',
   }),
-  schema: newsSchema,
+  schema: zNewsPostSchema,
 });
 
 // _schemas folder in collections will be included in type

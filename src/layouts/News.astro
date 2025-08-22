@@ -28,7 +28,7 @@ const authorName = data.avtor_name?.trim() ? data.avtor_name : 'Редакция
 const authorUrl = 'https://telegraf.news/redakciya/';
 ---
 
-<NewsBase {data}>
+<NewsBase {...data}>
   <!-- 📰 Main Content-->
   <main class="container grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
     <!-- 📄 Article Section -->

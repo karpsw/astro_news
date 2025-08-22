@@ -6,9 +6,11 @@ import BaseHead from '@/components/NewsHead.astro';
 import { SELECTORS } from '@/constants/dom';
 import { IMAGE_SIZES } from '@/constants/image';
 
+import type { MetaHead } from '@/schemas/meat-head';
+
 import Avatar from '@/assets/images/logotelegrafbel.svg';
 
-const { data } = Astro.props;
+const data = Astro.props as MetaHead;
 
 const { SCROLL_TO_TOP_ID } = SELECTORS;
 ---

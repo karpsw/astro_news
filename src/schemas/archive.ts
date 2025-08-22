@@ -1,6 +1,8 @@
 import { z } from 'astro:content';
 
-export const newsSchema = z.object({
+import { zMetaHead } from './meat-head';
+
+export const zNewsPostSchema = zMetaHead.extend({
   id: z.number(),
   title: z.string(),
   date: z.coerce.date().optional(),
@@ -10,6 +12,7 @@ export const newsSchema = z.object({
   category_slug: z.string().optional(),
   lid: z.string().optional(),
   permalink: z.string().optional(),
+
   // настройки новости
   label: z.string().optional(),
   showpost: z.number().optional(),
@@ -20,30 +23,17 @@ export const newsSchema = z.object({
   avtor_bio: z.string().optional(),
   avtor_avatar: z.string().optional(),
   tocontent: z.number().optional(),
-  //SEO
-  head_title: z.string().optional(),
-  head_canonical: z.string().optional(),
-  head_description: z.string().optional(),
-  head_robots: z.string().optional(),
-  head_twitter_card: z.string().optional(),
-  head_twitter_title: z.string().optional(),
-  head_twitter_description: z.string().optional(),
-  head_twitter_image: z.string().optional(),
-  head_og_locale: z.string().optional(),
-  head_og_type: z.string().optional(),
-  head_og_title: z.string().optional(),
-  head_og_description: z.string().optional(),
-  head_og_url: z.string().optional(),
-  head_og_site_name: z.string().optional(),
+
+  // дополнительные SEO
   head_article_tag: z.string().optional(),
   head_article_section: z.string().optional(),
-  head_og_updated_time: z.coerce.date().optional(),
   head_og_image: z.string().optional(),
   head_og_image_secure_url: z.string().optional(),
   head_og_image_width: z.number().optional(),
   head_og_image_height: z.number().optional(),
   head_og_image_alt: z.string().optional(),
   head_og_image_type: z.string().optional(),
+
   tags: z
     .array(
       z.object({
@@ -53,4 +43,5 @@ export const newsSchema = z.object({
     )
     .optional(),
 });
+
 // schema and collection are separate

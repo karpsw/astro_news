@@ -1,0 +1,8 @@
+---
+import { getHome } from '@/modules/post/getHome';
+import NewsBase from '@/layouts/NewsBase.astro';
+
+const data = await getHome();
+---
+
+<NewsBase {...data.metaHead} />
