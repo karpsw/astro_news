@@ -1,5 +1,5 @@
 import type { MetaHead } from '../schemas/meat-head';
-import type { PostCardItem } from './post-card';
+import type { PostCardItem } from '../schemas/post-card';
 
 export type HomeData = {
   metaHead: MetaHead;

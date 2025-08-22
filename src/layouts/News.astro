@@ -1,9 +1,9 @@
 ---
 //import Markdown from 'astro-remote/lib/Markdown.astro';
 
+
 import '@/assets/styles/news-markdown.css';
 
-import { getMarkdown } from '@/modules/post/getArchive';
 import LabelPost from '@/components/Labelpost.astro';
 import Podpiska from '@/components/Podpiska.astro';
 import Share from '@/components/Share.astro';
@@ -13,12 +13,11 @@ import { telDate } from '@/utils/datetime';
 import { renderMarkdown } from '@/utils/markdown';
 import NewsBase from './NewsBase.astro';
 
-const { slug } = Astro.params;
+const { data, content } = Astro.props;
 
-const { data, content } = await getMarkdown(slug!);
 const { tags = [] } = data;
 //const html = await renderMarkdown(rawMd);
-const { code: contentHtml } = await renderMarkdown(content);
+const { code: contentHtml } = await renderMarkdown(content!);
 const { code: lidtHtml } = await renderMarkdown(data.lid ?? '');
 const hasGallery = contentHtml.indexOf('splide') > 0;
 // автор
