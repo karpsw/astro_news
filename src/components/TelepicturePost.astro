@@ -3,15 +3,15 @@
 import Telepicture from './Telepicture.astro';
 
 import type { PostCardItem } from '@/schemas/post-card';
+import type { SrcSets } from './Telepicture.astro';
 
 export interface Props {
   post: PostCardItem;
-  wImg: number;
-  hImg: number;
   imgclass?: string;
+  srcSets: SrcSets;
 }
 
-const { post, wImg = 891, hImg = 501, imgclass = 'aspect-[16/9] max-w-full block' } = Astro.props;
+const { post, srcSets, imgclass = 'aspect-[16/9] max-w-full block' } = Astro.props;
 ---
 
 {
@@ -19,12 +19,11 @@ const { post, wImg = 891, hImg = 501, imgclass = 'aspect-[16/9] max-w-full block
     <Telepicture
       src={post.img.url}
       loading="lazy"
-      wImg={wImg}
-      hImg={hImg}
       imgclass={imgclass}
       posttitle={post.title}
       alt={post.img.alt}
       lightbox="no"
+      srcSets={srcSets}
     />
   )
 }

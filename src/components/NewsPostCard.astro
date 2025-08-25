@@ -31,8 +31,7 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
           >
             <TelepicturePost
               post={post}
-              wImg={300}
-              hImg={200}
+              srcSets={{ desctop: { w: 300, h: 200 }, modile: { w: 280, h: 190 } }}
               imgclass="aspect-[16/9] max-w-full block"
             />
 
@@ -52,8 +51,7 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
               <div class="relative">
                 <TelepicturePost
                   post={post}
-                  wImg={891}
-                  hImg={501}
+                  srcSets={{ desctop: { w: 300, h: 200 }, modile: { w: 280, h: 190 } }}
                   imgclass="aspect-[16/9] max-w-full block"
                 />
 

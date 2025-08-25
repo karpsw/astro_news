@@ -3,13 +3,19 @@
 
 import sanitizeHtml from 'sanitize-html';
 
+type SrcSetImg = { w: number; h: number };
+
+export type SrcSets = {
+  desctop: SrcSetImg;
+  modile?: SrcSetImg;
+  medium?: SrcSetImg;
+};
+
 // Props
 interface Props {
   src: string;
   alt?: string;
   className?: string;
-  wImg?: number;
-  hImg?: number;
   loading?: 'lazy' | 'eager' | null | undefined;
   fetchpriority?: 'auto' | 'high' | 'low' | null | undefined;
   decoding?: 'auto' | 'async' | 'sync' | null | undefined;
@@ -18,13 +24,12 @@ interface Props {
   caption?: string;
   posttitle?: string;
   lightbox?: 'yes' | 'no';
+  srcSets: SrcSets;
 }
 
 const {
   src,
   alt = '',
-  wImg = 891,
-  hImg = 501,
   loading = 'lazy',
   fetchpriority = 'auto',
   decoding = 'async',
@@ -33,6 +38,7 @@ const {
   caption,
   posttitle = '',
   lightbox = 'no',
+  srcSets = { desctop: { w: 891, h: 501 } } as SrcSets,
 } = Astro.props;
 
 // Если нет desktopImgUrl — ничего не показываем
@@ -46,42 +52,39 @@ const lightboxAttr = lightbox === 'yes' ? { 'data-lightbox': '' } : {};
 // Alt текст с очисткой
 const finalAlt = sanitizeHtml(alt || caption || posttitle);
 
-type DeviceImageData = {
-  src: string;
-  width: number;
-  height: number;
-};
-
 // Генерация изображений через Astro
-const mobileImg: DeviceImageData = {
-  src: src + '?w=382&h=221&crop=1',
-  width: 382,
-  height: 221,
-};
-
-const mediumImg: DeviceImageData = {
-  src: src + '?w=690&h=397&crop=1',
-  width: 690,
-  height: 397,
-};
-
-const desktopImg: DeviceImageData = {
-  src: `${src}?w=${wImg}&h=${hImg}&crop=1`,
-  width: wImg!,
-  height: hImg,
-};
 ---
 
 {
   !caption ? (
     <picture>
-      <source media="(max-width: 799px)" srcset={mobileImg.src} />
-      <source media="(min-width: 800px) and (max-width: 1200px)" srcset={mediumImg.src} />
-      <source media="(min-width: 1201px)" srcset={desktopImg.src} />
+      {srcSets.modile && (
+        <source
+          media="(max-width: 799px)"
+          srcset={`${src}?w=${srcSets.modile.w}&h=${srcSets.modile.h}&crop=1`}
+        />
+      )}
+      {srcSets.medium && (
+        <source
+          media="(min-width: 800px) and (max-width: 1200px)"
+          srcset={`${src}?w=${srcSets.medium.w}&h=${srcSets.medium.h}&crop=1`}
+        />
+      )}
+      {srcSets.desctop && (
+        <source
+          media="(min-width: 1201px)"
+          srcset={`${src}?w=${srcSets.desctop.w}&h=${srcSets.desctop.h}&crop=1`}
+        />
+      )}
+
       <img
-        width={wImg}
-        height={hImg}
-        src={desktopImg.src}
+        width={srcSets.desctop.w}
+        height={srcSets.desctop.h}
+        src={
+          srcSets.desctop
+            ? `${src}?w=${srcSets.desctop.w}&h=${srcSets.desctop.h}&crop=1`
+            : `${src}?w=${891}&h=${501}&crop=1`
+        }
         alt={finalAlt}
         loading={loading}
         decoding={decoding}
@@ -93,13 +96,28 @@ const desktopImg: DeviceImageData = {
   ) : (
     <figure>
       <picture>
-        <source media="(max-width: 799px)" srcset={mobileImg.src} />
-        <source media="(min-width: 800px) and (max-width: 1200px)" srcset={mediumImg.src} />
-        <source media="(min-width: 1201px)" srcset={desktopImg.src} />
+        {srcSets.modile && (
+          <source
+            media="(max-width: 799px)"
+            srcset={`${src}?w=${srcSets.modile.w}&h=${srcSets.modile.h}&crop=1`}
+          />
+        )}
+        {srcSets.medium && (
+          <source
+            media="(min-width: 800px) and (max-width: 1200px)"
+            srcset={`${src}?w=${srcSets.medium.w}&h=${srcSets.medium.h}&crop=1`}
+          />
+        )}
+        {srcSets.desctop && (
+          <source
+            media="(min-width: 1201px)"
+            srcset={`${src}?w=${srcSets.desctop.w}&h=${srcSets.desctop.h}&crop=1`}
+          />
+        )}
         <img
-          width={wImg}
-          height={hImg}
-          src={desktopImg.src}
+          width={srcSets.desctop.w}
+          height={srcSets.desctop.h}
+          src={`${src}?w=${srcSets.desctop.w}&h=${srcSets.desctop.h}&crop=1`}
           alt={finalAlt}
           loading={loading}
           decoding={decoding}
