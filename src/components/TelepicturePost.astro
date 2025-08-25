@@ -1,0 +1,31 @@
+---
+// Imports
+import Telepicture from './Telepicture.astro';
+
+import type { PostCardItem } from '@/schemas/post-card';
+
+export interface Props {
+  post: PostCardItem;
+  wImg: number;
+  hImg: number;
+  css?: string;
+}
+
+const { post, wImg = 891, hImg = 501, css = 'aspect-[16/9] max-w-full block' } = Astro.props;
+---
+
+{
+  post.img && post.img.url && (
+    <Telepicture
+      desktopImgUrl={post.img.url}
+      loading="lazy"
+      layout="constrained"
+      wImg={wImg}
+      hImg={hImg}
+      class={css}
+      posttitle={post.title}
+      alt={post.img.alt}
+      lightbox="no"
+    />
+  )
+}

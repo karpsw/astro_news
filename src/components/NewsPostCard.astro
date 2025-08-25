@@ -2,8 +2,8 @@
 import { decode } from 'html-entities';
 
 import LabelPost from '@/components/Labelpost.astro';
-import Telepicture from '@/components/Telepicture.astro';
 import { telDate } from '@/utils/datetime';
+import TelepicturePost from './TelepicturePost.astro';
 
 import type { PostCardItem } from '@/schemas/post-card';
 
@@ -23,25 +23,13 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
 {
   (() => {
     switch (layout) {
-      case NewsPostCardLayout.varant1:
+      case NewsPostCardLayout.variant1:
         return (
           <a
             href={post.url}
             class="block bg-white rounded-lg overflow-hidden shadow hover:shadow-md transition"
           >
-            {post.img && (
-              <Telepicture
-                desktopImgUrl={post.img.url}
-                loading="lazy"
-                layout="constrained"
-                wImg={891}
-                hImg={501}
-                class="aspect-[16/9] max-w-full block"
-                posttitle={post.title}
-                alt={post.img.alt}
-                lightbox="no"
-              />
-            )}
+            <TelepicturePost post={post} wImg={300} hImg={200} />
 
             <LabelPost label={post.label} />
 
@@ -57,19 +45,8 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
           <article class="bg-white rounded-lg shadow hover:shadow-md transition overflow-hidden">
             <head>
               <div class="relative">
-                {post.img && (
-                  <Telepicture
-                    desktopImgUrl={post.img.url}
-                    loading="lazy"
-                    layout="constrained"
-                    wImg={891}
-                    hImg={501}
-                    class="aspect-[16/9] max-w-full block"
-                    posttitle={post.title}
-                    alt={post.img.alt}
-                    lightbox="no"
-                  />
-                )}
+                <TelepicturePost post={post} wImg={891} hImg={501} />
+
                 <LabelPost label={post.label} position="absolute bottom-0 left-0" />
               </div>
             </head>
