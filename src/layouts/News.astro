@@ -108,17 +108,16 @@ const authorUrl = 'https://telegraf.news/redakciya/';
           <!-- Image Placeholder -->
           <div class="w-full bg-gray-200 rounded-md flex items-center justify-center mt-4">
             <!-- Картинка -->
-
-            <Telepicture
-              desktopImgUrl={data.featured_img_url}
-              loading="eager"
-              layout="constrained"
-              wImg={891}
-              hImg={501}
-              class="aspect-[16/9] max-w-full block"
-              posttitle={data.title}
-              lightbox = "yes"
-            />
+						<Telepicture
+									src={data.featured_img_url}
+									loading="eager"
+									wImg={891}
+									hImg={501}
+									imgclass="aspect-[16/9] max-w-full block"
+									posttitle={data.title}
+									lightbox="yes"
+								/>
+           
           </div>
 
           <!--  Subscribe Block -->
