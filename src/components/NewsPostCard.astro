@@ -1,6 +1,7 @@
 ---
 import { decode } from 'html-entities';
 
+import Telepicture from '@/components/Telepicture.astro';
 import { telDate } from '@/utils/datetime';
 
 import type { PostCardItem } from '@/schemas/post-card';
@@ -28,11 +29,16 @@ const { post, layout = NewsPostCardLayout.varant1 } = Astro.props;
             class="block bg-white rounded-lg overflow-hidden shadow hover:shadow-md transition"
           >
             {post.img && (
-              <img
-                src={post.img.url}
-                alt={post.img.alt}
-                class="w-full h-48 object-cover"
+              <Telepicture
+                desktopImgUrl={post.img.url}
                 loading="lazy"
+                layout="constrained"
+                wImg={891}
+                hImg={501}
+                class="aspect-[16/9] max-w-full block"
+                posttitle={post.title}
+                alt={post.img.alt}
+                lightbox="no"
               />
             )}
 
@@ -48,11 +54,16 @@ const { post, layout = NewsPostCardLayout.varant1 } = Astro.props;
           <article class="bg-white rounded-lg shadow hover:shadow-md transition overflow-hidden">
             <a href="/news/slug" class="block">
               {post.img && (
-                <img
-                  src={post.img.url}
-                  alt={post.img.alt}
-                  class="w-full h-48 object-cover"
+                <Telepicture
+                  desktopImgUrl={post.img.url}
                   loading="lazy"
+                  layout="constrained"
+                  wImg={891}
+                  hImg={501}
+                  class="aspect-[16/9] max-w-full block"
+                  posttitle={post.title}
+                  alt={post.img.alt}
+                  lightbox="no"
                 />
               )}
 
