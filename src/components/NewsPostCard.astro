@@ -29,7 +29,12 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
             href={post.url}
             class="block bg-white rounded-lg overflow-hidden shadow hover:shadow-md transition"
           >
-            <TelepicturePost post={post} wImg={300} hImg={200} />
+            <TelepicturePost
+              post={post}
+              wImg={300}
+              hImg={200}
+              imgclass="aspect-[16/9] max-w-full block"
+            />
 
             <LabelPost label={post.label} />
 
@@ -45,7 +50,12 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
           <article class="bg-white rounded-lg shadow hover:shadow-md transition overflow-hidden">
             <head>
               <div class="relative">
-                <TelepicturePost post={post} wImg={891} hImg={501} />
+                <TelepicturePost
+                  post={post}
+                  wImg={891}
+                  hImg={501}
+                  imgclass="aspect-[16/9] max-w-full block"
+                />
 
                 <LabelPost label={post.label} position="absolute bottom-0 left-0" />
               </div>

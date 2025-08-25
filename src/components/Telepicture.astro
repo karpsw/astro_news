@@ -1,23 +1,19 @@
 ---
 // Imports
-import { getImage } from 'astro:assets';
 
 import sanitizeHtml from 'sanitize-html';
 
-import type { ImageMetadata } from 'astro';
-
 // Props
 interface Props {
-  mobileImgUrl?: string | ImageMetadata;
-  mediumImgUrl?: string | ImageMetadata;
-  desktopImgUrl: string | ImageMetadata;
+  src: string;
   alt?: string;
-  wImg?: string;
-  hImg?: string;
-  loading?: string;
-  fetchpriority?: string;
-  decoding?: string;
-  layout?: string;
+  className?: string;
+  wImg?: number;
+  hImg?: number;
+  loading?: 'lazy' | 'eager' | null | undefined;
+  fetchpriority?: 'auto' | 'high' | 'low' | null | undefined;
+  decoding?: 'auto' | 'async' | 'sync' | null | undefined;
+  //layout?: string;
   imgclass?: string;
   caption?: string;
   posttitle?: string;
@@ -25,14 +21,14 @@ interface Props {
 }
 
 const {
-  desktopImgUrl,
+  src,
   alt = '',
-  wImg = '891',
-  hImg = '501',
+  wImg = 891,
+  hImg = 501,
   loading = 'lazy',
   fetchpriority = 'auto',
   decoding = 'async',
-  layout = 'constrained',
+  //layout = 'constrained',
   imgclass = 'w-full',
   caption,
   posttitle = '',
@@ -40,32 +36,40 @@ const {
 } = Astro.props;
 
 // Если нет desktopImgUrl — ничего не показываем
-if (!desktopImgUrl) {
+if (!src) {
   return null;
 }
 
 // Динамический атрибут lightbox
-const lightboxAttr = lightbox === 'yes' ? { 'data-lightbox': desktopImgUrl as string } : {};
+const lightboxAttr = lightbox === 'yes' ? { 'data-lightbox': '' } : {};
 
 // Alt текст с очисткой
 const finalAlt = sanitizeHtml(alt || caption || posttitle);
 
+type DeviceImageData = {
+  src: string;
+  width: number;
+  height: number;
+};
+
 // Генерация изображений через Astro
-const mobileImg = await getImage({
-  src: desktopImgUrl + '?w=382&h=221&crop=1',
+const mobileImg: DeviceImageData = {
+  src: src + '?w=382&h=221&crop=1',
   width: 382,
   height: 221,
-});
-const mediumImg = await getImage({
-  src: desktopImgUrl + '?w=690&h=397&crop=1',
+};
+
+const mediumImg: DeviceImageData = {
+  src: src + '?w=690&h=397&crop=1',
   width: 690,
   height: 397,
-});
-const desktopImg = await getImage({
-  src: `${desktopImgUrl}?w=${wImg}&h=${hImg}&crop=1`,
-  width: parseInt(wImg),
-  height: parseInt(hImg),
-});
+};
+
+const desktopImg: DeviceImageData = {
+  src: `${src}?w=${wImg}&h=${hImg}&crop=1`,
+  width: wImg!,
+  height: hImg,
+};
 ---
 
 {
@@ -79,7 +83,7 @@ const desktopImg = await getImage({
         height={hImg}
         src={desktopImg.src}
         alt={finalAlt}
-        loading={loading!=}
+        loading={loading}
         decoding={decoding}
         fetchpriority={fetchpriority}
         class={imgclass}
