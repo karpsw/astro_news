@@ -3,9 +3,10 @@ import { Icon } from 'astro-icon/components';
 
 interface Props {
   label?: string; // Делаем опциональным
+  position?: string; // класс для позиционирования в блоке
 }
 
-const { label } = Astro.props;
+const { label, position = 'static' } = Astro.props;
 
 // Проверяем, существует ли label и он не пустой
 const hasLabel = label && label.trim().length > 0;
@@ -18,7 +19,7 @@ const getLabelInfo = (labelText: string) => {
   let searchWord = '';
 
   if (lowerLabel.includes('полезно')) {
-    iconName = 'mdi:exclamation-thick';
+    iconName = 'mdi:thumb-up';
     searchWord = 'Полезно';
   } else if (lowerLabel.includes('фото')) {
     iconName = 'mdi:camera';
@@ -61,7 +62,7 @@ const labelInfo = hasLabel ? getLabelInfo(label) : { iconName: null, searchWord:
 
 {
   hasLabel && (
-    <div class="bg-tel-red px-3 py-1 text-white flex flex-nowrap">
+    <div class={`bg-tel-red px-2 py-1 items-center text-white flex flex-nowrap ${position}`}>
       {labelInfo.iconName && <Icon name={labelInfo.iconName} class="text-base mr-1" />}
       {labelInfo.searchWord}
     </div>

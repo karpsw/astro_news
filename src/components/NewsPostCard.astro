@@ -1,14 +1,15 @@
 ---
 import { decode } from 'html-entities';
 
+import LabelPost from '@/components/Labelpost.astro';
 import Telepicture from '@/components/Telepicture.astro';
 import { telDate } from '@/utils/datetime';
 
 import type { PostCardItem } from '@/schemas/post-card';
 
 export enum NewsPostCardLayout {
-  varant1 = 'картинка снизу',
-  varant2 = 'картинка сверху',
+  variant1 = 'картинка снизу',
+  variant2 = 'картинка сверху',
 }
 
 export interface Props {
@@ -16,7 +17,7 @@ export interface Props {
   layout?: NewsPostCardLayout;
 }
 
-const { post, layout = NewsPostCardLayout.varant1 } = Astro.props;
+const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
 ---
 
 {
@@ -42,6 +43,8 @@ const { post, layout = NewsPostCardLayout.varant1 } = Astro.props;
               />
             )}
 
+            <LabelPost label={post.label} />
+
             <div class="p-4">
               <h3 class="text-lg font-semibold leading-snug text-gray-800 hover:text-blue-600 transition">
                 {decode(post.title)}
@@ -49,24 +52,29 @@ const { post, layout = NewsPostCardLayout.varant1 } = Astro.props;
             </div>
           </a>
         );
-      case NewsPostCardLayout.varant2:
+      case NewsPostCardLayout.variant2:
         return (
           <article class="bg-white rounded-lg shadow hover:shadow-md transition overflow-hidden">
-            <a href="/news/slug" class="block">
-              {post.img && (
-                <Telepicture
-                  desktopImgUrl={post.img.url}
-                  loading="lazy"
-                  layout="constrained"
-                  wImg={891}
-                  hImg={501}
-                  class="aspect-[16/9] max-w-full block"
-                  posttitle={post.title}
-                  alt={post.img.alt}
-                  lightbox="no"
-                />
-              )}
+            <head>
+              <div class="relative">
+                {post.img && (
+                  <Telepicture
+                    desktopImgUrl={post.img.url}
+                    loading="lazy"
+                    layout="constrained"
+                    wImg={891}
+                    hImg={501}
+                    class="aspect-[16/9] max-w-full block"
+                    posttitle={post.title}
+                    alt={post.img.alt}
+                    lightbox="no"
+                  />
+                )}
+                <LabelPost label={post.label} position="absolute bottom-0 left-0" />
+              </div>
+            </head>
 
+            <a href="/news/slug" class="block">
               <div class="p-4">
                 <h3 class="text-lg font-semibold text-gray-800 hover:text-blue-600 transition">
                   {decode(post.title)}

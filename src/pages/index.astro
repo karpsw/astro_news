@@ -14,7 +14,7 @@ const data = await getHome();
         {
           data.newsBlockOne &&
             data.newsBlockOne.map((post) => (
-              <NewsPostCard post={post} layout={NewsPostCardLayout.varant1} />
+              <NewsPostCard post={post} layout={NewsPostCardLayout.variant2} />
             ))
         }
       </div>
@@ -25,7 +25,7 @@ const data = await getHome();
       {
         data.newsBlockOne &&
           data.newsBlockOne.map((post) => (
-            <NewsPostCard post={post} layout={NewsPostCardLayout.varant2} />
+            <NewsPostCard post={post} layout={NewsPostCardLayout.variant2} />
           ))
       }
     </div>
