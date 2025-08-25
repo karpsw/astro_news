@@ -1,0 +1,28 @@
+---
+// components/MainNewsBlock.astro
+import NewsPostCard, { NewsPostCardLayout } from '@/components/NewsPostCard.astro';
+
+interface Props {
+  title?: string;
+  className?: string;
+  news?: any[]; // Добавляем пропс для новостей
+}
+
+const { title = 'Главные новости', className = '', news = [] } = Astro.props;
+---
+
+<aside class={`w-full ${className}`}>
+  <div class="w-full flex items-center justify-between mt-3 mb-5 p-2 bg-sky-50">
+    <span class="font-bold">{title}</span>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    {
+      news && news.length > 0 ? (
+        news.map((post) => <NewsPostCard post={post} layout={NewsPostCardLayout.variant5} />)
+      ) : (
+        <p class="text-gray-500 col-span-2 text-center py-4">Нет главных новостей</p>
+      )
+    }
+  </div>
+</aside>

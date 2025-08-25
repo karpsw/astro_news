@@ -1,12 +1,18 @@
 ---
 import { Icon } from 'astro-icon/components';
 
+export enum LabelPostVariant {
+  filled = 'filled', // Красный фон, белый текст - div
+  outlined = 'outlined', // Красный текст, прозрачный фон, красная рамка - span
+}
+
 interface Props {
   label?: string; // Делаем опциональным
   position?: string; // класс для позиционирования в блоке
+  variant?: LabelPostVariant; // Вариант дизайна
 }
 
-const { label, position = 'static' } = Astro.props;
+const { label, position = 'static', variant = LabelPostVariant.filled } = Astro.props;
 
 // Проверяем, существует ли label и он не пустой
 const hasLabel = label && label.trim().length > 0;
@@ -31,7 +37,7 @@ const getLabelInfo = (labelText: string) => {
     iconName = 'mdi:sync-circle';
     searchWord = 'Обновлено';
   } else if (lowerLabel.includes('официально')) {
-    iconName = 'mdi:brief-case-variant';
+    iconName = 'mdi:briefcase-variant';
     searchWord = 'Официально';
   } else if (lowerLabel.includes('неофициально')) {
     iconName = 'mdi:incognito-circle';
@@ -58,13 +64,42 @@ const getLabelInfo = (labelText: string) => {
 
 // Получаем информацию о label только если он существует
 const labelInfo = hasLabel ? getLabelInfo(label) : { iconName: null, searchWord: '' };
+
+// Определяем классы в зависимости от варианта
+const getVariantClasses = () => {
+  switch (variant) {
+    case LabelPostVariant.outlined:
+      return 'ml-1 inline-block text-tel-red';
+    case LabelPostVariant.filled:
+    default:
+      return 'px-2 py-1 bg-tel-red text-white flex flex-nowrap ';
+  }
+};
 ---
 
 {
-  hasLabel && (
-    <div class={`bg-tel-red px-2 py-1 items-center text-white flex flex-nowrap ${position}`}>
-      {labelInfo.iconName && <Icon name={labelInfo.iconName} class="text-base mr-1" />}
-      {labelInfo.searchWord}
-    </div>
-  )
+  hasLabel &&
+    (() => {
+      const commonClasses = ` items-center  ${position} ${getVariantClasses()}`;
+
+      switch (variant) {
+        case LabelPostVariant.outlined:
+          return (
+            <span class={commonClasses}>
+              {labelInfo.iconName && (
+                <Icon name={labelInfo.iconName} class="text-sm inline mr-1 pb-[0.1rem]" />
+              )}
+              {labelInfo.searchWord}
+            </span>
+          );
+        case LabelPostVariant.filled:
+        default:
+          return (
+            <div class={commonClasses}>
+              {labelInfo.iconName && <Icon name={labelInfo.iconName} class="text-base mr-1" />}
+              {labelInfo.searchWord}
+            </div>
+          );
+      }
+    })()
 }

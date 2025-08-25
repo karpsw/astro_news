@@ -1,0 +1,86 @@
+---
+// components/ShareaholicRecs.astro
+import { decode } from 'html-entities';
+
+import NewsPostCard, { NewsPostCardLayout } from '@/components/NewsPostCard.astro';
+
+interface Props {
+  title?: string;
+  location: string;
+  className?: string;
+  internal?: string | number;
+}
+
+const { className, location, internal = 6, title = 'Подобрали для вас:' } = Astro.props;
+const API_KEY = '0fe2353072a05d61c3a9353ff83bbc15';
+
+// Функция для получения данных
+async function getRecommendations() {
+  try {
+    const url = `https://recs.shareaholic.com/rec/?location=${encodeURIComponent(location)}&internal=${internal}&sponsored=0&api_key=${API_KEY}`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    return null;
+  }
+}
+
+// Получаем данные
+const recommendationsData = await getRecommendations();
+
+// Преобразуем данные в нужный формат
+const transformRecommendations = (data: any) => {
+  if (!data || !data.internal || !Array.isArray(data.internal)) {
+    return [];
+  }
+
+  return data.internal.map((item: any) => ({
+    title: decode(item.title || ''),
+    url: item.url || '',
+    pubDate: item.published_date || '',
+    tags: [],
+    category: [],
+    lid: item.description || '',
+    img: {
+      alt: '',
+      url: item.image_url
+        ? item.image_url.startsWith('//')
+          ? `https:${item.image_url}`
+          : item.image_url
+        : '',
+    },
+    label: '',
+    ne_pokazyvat_v_lente_novostej: true,
+    showInFeed: true,
+    showPhoto: true,
+    showAuthor: 0,
+    author: item.author || null,
+  }));
+};
+
+// Преобразуем данные
+const transformedData = recommendationsData ? transformRecommendations(recommendationsData) : [];
+---
+
+{
+  transformedData.length > 0 && (
+    <aside class={`shareaholic-recs ${className}`}>
+      <div class="w-full flex items-center justify-between mt-3 mb-5 p-2 bg-sky-50">
+        <span class="font-bold">{title}</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {transformedData.map((post, index) => (
+          <NewsPostCard post={post} layout={NewsPostCardLayout.variant2} key={post.url + index} />
+        ))}
+      </div>
+    </aside>
+  )
+}
