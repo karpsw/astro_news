@@ -1,14 +1,15 @@
 ---
-import { getHome } from '@/modules/post/getHome';
+import { getWpSideBar } from '@/modules/wp-api';
 import NewsPostCard, { NewsPostCardLayout } from '@/components/NewsPostCard.astro';
 import CurrencyWidgetSimple from '@/components/Widgets/CurrencyWidgetSimple.astro';
 
-const data = await getHome();
+import type { SideBarDto } from '@/modules/wp-api-types';
+
+const data: SideBarDto = await getWpSideBar();
 ---
 
 <!-- 💱 Currency Block -->
-<CurrencyWidgetSimple />
-<h2>xxxx</h2>
+<CurrencyWidgetSimple curr={data.curr} />
 <!--   Weather Block -->
 
 <div class="bg-white border border-gray-200 p-4 rounded-md my-5">
@@ -23,8 +24,8 @@ const data = await getHome();
 </div>
 <div class="grid grid-cols-1 gap-4">
   {
-    data.newsBlockOne &&
-      data.newsBlockOne.map((post) => (
+    data.news_lenta &&
+      data.news_lenta.map((post) => (
         <NewsPostCard post={post} layout={NewsPostCardLayout.variant5} />
       ))
   }
