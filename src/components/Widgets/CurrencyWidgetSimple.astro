@@ -8,7 +8,7 @@ const getCurrencySymbol = (code: string): string => {
     CNY: '¥',
     UAH: '₴',
     RUB: '₽',
-    PLN: 'zł', // Добавлен символ злотого
+    PLN: 'zł',
   };
 
   return symbols[code] ?? code;
@@ -37,43 +37,80 @@ export const formatRate = (rate: number, scale: number): string => {
   return (rate / scale).toFixed(4);
 };
 
+const formatChange = (change: number): string => {
+  if (change === 0) return '0.0000';
+  return change > 0 ? `+${change.toFixed(4)}` : change.toFixed(4);
+};
+
+const getChangeColor = (change: number): string => {
+  if (change > 0) return 'text-green-600';
+  if (change < 0) return 'text-red-600';
+  return 'text-gray-500';
+};
+
+const getChangeIcon = (change: number): string => {
+  if (change > 0) return '↑';
+  if (change < 0) return '↓';
+  return '→';
+};
+
 const { curr }: { curr?: SideBarCurrDaysDto } = Astro.props;
 ---
 
 <div class="bg-white border border-gray-200 p-4 rounded-md mb-5">
   {
-    curr && curr.today && (
+    curr && curr.today && curr.previous && (
       <>
         <div class="flex justify-between items-center mb-3">
           <h3 class="text-md font-semibold text-gray-700">Курсы валют (НБРБ)</h3>
-          <span class="text-xs p-1 text-white bg-tel-red">
-            {new Date(curr.today.date).toLocaleDateString('ru-RU')}
-          </span>
-          <span class="text-xs text-gray-500">
-            {new Date(curr.previous.date).toLocaleDateString('ru-RU')}
-          </span>
-        </div>
-
-        {curr.today.currencies.map((todayCurrency) => (
-          <div class="flex justify-between items-center text-sm mb-2">
-            <div class="flex items-center">
-              <span class="font-medium text-gray-600 mr-2">
-                {getCurrencySymbol(todayCurrency.code)}
-              </span>
-              <span class="text-gray-600">{todayCurrency.code}</span>
-            </div>
-            <span class="font-semibold text-gray-800">
-              {formatRate(
-                curr.previous.currencies.find((x) => x.code == todayCurrency.code)!.rate,
-                curr.previous.currencies.find((x) => x.code == todayCurrency.code)!.scale
-              )}{' '}
-              BYN
-            </span>
-            <span class="font-semibold text-gray-800">
-              {formatRate(todayCurrency.rate, todayCurrency.scale)} BYN
+          <div class="flex flex-col items-end">
+            <span class="text-xs p-1 text-white bg-tel-red mb-1">
+              {new Date(curr.today.date).toLocaleDateString('ru-RU')}
             </span>
           </div>
-        ))}
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-xs text-gray-500 mb-2 px-1">
+          <div>Валюта</div>
+          <div class="text-right">
+            Сегодня <span class="text-gray-600 text-[12px]"> (BYN)</span>
+          </div>
+          <div class="text-right">
+            Вчера <span class="text-gray-600 text-[12px]"> (BYN) </span>
+          </div>
+        </div>
+
+        {curr.today.currencies.map((todayCurrency) => {
+          const previousCurrency = curr.previous.currencies.find(
+            (x) => x.code === todayCurrency.code
+          );
+
+          if (!previousCurrency) return null;
+
+          const todayRate = todayCurrency.rate / todayCurrency.scale;
+          const previousRate = previousCurrency.rate / previousCurrency.scale;
+          const change = todayRate - previousRate;
+
+          return (
+            <div class="grid grid-cols-3 gap-2 items-center text-sm mb-3 py-1 border-b border-gray-100 last:border-b-0">
+              <div class="flex items-center">
+                <span class="font-medium font-semibold text-tel-black mr-2">
+                  {getCurrencySymbol(todayCurrency.code)}
+                </span>
+                <span class="text-gray-600">1 {getCurrencyName(todayCurrency.code)}</span>
+              </div>
+
+              <div class="text-right font-semibold text-gray-800">
+                {formatRate(todayCurrency.rate, todayCurrency.scale)}
+                <span class={`text-[10px] ${getChangeColor(change)}`}>{getChangeIcon(change)}</span>
+              </div>
+
+              <div class="text-right  text-gray-600">
+                {formatRate(previousCurrency.rate, previousCurrency.scale)}
+              </div>
+            </div>
+          );
+        })}
       </>
     )
   }
