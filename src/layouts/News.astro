@@ -8,19 +8,12 @@ import LabelPost, { LabelPostVariant } from '@/components/Labelpost.astro';
 import LazyIsland from '@/components/LazyIsland.astro';
 import Podpiska from '@/components/Podpiska.astro';
 // блоки новостей
-import PostBlockMain from '@/components/PostBlocks/PostBlockMain.astro';
-import PostBlockPopular from '@/components/PostBlocks/PostBlockPopular.astro';
 import PostBlockShareaholic from '@/components/PostBlocks/PostBlockShareaholic.astro';
 import Share from '@/components/Share.astro';
 import Telepicture from '@/components/Telepicture.astro';
 import { telDate } from '@/utils/datetime';
 import { renderMarkdown } from '@/utils/markdown';
 import NewsBase from './NewsBase.astro';
-
-// Получаем блоки здесь
-const Blocks = await getPostBlocks();
-const { newsBlockMain } = Blocks;
-const { newsBlockPop } = Blocks;
 
 // для новости
 const { data, content } = Astro.props;
@@ -148,18 +141,10 @@ const authorUrl = 'https://telegraf.news/redakciya/';
           <Share />
         </footer>
       </article>
-
       <!-- блок рекомендаций -->
       <PostBlockShareaholic title="Подобрали для вас" className="mt-5" location={data.permalink} />
-      <!-- /блок рекомендаций -->
-      <!-- блок главных -->
-      <PostBlockMain title="Главные новости" className="mt-5" news={newsBlockMain} />
-      <!--/блок главных -->
-      <!-- блок популярных -->
-
-      <PostBlockPopular title="Популярные новости" className="mt-5" news={newsBlockPop} />
-
-      <!-- /блок популярных -->
+      <!-- Блоки: главные, популярные -->
+      <LazyIsland url="/fragments/PostBlocksLazy/" />
     </div>
     <!-- конец Left -->
     <!-- Sidebar -->

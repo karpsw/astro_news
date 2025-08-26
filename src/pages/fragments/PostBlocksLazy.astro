@@ -1,0 +1,16 @@
+---
+import { getPostBlocks } from '@/modules/post/getPostBlocks';
+import PostBlockMain from '@/components/PostBlocks/PostBlockMain.astro';
+import PostBlockPopular from '@/components/PostBlocks/PostBlockPopular.astro';
+
+// Получаем блоки здесь
+const Blocks = await getPostBlocks();
+const { newsBlockMain } = Blocks;
+const { newsBlockPop } = Blocks;
+
+layout: false;
+---
+
+<PostBlockMain title="Главные новости" className="mt-5" news={newsBlockMain} />
+
+<PostBlockPopular title="Популярные новости" className="mt-5" news={newsBlockPop} />
