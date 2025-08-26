@@ -1,103 +1,77 @@
 ---
-import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
 
-import Link from '@/components/Link.astro';
-import { ROUTES } from '@/constants/routes';
-import { CONFIG_CLIENT } from '@/config/client';
-import { getLatestCommitInfo } from '@/libs/git';
-import { shortDate } from '@/utils/datetime';
-import { limitString, trimHttpProtocol } from '@/utils/strings';
+import Podpiska from '@/components/Podpiska.astro';
+import { IMAGE_SIZES } from '@/constants/image';
 
-const { SITE_URL, AUTHOR_EMAIL, AUTHOR_GITHUB, AUTHOR_LINKEDIN, AUTHOR_NAME, REPO_URL } =
-  CONFIG_CLIENT;
-const domain = trimHttpProtocol(SITE_URL);
-const messageLength = 15 as const;
+import Avatar from '@/assets/images/logotelegrafbel.svg';
 
-const { time, fullHash, message } = getLatestCommitInfo();
-
-const commitUrl = `${REPO_URL}/commit/${fullHash}`;
-
-const shortDateStr = shortDate(new Date(time));
-const trimmedMessage = limitString(message, messageLength);
-
-const firstName = AUTHOR_NAME.split(' ')[0];
-
-// footer is full width for border, div has max-w
+// components/SiteFooter.astro
+const currentYear = new Date().getFullYear();
 ---
 
-<footer class="border-t border-base-300 py-8 px-4">
-  <div class="max-w-6xl md:mx-auto flex justify-center md:justify-start">
-    <div class="flex justify-between gap-4 flex-col-reverse md:flex-row md:w-full min-w-0">
-      <!-- left column -->
-      <div class="flex items-center gap-2 flex-wrap text-sm text-content whitespace-nowrap">
-        <div class="flex items-center gap-2">
-          <label class="font-bold">Latest commit:</label>
-          <Link href={commitUrl} title={shortDateStr} target="_blank">
-            {trimmedMessage}
-          </Link>
-        </div>
-        <div class="flex items-center gap-2">
-          <label class="font-bold">Design system:</label>
-          <Link href={`${ROUTES.DESIGN}`} title="Design system">link</Link>
+<footer class="bg-tel-black text-white mt-5" role="contentinfo">
+  <div class="container py-3">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 md:mb-0">
+      <!-- Левая колонка -->
+      <div class="md:w-1/2 mb-4 md:mb-0">
+        <a href="/" class="inline-block mb-2">
+          <Image
+            {...IMAGE_SIZES.FIXED.AVATAR}
+            loading="lazy"
+            class="shrink-0 select-none"
+            src={Avatar}
+            alt="Telegraf.news"
+          />
+        </a>
+
+        <p class="text-sm text-white">
+          &copy; 2005 - {currentYear} Телеграф - новости Беларуси и мира.
+        </p>
+
+        <div class="text-xs text-white space-y-1 mt-2">
+          <p>ЧИУП «АГЕНТСТВО «ТЕЛЕГРАФ». УНП: 191309537</p>
+          <p>220035, г. Минск, ул. Тимирязева, д. 65Б</p>
+          <p>В Реестре рекламораспространителей МАРТ РБ: 1398</p>
+          <p>При использовании информации Telegraf.news активная ссылка обязательна</p>
+          <p>E-mail рекламного отдела: reklama@telegraf.news</p>
         </div>
       </div>
 
-      <!-- right column -->
-      <ul
-        class="flex gap-16 xs:gap-2 flex-wrap xs:flex-nowrap lg:items-center [&_span]:hidden [&_span]:xs:block"
-      >
-        <li>
-          <Link
-            href={`mailto:${AUTHOR_EMAIL}`}
-            title={`${firstName}'s email`}
-            target="_blank"
-            rel="me noreferrer noopener"
-            class="flex items-center gap-2 text-base xs:text-lg"
-            variant="nav"
+      <!-- Правая колонка -->
+      <div class="md:w-1/2">
+        <!-- Навигация -->
+        <nav class="flex flex-wrap gap-4 mb-4 md:justify-end">
+          <a href="/pravila/" class="text-sm text-white hover:text-red-600 transition-colors">
+            Политика конфиденциальности
+          </a>
+          <a
+            href="/informaciya-o-sajte/"
+            class="text-sm text-white hover:text-red-600 transition-colors"
           >
-            <Icon name="mdi:email-outline" class="h-6 w-6 fill-current" />
-            <span>Email</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            href={AUTHOR_GITHUB}
-            target="_blank"
-            rel="me noreferrer noopener"
-            title={`${firstName} on Github`}
-            class="flex items-center gap-2 text-base xs:text-lg"
-            variant="nav"
+            Контакты
+          </a>
+          <a href="/redakciya/" class="text-sm text-white hover:text-red-600 transition-colors">
+            О сайте
+          </a>
+          <a
+            href="#"
+            class="text-sm text-white hover:text-red-600 transition-colors"
+            aria-label="Поиск по сайту"
           >
-            <Icon name="mdi:github" class="h-6 w-6 fill-current" />
-            <span>Github</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            href={AUTHOR_LINKEDIN}
-            target="_blank"
-            rel="me noreferrer noopener"
-            title={`${firstName} on LinkedIn`}
-            class="flex items-center gap-2 text-base xs:text-lg"
-            variant="nav"
-          >
-            <Icon name="mdi:linkedin" class="h-6 w-6 fill-current" />
-            <span>LinkedIn</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            href={ROUTES.API.FEED_RSS}
-            target="_blank"
-            title={`RSS feed for ${domain}`}
-            class="flex items-center gap-2 text-base xs:text-lg"
-            variant="nav"
-          >
-            <Icon name="mdi:rss" class="h-6 w-6 fill-current" />
-            <span>RSS Feed</span>
-          </Link>
-        </li>
-      </ul>
+            <svg width="16" height="16" viewBox="0 0 640 640" class="inline-block">
+              <path
+                fill="#CC0000"
+                d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z"
+              ></path>
+            </svg>
+          </a>
+        </nav>
+
+        <!-- Социальные сети -->
+        <!--  Subscribe Block -->
+        <Podpiska theme="black" title="Телеграф в соцсетях:" />
+      </div>
     </div>
   </div>
 </footer>

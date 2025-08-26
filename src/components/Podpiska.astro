@@ -1,46 +1,85 @@
 ---
 import { Icon } from 'astro-icon/components';
+
+interface Props {
+  theme?: 'default' | 'black';
+  title?: string;
+}
+
+const { theme = 'default', title = 'Подпишитесь на Телеграф:' } = Astro.props;
+
+// Определяем классы в зависимости от темы
+const getContainerClasses = () => {
+  const baseClasses = 'w-full flex items-center justify-between mt-4 p-2 rounded';
+
+  if (theme === 'black') {
+    return `${baseClasses} bg-transparent`;
+  }
+
+  return `${baseClasses} bg-sky-50`;
+};
+
+const getTextClasses = () => {
+  if (theme === 'black') {
+    return 'mr-2 font-semibold text-white';
+  }
+
+  return 'mr-2 font-semibold text-gray-800';
+};
 ---
 
-<div class="w-full flex items-center justify-between mt-4 p-2 bg-sky-50">
-  <span class="mr-2 font-semibold">Подпишитесь на Телеграф:</span>
+<div class={getContainerClasses()}>
+  <span class={getTextClasses()}>{title}</span>
   <div class="flex items-center">
     <a
       rel="nofollow noopener noreferrer"
       href="https://t.me/telegraf_news_bel"
       target="_blank"
-      aria-label="Подписаться в Telegram"><Icon name="logos:telegram" class="text-[22px] mr-2" /></a
+      aria-label="Подписаться в Telegram"
+      class="hover:opacity-80 transition-opacity"
     >
+      <Icon name="logos:telegram" class="text-[22px] mr-2" />
+    </a>
+
     <a
       rel="nofollow noopener noreferrer"
       href="https://news.google.com/publications/CAAqKAgKIiJDQklTRXdnTWFnOEtEWFJsYkdWbmNtRm1MbTVsZDNNb0FBUAE?hl=ru&gl=RU&ceid=RU%3Aru"
       target="_blank"
-      class="badge"
       aria-label="Подписаться в Google Новости"
-      ><Icon name="logos:google-icon" class="text-[21px] mr-2" /></a
+      class="hover:opacity-80 transition-opacity"
     >
+      <Icon name="logos:google-icon" class="text-[21px] mr-2" />
+    </a>
+
     <a
       rel="nofollow noopener noreferrer"
       href="https://invite.viber.com/?g2=AQAQrt42HGDBplUeiInypYEYPxUwwLVmm7ati08iZ2YGJKO4D9Ug1NEhlAhA5ix2"
       target="_blank"
-      class="badge"
       aria-label="Подписаться в Viber"
-      ><Icon name="simple-icons:viber" class="text-[22px] mr-2" style="color:#7360f2" /></a
+      class="hover:opacity-80 transition-opacity"
     >
-    <!--<a  rel="nofollow noopener noreferrer"  href="https://dzen.ru/telegraf.by" target="_blank" class="badge" aria-label="Подписаться в Дзен"><img src="https://telegraf.news/tel/app/temy/telegrafwpby/inc/assets/img/dark-basic.svg" width="65" alt="Подписаться в Дзен" /></a>-->
+      <Icon name="simple-icons:viber" class="text-[22px] mr-2" style="color:#7360f2" />
+    </a>
+
     <a
       rel="nofollow noopener noreferrer"
       href="https://x.com/news_telegraf"
       target="_blank"
-      aria-label="Подписаться в X"><Icon name="devicon:twitter" class="text-[19px] mr-2" /></a
+      aria-label="Подписаться в X"
+      class="hover:opacity-80 transition-opacity"
     >
+      <Icon name="devicon:twitter" class="text-[19px] mr-2" />
+    </a>
+
     <a
       rel="nofollow noopener noreferrer"
       href="https://telegraf.news/feed"
       target="_blank"
       aria-label="Подписаться RSS"
+      class="hover:opacity-80 transition-opacity"
     >
       <Icon name="mdi:rss" class="mr-2 text-[29px] text-orange-600" />
     </a>
   </div>
 </div>
+r

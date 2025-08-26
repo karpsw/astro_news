@@ -2,6 +2,7 @@
 import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
 
+import Footer from '@/components/Footer.astro';
 import BaseHead from '@/components/NewsHead.astro';
 import { SELECTORS } from '@/constants/dom';
 import { IMAGE_SIZES } from '@/constants/image';
@@ -17,7 +18,7 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
 
 <html lang="ru-BY">
   <BaseHead {data} />
-  <body class="bg-white text-tel-black font-sans text-[16px]">
+  <body class="bg-white min-h-screen text-tel-black font-sans text-[16px]">
     <!--   Header -->
     <header id={SCROLL_TO_TOP_ID} class="bg-tel-black sticky top-0 z-50">
       <div class="container h-10 flex items-center justify-between">
@@ -193,18 +194,7 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
     <slot />
 
     <!--   Footer -->
-    <footer class="bg-tel-black py-6 mt-8">
-      <div
-        class="container text-sm text-white flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0"
-      >
-        <span>&copy; 2025 Telegraf.news</span>
-        <div class="flex space-x-4">
-          <a href="#" class="">О нас</a>
-          <a href="#" class="">Контакты</a>
-          <a href="#" class="">Политика конфиденциальности</a>
-        </div>
-      </div>
-    </footer>
+    <Footer />
 
     <script async src="/js/nativejspsp.js" client:load></script>
     <script
