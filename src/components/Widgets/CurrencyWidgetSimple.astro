@@ -1,5 +1,5 @@
 ---
-import type { SideBarCurrDto } from '@/modules/wp-api-types';
+import type { SideBarCurrDaysDto } from '@/modules/wp-api-types';
 
 const getCurrencySymbol = (code: string): string => {
   const symbols: Record<string, string> = {
@@ -18,30 +18,42 @@ export const formatRate = (rate: number, scale: number): string => {
   return (rate / scale).toFixed(4);
 };
 
-const { curr }: { curr?: SideBarCurrDto } = Astro.props;
+const { curr }: { curr?: SideBarCurrDaysDto } = Astro.props;
 ---
 
 <div class="bg-white border border-gray-200 p-4 rounded-md mb-5">
   <h2 class="text-lg font-semibold text-gray-700 mb-4">Курсы валют</h2>
 
   {
-    curr && (
+    curr && curr.today && (
       <>
         <div class="flex justify-between items-center mb-3">
           <h3 class="text-md font-semibold text-gray-700">Курсы валют</h3>
           <span class="text-xs text-gray-500">
-            {new Date(curr.date).toLocaleDateString('ru-RU')}
+            {new Date(curr.today.date).toLocaleDateString('ru-RU')}
+          </span>
+          <span class="text-xs text-gray-500">
+            {new Date(curr.previous.date).toLocaleDateString('ru-RU')}
           </span>
         </div>
 
-        {curr.currencies.map((currency) => (
+        {curr.today.currencies.map((todayCurrency) => (
           <div class="flex justify-between items-center text-sm mb-2">
             <div class="flex items-center">
-              <span class="font-medium text-gray-600 mr-2">{getCurrencySymbol(currency.code)}</span>
-              <span class="text-gray-600">{currency.code}</span>
+              <span class="font-medium text-gray-600 mr-2">
+                {getCurrencySymbol(todayCurrency.code)}
+              </span>
+              <span class="text-gray-600">{todayCurrency.code}</span>
             </div>
             <span class="font-semibold text-gray-800">
-              {formatRate(currency.rate, currency.scale)} BYN
+              {formatRate(
+                curr.previous.currencies.find((x) => x.code == todayCurrency.code)!.rate,
+                curr.previous.currencies.find((x) => x.code == todayCurrency.code)!.scale
+              )}{' '}
+              BYN
+            </span>
+            <span class="font-semibold text-gray-800">
+              {formatRate(todayCurrency.rate, todayCurrency.scale)} BYN
             </span>
           </div>
         ))}

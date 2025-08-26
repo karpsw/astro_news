@@ -14,7 +14,12 @@ export interface CurrencyDto {
   date: string; // Дата в ISO-формате
 }
 
-export interface SideBarCurrDto {
+export interface SideBarCurrDaysDto {
+  today: SideBarCurrDto; // Дата обновления (например, "2025-08-26")
+  previous: SideBarCurrDto; // Дата обновления (например, "2025-08-26")
+}
+
+interface SideBarCurrDto {
   date: string; // Дата обновления (например, "2025-08-26")
   currencies: CurrencyDto[];
 }
