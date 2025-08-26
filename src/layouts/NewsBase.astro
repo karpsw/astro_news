@@ -12,7 +12,6 @@ import type { MetaHead } from '@/schemas/meat-head';
 
 import Avatar from '@/assets/images/logotelegrafbel.svg';
 
-import Lightbox from '@/components/Telebox.astro';
 
 const { hasGallery = false } = Astro.props;
 const data = Astro.props as MetaHead;
@@ -199,7 +198,7 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
     <Footer />
     
     <!--Служебные скрипты -->
-    <Lightbox />
+    
    
     <script
       src="https://platform-api.sharethis.com/js/sharethis.js#property=5fad52bce3f5df0012a01974&product=inline-reaction-buttons"
@@ -251,5 +250,51 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
 	</>
 )}
 <Lightbox />
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabButtons = document.querySelectorAll("[data-tab-target]");
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-tab-target");
+        const parent = btn.closest("#weather-tabs").parentNode;
+
+        parent.querySelectorAll("[role=tabpanel]").forEach((p) => p.classList.add("hidden"));
+        parent.querySelectorAll("[role=tab]").forEach((b) =>
+          b.classList.remove("border-blue-600", "text-blue-600")
+        );
+
+        document.querySelector(targetId).classList.remove("hidden");
+        btn.classList.add("border-blue-600", "text-blue-600");
+      });
+    });
+  });
+</script>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+  const tabButtons = document.querySelectorAll("#weather-tabs [data-tab-target]");
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetId = btn.getAttribute("data-tab-target");
+      const parent = btn.closest("#weather-tabs");
+
+      parent.querySelectorAll("[role=tabpanel]").forEach(panel => panel.classList.add("hidden"));
+      parent.querySelectorAll("[role=tab]").forEach(b => b.classList.remove("border-blue-600", "text-blue-600"));
+
+      const targetPanel = parent.querySelector(targetId);
+      if (targetPanel) targetPanel.classList.remove("hidden");
+
+      btn.classList.add("border-blue-600", "text-blue-600");
+    });
+  });
+
+  // активируем первую вкладку по умолчанию
+  const firstBtn = tabButtons[0];
+  if (firstBtn) firstBtn.click();
+});
+
+</script>
+
   </body>
 </html>
