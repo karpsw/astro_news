@@ -30,3 +30,25 @@
   opacity: 1;
   transform: translateY(0);
 }
+.tab {
+  color: white;
+  padding: 1rem;
+  background-color: teal;
+  border: 1px solid cyan;
+
+  &:hover {
+    color: black;
+    background-color: cyan;
+  }
+}
+
+.tab-selector:checked ~ .tab {
+  color: black;
+  background: turquoise;
+}
+
+.panel {
+  padding: 1rem;
+  background-color: lightcyan;
+  border: 3px solid darkcyan;
+}

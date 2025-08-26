@@ -1,6 +1,7 @@
 ---
 import type { NadvorDto, CityWeather, CityWeatherError } from '@/modules/wp-api-types';
-
+import { Tabs } from 'astro-tabs';
+ import NadvoreCityPanel from '@/components/Widgets/NadvoreCityPanel.astro';
 const { nadvore }: { nadvore?: NadvorDto } = Astro.props;
 
 export const extractDate = (raw: string): string => {
@@ -9,39 +10,42 @@ export const extractDate = (raw: string): string => {
 };
 
 const cities = nadvore?.data ? Object.entries(nadvore.data) : [];
+ 
+
 ---
+
+
+
 {nadvore && cities.length > 0 ? (
   <div class="bg-white border border-gray-200 p-4 rounded-md mb-5">
     <h3 class="text-md font-semibold text-gray-700 mb-2">Погода по городам</h3>
     <p class="text-xs text-gray-500 mb-4">Обновлено: {nadvore.last_updated}</p>
 
-    <!-- Вкладки -->
-    <div class="border-b border-gray-200 mb-4">
-      <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="weather-tabs" role="tablist">
-        {cities.map(([cityKey, city], i) => (
-          <li class="mr-2" role="presentation">
-            <button
-              class={`inline-block p-2 rounded-t-lg border-b-2 ${
-                i === 0
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300'
-              }`}
-              id={`tab-${cityKey}`}
-              type="button"
-              role="tab"
-              aria-controls={`panel-${cityKey}`}
-              aria-selected={i === 0}
-              data-tab-target={`#panel-${cityKey}`}
-            >
-              {'error' in city ? cityKey : (city as CityWeather).name}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+
+<Tabs>
+  	<Fragment slot={`tab-1`}>Минск</Fragment>
+		<Fragment slot={`panel-1`}>
+			<NadvoreCityPanel city={nadvore.data['Minsk'] as CityWeather} />
+		</Fragment>
+
+		<Fragment slot={`tab-2`}>Гомель</Fragment>
+		<Fragment slot={`panel-2`}>
+			<NadvoreCityPanel city={nadvore.data['Brest'] as CityWeather} />
+		</Fragment>
+
+		<Fragment slot={`tab-3`}>Гродно</Fragment>
+		<Fragment slot={`panel-3`}>
+			<NadvoreCityPanel city={nadvore.data['Harodnia'] as CityWeather} />
+		</Fragment>
+</Tabs>
+
+
+ 
 
     <!-- Контент -->
     <div id="weather-tabs-content">
+
+
       {cities.map(([cityKey, city], i) => (
         <div
           id={`panel-${cityKey}`}

@@ -1,0 +1,20 @@
+---
+import type { CityWeather } from '@/modules/wp-api-types';
+
+const { city }: { city: CityWeather } = Astro.props;
+const isValid = city && !('error' in city);
+---
+
+{
+  isValid ? (
+    <div class="city-panel">
+      <h2>{city.name}</h2>
+      <p>Температура: {city.current.temperature}</p>
+      <p>Состояние: {city.current.condition}</p>
+    </div>
+  ) : (
+    <div class="city-panel-error">
+      <p class="text-red-600">Ошибка: {city}</p>
+    </div>
+  )
+}
