@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 
 import Footer from '@/components/Footer.astro';
 import BaseHead from '@/components/NewsHead.astro';
+import Lightbox from '@/components/Telebox.astro';
 import { SELECTORS } from '@/constants/dom';
 import { IMAGE_SIZES } from '@/constants/image';
 
@@ -11,6 +12,7 @@ import type { MetaHead } from '@/schemas/meat-head';
 
 import Avatar from '@/assets/images/logotelegrafbel.svg';
 
+const { hasGallery = false } = Astro.props;
 const data = Astro.props as MetaHead;
 
 const { SCROLL_TO_TOP_ID } = SELECTORS;
@@ -192,13 +194,60 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
     </script>
 
     <slot />
-
-    <!--   Footer -->
     <Footer />
-
-    <script async src="/js/nativejspsp.js" client:load></script>
+    
+    <!--Служебные скрипты -->
+    <Lightbox />
+   
     <script
       src="https://platform-api.sharethis.com/js/sharethis.js#property=5fad52bce3f5df0012a01974&product=inline-reaction-buttons"
       client:load></script>
+
+      {hasGallery && (
+  <>
+      <script>
+  import Splide from '@splidejs/splide';
+  import '@splidejs/splide/css';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const main = document.querySelector('#main-slider');
+    const thumbs = document.querySelector('#thumbs');
+
+    if (main && thumbs) {
+      const mainSplide = new Splide(main, {
+        type: 'fade',
+        rewind: true,
+        pagination: false,
+        arrows: true,
+      });
+
+      const thumbsSplide = new Splide(thumbs, {
+        fixedWidth: 100,
+        fixedHeight: 70,
+        gap: 8,
+        rewind: true,
+        pagination: false,
+        arrows: false,
+        isNavigation: true,
+        focus: 'center',
+      });
+
+      mainSplide.sync(thumbsSplide);
+
+      thumbsSplide.mount();
+      mainSplide.mount();
+    } else {
+      // fallback: если нет парного слайдера, то просто запускаем все одиночные
+      document.querySelectorAll('.splide').forEach((el) => {
+        if (!el.id) {
+          new Splide(el).mount();
+        }
+      });
+    }
+  });
+</script>
+	</>
+)}
+
   </body>
 </html>

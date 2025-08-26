@@ -1,5 +1,20 @@
 ---
 import { Icon } from 'astro-icon/components';
+
+// Получаем данные страницы
+const { title, description, url } = Astro.props;
+
+// Функция для кодирования URL
+const encodeURI = (str: string) => {
+  if (typeof window !== 'undefined') {
+    return window.encodeURIComponent(str);
+  }
+  return encodeURIComponent(str);
+};
+
+const encodedUrl = encodeURI(url);
+const encodedTitle = encodeURI(title);
+const encodedText = encodeURI(description || 'Посмотрите на эту интересную статью!');
 ---
 
 <div class="w-full flex items-center justify-between mb-3 p-2 bg-sky-50">
@@ -8,7 +23,7 @@ import { Icon } from 'astro-icon/components';
 <div class="grid grid-cols-1 md:grid-cols-2 justify-between">
   <div class="sharethis-inline-reaction-buttons justify-start mb-2 md:mb-0"></div>
 
-  <div class="share-buttons flex items-center justify-start md:justify-end">
+  <div class="share-buttons flex items-center justify-center md:justify-end">
     <div class="text-xs flex items-center justify-between mr-2 px-2 h-[40px] bg-stone-100">
       <span class="mr-2 text-gray-600">Репосты:</span>
       <span class="count-share font-semibold">10</span>
@@ -19,31 +34,100 @@ import { Icon } from 'astro-icon/components';
     >
     <a
       class="share-telegram bg-tel-telegram text-white mr-2 shareb flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
-      href="#"
+      href={`https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`}
       target="_blank"
       rel="noopener noreferrer"><Icon name="simple-icons:telegram" class="text-2xl" /></a
     >
     <a
       class="share-viber bg-tel-viber text-white mr-2 shareb flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
-      href="#"><Icon name="simple-icons:viber" class="text-2xl" /></a
+      href={`viber://forward?text=${encodedText}%20${encodedUrl}`}
+      target="_blank"
+      rel="noopener noreferrer"><Icon name="simple-icons:viber" class="text-2xl" /></a
     >
     <a
       class="share-vk mr-2 bg-tel-vk text-white shareb flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
-      href="#"
+      href={`https://vk.com/share.php?url=${encodedUrl}&title=${encodedTitle}&description=${encodedText}`}
       target="_blank"
       rel="noopener noreferrer"><Icon name="simple-icons:vk" class="text-2xl" /></a
     >
     <a
       class="share-ok mr-2 shareb text-white bg-tel-ok flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
-      href="#"
+      href={`https://connect.ok.ru/dk?st.cmd=WidgetSharePreview&st.shareUrl=${encodedUrl}`}
       target="_blank"
       rel="noopener noreferrer"><Icon name="simple-icons:odnoklassniki" class="text-2xl" /></a
     >
     <a
       class="share-whatsapp bg-tel-whatsapp text-white mr-2 shareb flex items-center justify-center rounded shareb h-[35px] w-[35px] bg-orange-400"
-      href="#"
+      href={`https://wa.me/?text=${encodedText}%20${encodedUrl}`}
       target="_blank"
       rel="noopener noreferrer"><Icon name="simple-icons:whatsapp" class="text-2xl" /></a
     >
   </div>
 </div>
+
+<script is:inline>
+  // Функция для инициализации шаринга
+  function initShare() {
+    const shareData = {
+      title: '${title.replace(/'/g, "\\'")}',
+      text: '${(description || "Посмотрите на эту интересную статью!").replace(/'/g, "\\'")}',
+      url: '${url}',
+    };
+
+    const generalShareBtns = document.querySelectorAll('.share-general');
+    const whatsappLinks = document.querySelectorAll('.share-whatsapp');
+    const telegramLinks = document.querySelectorAll('.share-telegram');
+    const viberLinks = document.querySelectorAll('.share-viber');
+    const vkLinks = document.querySelectorAll('.share-vk');
+    const okLinks = document.querySelectorAll('.share-ok');
+
+    // Проверяем поддержку Web Share API
+    if (navigator.share) {
+      generalShareBtns.forEach((btn) => {
+        btn.style.display = 'flex';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.share(shareData);
+          } catch (err) {
+            console.error('Ошибка шаринга:', err);
+          }
+        });
+      });
+    } else {
+      // Скрываем кнопку нативного шаринга, если не поддерживается
+      generalShareBtns.forEach((btn) => {
+        btn.style.display = 'none';
+      });
+    }
+
+    // Загрузка счетчиков
+    const apiUrl = `https://count-server.sharethis.com/v2.0/get_counts?url=${encodeURIComponent(shareData.url)}`;
+
+    fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const allClicks = data?.total || '13';
+        document.querySelectorAll('.count-share').forEach((element) => {
+          element.textContent = allClicks;
+        });
+      })
+      .catch((error) => {
+        console.error('Ошибка загрузки счетчиков:', error);
+        document.querySelectorAll('.count-share').forEach((element) => {
+          element.textContent = '13';
+        });
+      });
+  }
+
+  // Инициализируем после загрузки DOM
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initShare);
+  } else {
+    initShare();
+  }
+</script>
