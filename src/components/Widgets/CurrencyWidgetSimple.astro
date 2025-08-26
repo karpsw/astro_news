@@ -57,8 +57,10 @@ const { curr }: { curr?: SideBarCurrDaysDto } = Astro.props;
         {curr.today.currencies.map((todayCurrency) => (
           <div class="flex justify-between items-center text-sm mb-2">
             <div class="flex items-center">
-              <span class="font-medium text-gray-600 mr-2">{getCurrencySymbol(currency.code)}</span>
-              <span class="text-gray-600">{currency.code}</span>
+              <span class="font-medium text-gray-600 mr-2">
+                {getCurrencySymbol(todayCurrency.code)}
+              </span>
+              <span class="text-gray-600">{todayCurrency.code}</span>
             </div>
             <span class="font-semibold text-gray-800">
               {formatRate(
