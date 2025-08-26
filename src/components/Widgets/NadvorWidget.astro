@@ -1,28 +1,119 @@
 ---
-import type { CityWeather, NadvorDto } from '@/modules/wp-api-types';
+import type { NadvorDto, CityWeather, CityWeatherError } from '@/modules/wp-api-types';
 
 const { nadvore }: { nadvore?: NadvorDto } = Astro.props;
+
 export const extractDate = (raw: string): string => {
-  // Ожидаемый формат: "DD.MM.YYYY HH:mm"
   const match = raw.match(/^\d{2}\.\d{2}\.\d{4}/);
   return match ? match[0] : '';
 };
----
 
-<div class="bg-white border border-gray-200 p-4 rounded-md mb-5">
-  {
-    nadvore &&
-      nadvore.data &&
-      !('error' in nadvore.data['Minsk']) &&
-      (() => {
-        const minsk = nadvore.data['Minsk'] as CityWeather;
-        return (
-          <div class="flex justify-between items-center mb-3">
-            <h3 class="text-md font-semibold text-gray-700">Погода в {minsk.name}</h3>
-            <span class="text-xs text-gray-500">{minsk.current.temperature}</span>
-            <span class="text-xs text-gray-500">{extractDate(minsk.current.date)}</span>
-          </div>
+const cities = nadvore?.data ? Object.entries(nadvore.data) : [];
+---
+{nadvore && cities.length > 0 ? (
+  <div class="bg-white border border-gray-200 p-4 rounded-md mb-5">
+    <h3 class="text-md font-semibold text-gray-700 mb-2">Погода по городам</h3>
+    <p class="text-xs text-gray-500 mb-4">Обновлено: {nadvore.last_updated}</p>
+
+    <!-- Вкладки -->
+    <div class="border-b border-gray-200 mb-4">
+      <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="weather-tabs" role="tablist">
+        {cities.map(([cityKey, city], i) => (
+          <li class="mr-2" role="presentation">
+            <button
+              class={`inline-block p-2 rounded-t-lg border-b-2 ${
+                i === 0
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300'
+              }`}
+              id={`tab-${cityKey}`}
+              type="button"
+              role="tab"
+              aria-controls={`panel-${cityKey}`}
+              aria-selected={i === 0}
+              data-tab-target={`#panel-${cityKey}`}
+            >
+              {'error' in city ? cityKey : (city as CityWeather).name}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Контент -->
+    <div id="weather-tabs-content">
+      {cities.map(([cityKey, city], i) => (
+        <div
+          id={`panel-${cityKey}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${cityKey}`}
+          class={`${i === 0 ? 'block' : 'hidden'} p-4 bg-gray-50 border border-gray-200 rounded-md`}
+        >
+          {'error' in city ? (
+            <p class="text-red-600">Ошибка: {(city as CityWeatherError).error}</p>
+          ) : (
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <img src={(city as CityWeather).current.icon} alt="" />
+                <div>
+                  <p class="text-lg font-semibold">{(city as CityWeather).name}</p>
+                  <p class="text-gray-600">{(city as CityWeather).current.condition}</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-4 text-sm">
+                <div class="p-2 border rounded shadow-sm">
+                  <p class="font-medium">Сейчас</p>
+                  <p>{(city as CityWeather).current.temperature}</p>
+                  <p>Ощущается: {(city as CityWeather).current.feels_like}</p>
+                  <p>Ветер: {(city as CityWeather).current.wind.speed} м/с</p>
+                  <p>Влажность: {(city as CityWeather).current.humidity}%</p>
+                </div>
+
+                <div class="p-2 border rounded shadow-sm">
+                  <p class="font-medium">Завтра</p>
+                  <img src={(city as CityWeather).forecast_tomorrow.icon} alt="" />
+                  <p>
+                    {(city as CityWeather).forecast_tomorrow.max_temp} / {(city as CityWeather).forecast_tomorrow.min_temp}
+                  </p>
+                  <p>Ветер: {(city as CityWeather).forecast_tomorrow.wind_speed} м/с</p>
+                </div>
+
+                <div class="p-2 border rounded shadow-sm">
+                  <p class="font-medium">Послезавтра</p>
+                  <img src={(city as CityWeather).forecast_day_after.icon} alt="" />
+                  <p>
+                    {(city as CityWeather).forecast_day_after.max_temp} / {(city as CityWeather).forecast_day_after.min_temp}
+                  </p>
+                  <p>Ветер: {(city as CityWeather).forecast_day_after.wind_speed} м/с</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+) : (
+  <p class="text-gray-500">Нет данных о погоде</p>
+)}
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabButtons = document.querySelectorAll("[data-tab-target]");
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-tab-target");
+        const parent = btn.closest("#weather-tabs").parentNode;
+
+        parent.querySelectorAll("[role=tabpanel]").forEach((p) => p.classList.add("hidden"));
+        parent.querySelectorAll("[role=tab]").forEach((b) =>
+          b.classList.remove("border-blue-600", "text-blue-600")
         );
-      })()
-  }
-</div>
+
+        document.querySelector(targetId).classList.remove("hidden");
+        btn.classList.add("border-blue-600", "text-blue-600");
+      });
+    });
+  });
+</script>
