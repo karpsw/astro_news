@@ -8,9 +8,28 @@ const getCurrencySymbol = (code: string): string => {
     CNY: '¥',
     UAH: '₴',
     RUB: '₽',
+    PLN: 'zł', // Добавлен символ злотого
   };
 
   return symbols[code] ?? code;
+};
+
+const getCurrencyName = (code: string): string => {
+  const names: Record<string, string> = {
+    USD: 'доллар',
+    EUR: 'евро',
+    CNY: 'юань',
+    UAH: 'гривна',
+    RUB: 'рубль',
+    PLN: 'злотый',
+    GBP: 'фунт',
+    JPY: 'иена',
+    CHF: 'франк',
+    CAD: 'канадский доллар',
+    AUD: 'австралийский доллар',
+  };
+
+  return names[code] ?? code;
 };
 
 export const formatRate = (rate: number, scale: number): string => {
@@ -22,14 +41,12 @@ const { curr }: { curr?: SideBarCurrDaysDto } = Astro.props;
 ---
 
 <div class="bg-white border border-gray-200 p-4 rounded-md mb-5">
-  <h2 class="text-lg font-semibold text-gray-700 mb-4">Курсы валют</h2>
-
   {
     curr && curr.today && (
       <>
         <div class="flex justify-between items-center mb-3">
-          <h3 class="text-md font-semibold text-gray-700">Курсы валют</h3>
-          <span class="text-xs text-gray-500">
+          <h3 class="text-md font-semibold text-gray-700">Курсы валют (НБРБ)</h3>
+          <span class="text-xs p-1 text-white bg-tel-red">
             {new Date(curr.today.date).toLocaleDateString('ru-RU')}
           </span>
           <span class="text-xs text-gray-500">
@@ -40,10 +57,8 @@ const { curr }: { curr?: SideBarCurrDaysDto } = Astro.props;
         {curr.today.currencies.map((todayCurrency) => (
           <div class="flex justify-between items-center text-sm mb-2">
             <div class="flex items-center">
-              <span class="font-medium text-gray-600 mr-2">
-                {getCurrencySymbol(todayCurrency.code)}
-              </span>
-              <span class="text-gray-600">{todayCurrency.code}</span>
+              <span class="font-medium text-gray-600 mr-2">{getCurrencySymbol(currency.code)}</span>
+              <span class="text-gray-600">{currency.code}</span>
             </div>
             <span class="font-semibold text-gray-800">
               {formatRate(
@@ -57,10 +72,6 @@ const { curr }: { curr?: SideBarCurrDaysDto } = Astro.props;
             </span>
           </div>
         ))}
-
-        <div class="mt-3 pt-3 border-t border-gray-100">
-          <p class="text-xs text-gray-500 text-center">Курсы НБРБ</p>
-        </div>
       </>
     )
   }
