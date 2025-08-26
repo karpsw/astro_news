@@ -7,41 +7,33 @@ const { url = '/fragments/lazy-block' } = Astro.props;
 </div>
 
 <script>
-  const observer = new IntersectionObserver(async ([entry], obs) => {
-    if (entry.isIntersecting) {
-      const el = entry.target;
-      const url = el.dataset.url;
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(async (entry) => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const url = el.dataset.url;
 
-      try {
-        const res = await fetch(url);
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(`Ошибка загрузки: ${res.status}`);
 
-        if (!res.ok) {
-          console.log(`Ошибка загрузки ${url}`);
-          throw new Error(`Ошибка загрузки`);
+          const html = await res.text();
+          const wrapper = document.createElement('div');
+          wrapper.className = 'lazy-content';
+          wrapper.innerHTML = html;
+
+          const fallback = el.querySelector('.lazy-fallback');
+          if (fallback) setTimeout(() => fallback.remove(), 500);
+
+          el.appendChild(wrapper);
+          el.classList.add('loaded');
+        } catch (err) {
+          el.innerHTML += `<div style="color:red">Ошибка загрузки</div>`;
         }
 
-        const html = await res.text();
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'lazy-content';
-        wrapper.innerHTML = html;
-
-        // Удаляем fallback
-        const fallback = el.querySelector('.lazy-fallback');
-        if (fallback) {
-          setTimeout(() => {
-            fallback.remove();
-          }, 500);
-        }
-
-        el.appendChild(wrapper);
-        el.classList.add('loaded');
-      } catch (err) {
-        el.innerHTML += `<div style="color:red">Ошибка загрузки </div>`;
+        obs.unobserve(el); // отключаем наблюдение для этого элемента
       }
-
-      obs.disconnect();
-    }
+    });
   });
 
   document.querySelectorAll('.lazy-island').forEach((el) => observer.observe(el));
