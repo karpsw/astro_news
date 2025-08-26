@@ -17,6 +17,7 @@ import PostBlockMain from '@/components/PostBlocks/PostBlockMain.astro';
 import PostBlockPopular from '@/components/PostBlocks/PostBlockPopular.astro';
 import PostBlockShareaholic from '@/components/PostBlocks/PostBlockShareaholic.astro';
 import Sidebar from '@/components/PostBlocks/PostSidebar.astro';
+import LazyIsland from '@/components/LazyIsland.astro'
 
 
 // Получаем блоки здесь
@@ -178,7 +179,8 @@ const authorUrl = 'https://telegraf.news/redakciya/';
 
   </div> <!-- конец Left -->
     <!-- Sidebar -->
-     <Sidebar />
+		 <LazyIsland url="/fragments/PostSidebar/" fallback="Загрузка блока..." />
+
   </div> <!-- /container -->
 </NewsBase>
 

@@ -1,0 +1,28 @@
+---
+const { url = '/fragments/lazy-block', fallback = 'Загрузка...' } = Astro.props;
+---
+
+<div class="lazy-island" data-url={url}>
+  <div class="lazy-fallback">{fallback}</div>
+</div>
+
+<script>
+  const observer = new IntersectionObserver(async ([entry], obs) => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const url = el.dataset.url;
+
+      try {
+        const res = await fetch(url);
+        const html = await res.text();
+        el.innerHTML = html;
+      } catch (err) {
+        el.innerHTML = '<div style="color:red">Ошибка загрузки</div>';
+      }
+
+      obs.disconnect();
+    }
+  });
+
+  document.querySelectorAll('.lazy-island').forEach((el) => observer.observe(el));
+</script>
