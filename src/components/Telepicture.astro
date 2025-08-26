@@ -1,6 +1,5 @@
 ---
 // Imports
-
 import sanitizeHtml from 'sanitize-html';
 
 type SrcSetImg = { w: number; h: number };
@@ -46,8 +45,11 @@ if (!src) {
   return null;
 }
 
-// Динамический атрибут lightbox
-const lightboxAttr = lightbox === 'yes' ? { 'data-lightbox': '' } : {};
+// Получаем чистый URL без параметров для lightbox
+const cleanSrc = src.split('?')[0];
+
+// Динамический атрибут lightbox - используем чистый URL без параметров
+const lightboxAttr = lightbox === 'yes' ? { 'data-lightbox': cleanSrc } : {};
 
 // Alt текст с очисткой
 const finalAlt = sanitizeHtml(alt || caption || posttitle);

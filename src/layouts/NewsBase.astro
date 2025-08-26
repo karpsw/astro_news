@@ -12,6 +12,8 @@ import type { MetaHead } from '@/schemas/meat-head';
 
 import Avatar from '@/assets/images/logotelegrafbel.svg';
 
+import Lightbox from '@/components/Telebox.astro';
+
 const { hasGallery = false } = Astro.props;
 const data = Astro.props as MetaHead;
 
@@ -248,6 +250,6 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
 </script>
 	</>
 )}
-
+<Lightbox />
   </body>
 </html>

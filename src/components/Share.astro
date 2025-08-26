@@ -26,7 +26,7 @@ const encodedText = encodeURI(description || 'Посмотрите на эту �
   <div class="share-buttons flex items-center justify-center md:justify-end">
     <div class="text-xs flex items-center justify-between mr-2 px-2 h-[40px] bg-stone-100">
       <span class="mr-2 text-gray-600">Репосты:</span>
-      <span class="count-share font-semibold">10</span>
+      <span class="count-share font-semibold">13</span>
     </div>
     <button
       class="share-general mr-2 flex items-center justify-center rounded shareb h-[35px] w-[35px]"
@@ -69,27 +69,33 @@ const encodedText = encodeURI(description || 'Посмотрите на эту �
   // Функция для инициализации шаринга
   function initShare() {
     const shareData = {
-      title: '${title.replace(/'/g, "\\'")}',
-      text: '${(description || "Посмотрите на эту интересную статью!").replace(/'/g, "\\'")}',
+      title: `${'${title}'.replace(/'/g, "\\'")}`,
+      text: `${'${description || "Посмотрите на эту интересную статью!"}'.replace(/'/g, "\\'")}`,
       url: '${url}',
     };
 
     const generalShareBtns = document.querySelectorAll('.share-general');
-    const whatsappLinks = document.querySelectorAll('.share-whatsapp');
-    const telegramLinks = document.querySelectorAll('.share-telegram');
-    const viberLinks = document.querySelectorAll('.share-viber');
-    const vkLinks = document.querySelectorAll('.share-vk');
-    const okLinks = document.querySelectorAll('.share-ok');
 
-    // Проверяем поддержку Web Share API
-    if (navigator.share) {
+    // Проверяем поддержку Web Share API - исправленная проверка
+    const isWebShareSupported = () => {
+      try {
+        return navigator && navigator.share && typeof navigator.share === 'function';
+      } catch (e) {
+        return false;
+      }
+    };
+
+    if (isWebShareSupported()) {
       generalShareBtns.forEach((btn) => {
         btn.style.display = 'flex';
         btn.addEventListener('click', async () => {
           try {
             await navigator.share(shareData);
           } catch (err) {
-            console.error('Ошибка шаринга:', err);
+            // Игнорируем ошибку "AbortError" (пользователь отменил шаринг)
+            if (err.name !== 'AbortError') {
+              console.error('Ошибка шаринга:', err);
+            }
           }
         });
       });
@@ -100,10 +106,15 @@ const encodedText = encodeURI(description || 'Посмотрите на эту �
       });
     }
 
-    // Загрузка счетчиков
+    // Загрузка счетчиков с обработкой ошибок CORS
     const apiUrl = `https://count-server.sharethis.com/v2.0/get_counts?url=${encodeURIComponent(shareData.url)}`;
 
-    fetch(apiUrl)
+    fetch(apiUrl, {
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+      },
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -124,10 +135,24 @@ const encodedText = encodeURI(description || 'Посмотрите на эту �
       });
   }
 
+  // Безопасная инициализация
+  function safeInitShare() {
+    try {
+      // Проверяем, что мы в браузере
+      if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+        initShare();
+      }
+    } catch (error) {
+      console.error('Ошибка инициализации шаринга:', error);
+    }
+  }
+
   // Инициализируем после загрузки DOM
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initShare);
-  } else {
-    initShare();
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', safeInitShare);
+    } else {
+      safeInitShare();
+    }
   }
 </script>
