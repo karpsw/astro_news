@@ -1,0 +1,28 @@
+---
+import type { CityWeather, NadvorDto } from '@/modules/wp-api-types';
+
+const { nadvore }: { nadvore?: NadvorDto } = Astro.props;
+export const extractDate = (raw: string): string => {
+  // Ожидаемый формат: "DD.MM.YYYY HH:mm"
+  const match = raw.match(/^\d{2}\.\d{2}\.\d{4}/);
+  return match ? match[0] : '';
+};
+---
+
+<div class="bg-white border border-gray-200 p-4 rounded-md mb-5">
+  {
+    nadvore &&
+      nadvore.data &&
+      !('error' in nadvore.data['Minsk']) &&
+      (() => {
+        const minsk = nadvore.data['Minsk'] as CityWeather;
+        return (
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-md font-semibold text-gray-700">Погода в {minsk.name}</h3>
+            <span class="text-xs text-gray-500">{minsk.current.temperature}</span>
+            <span class="text-xs text-gray-500">{extractDate(minsk.current.date)}</span>
+          </div>
+        );
+      })()
+  }
+</div>

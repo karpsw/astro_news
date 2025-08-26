@@ -2,6 +2,7 @@
 import { getWpSideBar } from '@/modules/wp-api';
 import NewsPostCard, { NewsPostCardLayout } from '@/components/NewsPostCard.astro';
 import CurrencyWidgetSimple from '@/components/Widgets/CurrencyWidgetSimple.astro';
+import NadvorWidget from '@/components/Widgets/NadvorWidget.astro';
 
 import type { SideBarDto } from '@/modules/wp-api-types';
 
@@ -12,6 +13,7 @@ const data: SideBarDto = await getWpSideBar();
 
 <!--  Currency Block -->
 <CurrencyWidgetSimple curr={data.curr} />
+<NadvorWidget nadvore={data.nadvor} />
 <!--   Weather Block -->
 
 <div class="bg-white border border-gray-200 p-4 rounded-md my-5">
