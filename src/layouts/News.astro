@@ -1,24 +1,23 @@
 ---
 import '@/assets/styles/news-markdown.css';
+
 import sanitizeHtml from 'sanitize-html';
-import LabelPost, { LabelPostVariant } from '@/components/Labelpost.astro';
-import Podpiska from '@/components/Podpiska.astro';
-import Share from '@/components/Share.astro';
-import Telepicture from '@/components/Telepicture.astro';
-import Lightbox from '@/components/Telebox.astro';
-import { telDate } from '@/utils/datetime';
-import { renderMarkdown } from '@/utils/markdown';
-import NewsBase from './NewsBase.astro';
 
 import { getPostBlocks } from '@/modules/post/getPostBlocks';
-
+import LabelPost, { LabelPostVariant } from '@/components/Labelpost.astro';
+import LazyIsland from '@/components/LazyIsland.astro';
+import Podpiska from '@/components/Podpiska.astro';
 // блоки новостей
 import PostBlockMain from '@/components/PostBlocks/PostBlockMain.astro';
 import PostBlockPopular from '@/components/PostBlocks/PostBlockPopular.astro';
 import PostBlockShareaholic from '@/components/PostBlocks/PostBlockShareaholic.astro';
 import Sidebar from '@/components/PostBlocks/PostSidebar.astro';
-import LazyIsland from '@/components/LazyIsland.astro'
-
+import Share from '@/components/Share.astro';
+import Lightbox from '@/components/Telebox.astro';
+import Telepicture from '@/components/Telepicture.astro';
+import { telDate } from '@/utils/datetime';
+import { renderMarkdown } from '@/utils/markdown';
+import NewsBase from './NewsBase.astro';
 
 // Получаем блоки здесь
 const Blocks = await getPostBlocks();
@@ -27,14 +26,14 @@ const { newsBlockPop } = Blocks;
 
 // для новости
 const { data, content } = Astro.props;
-const { tags = [] } = data; 
+const { tags = [] } = data;
 //const html = await renderMarkdown(rawMd);
 
 //текст новости
 const { code: contentHtml } = await renderMarkdown(content);
 const safeTitle = sanitizeHtml(data.title || 'Изображение', {
   allowedTags: [],
-  allowedAttributes: {}
+  allowedAttributes: {},
 });
 const finalcontentHtml = contentHtml.replaceAll('default-alt-content', safeTitle);
 
@@ -48,205 +47,142 @@ const authorName = data.avtor_name?.trim() ? data.avtor_name : 'Редакция
 const authorUrl = 'https://telegraf.news/redakciya/';
 ---
 
-<NewsBase {...data}>
+<NewsBase {...data} hasGallery={hasGallery}>
   <!-- container -->
   <div class="container grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
     <div class="left">
-    <!-- 📄 Article Section -->
-    <article role="main" class="">
-      <header class="">
-        <h1
-          class="md:text-4xl text-3xl font-bold text-tel-black border-b border-gray-200 mt-6 mb-4 pb-5"
-        >
-          {data.title}
-        </h1>
-        <div class="flex flex-wrap justify-between items-center text-xs">
-          <div
-            class="group mb-2 md:mb-0 items-center w-full md:w-auto grid grid-cols-3 auto-cols-max"
+      <!-- 📄 Article Section -->
+      <article role="main" class="">
+        <header class="">
+          <h1
+            class="md:text-4xl text-3xl font-bold text-tel-black border-b border-gray-200 mt-6 mb-4 pb-5"
           >
+            {data.title}
+          </h1>
+          <div class="flex flex-wrap justify-between items-center text-xs">
+            <div
+              class="group mb-2 md:mb-0 items-center w-full md:w-auto grid grid-cols-3 auto-cols-max"
+            >
+              {
+                data.date && (
+                  <time
+                    itemprop="datePublished"
+                    datetime={telDate(data.date)}
+                    class="bg-cyan-700 mr-0 p-1 items-center text-white "
+                  >
+                    {telDate(data.date)}
+                  </time>
+                )
+              }
+
+              <a
+                href={authorUrl}
+                class="bg-slate-500 px-3 py-1 text-white hover:bg-slate-600 transition-colors overflow-x-hidden truncate"
+              >
+                {authorName}
+              </a>
+              <LabelPost label={data.label} />
+            </div>
             {
-              data.date && (
-                <time
-                  itemprop="datePublished"
-                  datetime={telDate(data.date)}
-                  class="bg-cyan-700 mr-0 p-1 items-center text-white "
-                >
-                  {telDate(data.date)}
-                </time>
+              (data.category || (tags && tags.length > 0)) && (
+                <div class="text-xs text-gray-900 font-medium flex flex-wrap items-center">
+                  {/* <div class="bg-tel-red p-1 items-center text-white mr-1">Темы:</div> */}
+
+                  {data.category && (
+                    <a
+                      rel="tag"
+                      class="bg-slate-100 hover:bg-slate-200 p-1 mr-1"
+                      href={data.category_slug}
+                    >
+                      #{data.category}
+                    </a>
+                  )}
+
+                  {tags &&
+                    tags.length > 0 &&
+                    tags.map(
+                      (tag) =>
+                        tag &&
+                        tag.name &&
+                        tag.slug && (
+                          <a
+                            rel="tag"
+                            href={tag.slug}
+                            class="bg-slate-100 p-1 hover:bg-slate-200 mr-1"
+                          >
+                            #{tag.name}
+                          </a>
+                        )
+                    )}
+                </div>
               )
             }
-           
-            <a
-              href={authorUrl}
-              class="bg-slate-500 px-3 py-1 text-white hover:bg-slate-600 transition-colors overflow-x-hidden truncate"
-            >
-              {authorName}
-            </a>
-            <LabelPost label={data.label} />
+
+            <!-- Мета-информация -->
+
+            <!-- Image Placeholder -->
+            <div class="w-full bg-gray-200 rounded-md flex items-center justify-center mt-4">
+              <!-- Картинка -->
+              <Telepicture
+                src={data.featured_img_url}
+                loading="eager"
+                imgclass="aspect-[16/9] max-w-full block"
+                posttitle={data.title}
+                lightbox="yes"
+                srcSets={{
+                  desctop: { w: 891, h: 501 },
+                  medium: { w: 903, h: 495 },
+                  modile: { w: 437, h: 252 },
+                }}
+              />
+            </div>
+
+            <!--  Subscribe Block -->
+            <Podpiska />
           </div>
-          {
-            (data.category || (tags && tags.length > 0)) && (
-              <div class="text-xs text-gray-900 font-medium flex flex-wrap items-center">
-                {/* <div class="bg-tel-red p-1 items-center text-white mr-1">Темы:</div> */}
+        </header>
+        <section class="prose max-w-none prose-tel-red">
+          <div id="lead-post" set:html={lidtHtml} />
+          <!-- 📝 Article Text -->
+          <div id="post-text" set:html={finalcontentHtml} />
+        </section>
+        <footer>
+          <Share />
+        </footer>
+      </article>
 
-                {data.category && (
-                  <a
-                    rel="tag"
-                    class="bg-slate-100 hover:bg-slate-200 p-1 mr-1"
-                    href={data.category_slug}
-                  >
-                    #{data.category}
-                  </a>
-                )}
+      <!-- блок рекомендаций -->
+      <PostBlockShareaholic title="Подобрали для вас" className="mt-5" location={data.permalink} />
+      <!-- /блок рекомендаций -->
+      <!-- блок главных -->
+      <PostBlockMain title="Главные новости" className="mt-5" news={newsBlockMain} />
+      <!--/блок главных -->
+      <!-- блок популярных -->
 
-                {tags &&
-                  tags.length > 0 &&
-                  tags.map(
-                    (tag) =>
-                      tag &&
-                      tag.name &&
-                      tag.slug && (
-                        <a
-                          rel="tag"
-                          href={tag.slug}
-                          class="bg-slate-100 p-1 hover:bg-slate-200 mr-1"
-                        >
-                          #{tag.name}
-                        </a>
-                      )
-                  )}
-              </div>
-            )
-          }
+      <PostBlockPopular title="Популярные новости" className="mt-5" news={newsBlockPop} />
 
-          <!-- Мета-информация -->
-
-          <!-- Image Placeholder -->
-          <div class="w-full bg-gray-200 rounded-md flex items-center justify-center mt-4">
-            <!-- Картинка -->
-						<Telepicture
-									src={data.featured_img_url}
-									loading="eager"
-									imgclass="aspect-[16/9] max-w-full block"
-									posttitle={data.title}
-									lightbox="yes"
-									srcSets={{desctop:{w:891, h:501}, medium:{w:903, h:495}, modile:{w:437, h:252}}}
-								/>
-           
-          </div>
-
-          <!--  Subscribe Block -->
-          <Podpiska />
-        </div>
-      </header>
-      <section class="prose max-w-none prose-tel-red">
-        <div id="lead-post" set:html={lidtHtml} />
-        <!-- 📝 Article Text -->
-        <div id="post-text" set:html={finalcontentHtml} />
-      </section>
-      <footer>
-        <Share />
-      </footer>
-    </article>
-
-    <!-- блок рекомендаций -->
- <PostBlockShareaholic 
-        title="Подобрали для вас" 
-        className="mt-5" 
-        location= {data.permalink}
-      />
-<!-- /блок рекомендаций -->
-  <!-- блок главных -->
-      <PostBlockMain 
-        title="Главные новости" 
-        className="mt-5" 
-        news={newsBlockMain} 
-       
-      />
-  <!--/блок главных -->
-<!-- блок популярных -->
-
- <PostBlockPopular 
-        title="Популярные новости" 
-        className="mt-5" 
-        news={newsBlockPop} 
-       
-      />
-
-<!-- /блок популярных -->
-
-
-
-  </div> <!-- конец Left -->
+      <!-- /блок популярных -->
+    </div>
+    <!-- конец Left -->
     <!-- Sidebar -->
-		 <aside class="mt-8">
-				<LazyIsland url="/fragments/PostSidebar/" >
-					<div id="currency-widget" class="bg-white border border-gray-200 p-4 rounded-md mb-5">
-						<h2 class="text-lg font-semibold text-gray-700 mb-4">Курсы валют</h2>
-						<div id="currency-content">
-							<div class="animate-pulse">
-								<div class="h-4 bg-gray-200 rounded mb-2"></div>
-								<div class="h-4 bg-gray-200 rounded mb-2"></div>
-								<div class="h-4 bg-gray-200 rounded mb-2"></div>
-								<div class="h-4 bg-gray-200 rounded mb-2"></div>
-								<div class="h-4 bg-gray-200 rounded"></div>
-							</div>
-						</div>
-					</div>
-			</LazyIsland>
-	</aside>
-
-  </div> <!-- /container -->
+    <aside class="mt-8">
+      <LazyIsland url="/fragments/PostSidebar/">
+        <div id="currency-widget" class="bg-white border border-gray-200 p-4 rounded-md mb-5">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">Курсы валют</h2>
+          <div id="currency-content">
+            <div class="animate-pulse">
+              <div class="h-4 bg-gray-200 rounded mb-2"></div>
+              <div class="h-4 bg-gray-200 rounded mb-2"></div>
+              <div class="h-4 bg-gray-200 rounded mb-2"></div>
+              <div class="h-4 bg-gray-200 rounded mb-2"></div>
+              <div class="h-4 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </LazyIsland>
+    </aside>
+  </div>
+  <!-- /container -->
 </NewsBase>
 
 <Lightbox />
-
-{hasGallery && (
- <>
-<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css"
-/>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const main = document.querySelector('#main-slider');
-    const thumbs = document.querySelector('#thumbs');
-
-    if (main && thumbs) {
-      const mainSplide = new Splide(main, {
-        type: 'fade',
-        rewind: true,
-        pagination: false,
-        arrows: true,
-      });
-
-      const thumbsSplide = new Splide(thumbs, {
-        fixedWidth: 100,
-        fixedHeight: 70,
-        gap: 8,
-        rewind: true,
-        pagination: false,
-        arrows: false,
-        isNavigation: true,
-        focus: 'center',
-      });
-
-      mainSplide.sync(thumbsSplide);
-
-      thumbsSplide.mount();
-      mainSplide.mount();
-    } else {
-      // fallback: если нет парного слайдера, то просто запускаем все одиночные
-      document.querySelectorAll('.splide').forEach((el) => {
-        if (!el.id) {
-          new Splide(el).mount();
-        }
-      });
-    }
-  });
-</script>
-
-	</>
-)}
