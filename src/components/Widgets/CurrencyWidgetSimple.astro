@@ -22,13 +22,11 @@ const { curr }: { curr?: SideBarCurrDto } = Astro.props;
 ---
 
 <div class="bg-white border border-gray-200 p-4 rounded-md mb-5">
-  <h2 class="text-lg font-semibold text-gray-700 mb-4">Курсы валют</h2>
-
   {
     curr && (
       <>
         <div class="flex justify-between items-center mb-3">
-          <h3 class="text-md font-semibold text-gray-700">Курсы валют</h3>
+          <h3 class="text-md font-semibold text-gray-700">Курсы валют (НБРБ)</h3>
           <span class="text-xs text-gray-500">
             {new Date(curr.date).toLocaleDateString('ru-RU')}
           </span>
@@ -45,10 +43,6 @@ const { curr }: { curr?: SideBarCurrDto } = Astro.props;
             </span>
           </div>
         ))}
-
-        <div class="mt-3 pt-3 border-t border-gray-100">
-          <p class="text-xs text-gray-500 text-center">Курсы НБРБ</p>
-        </div>
       </>
     )
   }
