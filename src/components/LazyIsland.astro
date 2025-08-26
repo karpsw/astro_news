@@ -1,9 +1,9 @@
 ---
-const { url = '/fragments/lazy-block', fallback = 'Загрузка...' } = Astro.props;
+const { url = '/fragments/lazy-block' } = Astro.props;
 ---
 
 <div class="lazy-island" data-url={url}>
-  <div class="lazy-fallback">{fallback}</div>
+  <div class="lazy-fallback"><slot /></div>
 </div>
 
 <script>
@@ -14,10 +14,30 @@ const { url = '/fragments/lazy-block', fallback = 'Загрузка...' } = Astr
 
       try {
         const res = await fetch(url);
+
+        if (!res.ok) {
+          console.log(`Ошибка загрузки ${url}`);
+          throw new Error(`Ошибка загрузки`);
+        }
+
         const html = await res.text();
-        el.innerHTML = html;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'lazy-content';
+        wrapper.innerHTML = html;
+
+        // Удаляем fallback
+        const fallback = el.querySelector('.lazy-fallback');
+        if (fallback) {
+          setTimeout(() => {
+            fallback.remove();
+          }, 500);
+        }
+
+        el.appendChild(wrapper);
+        el.classList.add('loaded');
       } catch (err) {
-        el.innerHTML = '<div style="color:red">Ошибка загрузки</div>';
+        el.innerHTML += `<div style="color:red">Ошибка загрузки </div>`;
       }
 
       obs.disconnect();

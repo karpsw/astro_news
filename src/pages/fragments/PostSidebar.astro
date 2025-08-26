@@ -6,28 +6,26 @@ import CurrencyWidgetSimple from '@/components/Widgets/CurrencyWidgetSimple.astr
 const data = await getHome();
 ---
 
-<aside class="mt-8">
-  <!-- 💱 Currency Block -->
-  <CurrencyWidgetSimple />
-  <h2>xxxx</h2>
-  <!--   Weather Block -->
+<!-- 💱 Currency Block -->
+<CurrencyWidgetSimple />
+<h2>xxxx</h2>
+<!--   Weather Block -->
 
-  <div class="bg-white border border-gray-200 p-4 rounded-md my-5">
-    <h2 class="text-lg font-semibold text-gray-700 mb-2">Погода</h2>
-    <p class="text-sm text-gray-600">Бобруйск: +24°C, ясно</p>
-    <p class="text-sm text-gray-600">Влажность: 45%, Ветер: 3 м/с</p>
-  </div>
+<div class="bg-white border border-gray-200 p-4 rounded-md my-5">
+  <h2 class="text-lg font-semibold text-gray-700 mb-2">Погода</h2>
+  <p class="text-sm text-gray-600">Бобруйск: +24°C, ясно</p>
+  <p class="text-sm text-gray-600">Влажность: 45%, Ветер: 3 м/с</p>
+</div>
 
-  <!--  Последние новости -->
-  <div class="w-full flex items-center justify-between my-5 p-2 bg-sky-50">
-    <span class="font-bold">Последние новости</span>
-  </div>
-  <div class="grid grid-cols-1 gap-4">
-    {
-      data.newsBlockOne &&
-        data.newsBlockOne.map((post) => (
-          <NewsPostCard post={post} layout={NewsPostCardLayout.variant5} />
-        ))
-    }
-  </div>
-</aside>
+<!--  Последние новости -->
+<div class="w-full flex items-center justify-between my-5 p-2 bg-sky-50">
+  <span class="font-bold">Последние новости</span>
+</div>
+<div class="grid grid-cols-1 gap-4">
+  {
+    data.newsBlockOne &&
+      data.newsBlockOne.map((post) => (
+        <NewsPostCard post={post} layout={NewsPostCardLayout.variant5} />
+      ))
+  }
+</div>
