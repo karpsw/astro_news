@@ -1,6 +1,6 @@
 import { z } from 'astro:content';
 
-export type MetaHead = z.infer<typeof zMetaHead>;
+//export type MetaHead = z.infer<typeof zMetaHead>;
 export const zMetaHead = z.object({
   head_title: z.string().optional(),
   head_description: z.string().optional(),
@@ -8,6 +8,7 @@ export const zMetaHead = z.object({
   head_twitter_card: z.string().optional(),
   head_twitter_title: z.string().optional(),
   head_twitter_description: z.string().optional(),
+  head_twitter_image: z.string().optional(),
   head_og_locale: z.string().optional(),
   head_og_type: z.string().optional(),
   head_og_title: z.string().optional(),

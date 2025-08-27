@@ -1,26 +1,30 @@
 ---
-import '@/styles/main.css';
-import '@fontsource-variable/inter/index.css';
+import '@/styles/main.css'
+import '@fontsource-variable/inter/index.css'
 
-import { ClientRouter } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions'
 
-import { decode } from 'html-entities';
+import { decode } from 'html-entities'
 
-import ThemeScript from '@/components/ThemeScript.astro';
-import { CONFIG_CLIENT } from '@/config/client';
+import ThemeScript from '@/components/ThemeScript.astro'
+import { CONFIG_CLIENT } from '@/config/client'
 
-import '@/assets/styles/global.css';
+import '@/assets/styles/global.css'
 
-import type { MetaHead } from '@/schemas/meat-head';
-import type { NewsArticle, WithContext } from 'schema-dts';
+import { zNewsPostSchema } from '@/schemas/archive'
+import { zMetaHead } from '@/schemas/meat-head'
+
+import type { NewsArticle, WithContext } from 'schema-dts'
+
+const { data }: { data: unknown } = Astro.props;
+const parsedMeta = zMetaHead.safeParse(data);
+const parsedNews = zNewsPostSchema.safeParse(data);
 
 const { PLAUSIBLE_SCRIPT_URL, PLAUSIBLE_DOMAIN } = CONFIG_CLIENT;
 
 // set defualt metadata in this component
 //const { data } = Astro.props;
-const { data } = Astro.props as { data: MetaHead };
-const { tags } = data;
-const decodedTitle = decode(data.head_title);
+const decodedTitle = parsedMeta.success ? decode(parsedMeta.data.head_title) : 'Telegraf.news';
 const decodedTitle2 = decodeHtml(decodedTitle);
 
 function decodeHtml(html) {
@@ -28,35 +32,36 @@ function decodeHtml(html) {
   return plainText;
 }
 
-const authorName = data.avtor_name?.trim() ? data.avtor_name : 'Редакция Telegraf.news';
-const authortype = data.avtor_name?.trim() ? 'Person' : 'Organization';
-
-const structuredData: WithContext<NewsArticle> = {
-  '@context': 'https://schema.org',
-  '@type': 'NewsArticle',
-  mainEntityOfPage: {
-    '@type': 'WebPage',
-    '@id': data.head_canonical,
-  },
-  headline: decodedTitle2,
-  image: data.head_og_image,
-  datePublished: data.date,
-  articleSection: data.category,
-  author: {
-    '@type': authortype,
-    name: authorName,
-    url: 'https://telegraf.news/redakciya/',
-  },
-  publisher: {
-    '@type': 'Organization',
-    name: 'ЧИУП Агентство Телеграф',
-    logo: {
-      '@type': 'ImageObject',
-      url: 'https://telegraf.news/file/2022/07/Telegraf.news-C.png',
-    },
-  },
-  description: data.head_description,
-};
+const structuredData: WithContext<NewsArticle> | any = parsedNews.success
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': parsedNews.data.head_canonical,
+      },
+      headline: decodedTitle2,
+      image: parsedNews.data.head_og_image,
+      datePublished: parsedNews.data.date,
+      articleSection: parsedNews.data.category,
+      author: {
+        '@type': parsedNews.data.avtor_name?.trim() ? 'Person' : 'Organization',
+        name: parsedNews.data.avtor_name?.trim()
+          ? parsedNews.data.avtor_name
+          : 'Редакция Telegraf.news',
+        url: 'https://telegraf.news/redakciya/',
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'ЧИУП Агентство Телеграф',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://telegraf.news/file/2022/07/Telegraf.news-C.png',
+        },
+      },
+      description: parsedNews.data.head_description,
+    }
+  : {};
 ---
 
 <head>
@@ -65,34 +70,56 @@ const structuredData: WithContext<NewsArticle> = {
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
   <meta name="theme-color" content="" />
-  <title>{decodedTitle2}</title>
-  <meta name="description" content={data.head_description} />
-  <meta name="robots" content={data.head_robots} />
-  <link rel="canonical" href={data.head_canonical} />
-  <meta property="og:locale" content="ru_BY" />
-  <meta property="og:type" content={data.head_og_type} />
-  <meta property="og:title" content={data.head_og_title} />
-  <meta property="og:description" content={data.head_og_description} />
-  <meta property="og:url" content={data.head_og_url} />
-  <meta property=" og:site_name" content={data.head_og_site_name} />
-  <meta property="article:section" content={data.head_article_section} />
-  <meta property="og:image" content={data.head_og_image} />
-  <meta property="og:image:secure_url" content={data.head_og_image_secure_url} />
-  <meta property="og:image:width" content={data.head_og_image_width} />
-  <meta property="og:image:height" content={data.head_og_image_height} />
-  <meta property="og:image:alt" content={data.head_og_image_alt} />
-  <meta property="og:image:type" content={data.head_og_image_type} />
   {
-    tags &&
-      tags.length > 0 &&
-      tags.map((tag) => tag && tag.name && <meta property="article:tag" content={tag.name} />)
-  }
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={data.head_twitter_title} />
-  <meta name="twitter:description" content={data.head_twitter_description} />
-  <meta name="twitter:image" content={data.head_twitter_image} />
+    parsedMeta.success && (
+      <>
+        <title>{decodedTitle2}</title>
+        <meta name="description" content={parsedMeta.data.head_description} />
+        <meta name="robots" content={parsedMeta.data.head_robots} />
+        <link rel="canonical" href={parsedMeta.data.head_canonical} />
+        <meta property="og:locale" content="ru_BY" />
+        <meta property="og:type" content={parsedMeta.data.head_og_type} />
+        <meta property="og:title" content={parsedMeta.data.head_og_title} />
+        <meta property="og:description" content={parsedMeta.data.head_og_description} />
+        <meta property="og:url" content={parsedMeta.data.head_og_url} />
+        <meta property=" og:site_name" content={parsedMeta.data.head_og_site_name} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={parsedMeta.data.head_twitter_title} />
+        <meta name="twitter:description" content={parsedMeta.data.head_twitter_description} />
 
-  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+        {parsedMeta.data.head_twitter_image && (
+          <meta name="twitter:image" content={parsedMeta.data.head_twitter_image} />
+        )}
+      </>
+    )
+  }
+
+  {
+    parsedNews.success && (
+      <>
+        <meta property="article:section" content={parsedNews.data.head_article_section} />
+        <meta property="og:image" content={parsedNews.data.head_og_image} />
+        <meta property="og:image:secure_url" content={parsedNews.data.head_og_image_secure_url} />
+        {parsedNews.data.head_og_image_width && (
+          <meta property="og:image:width" content=`${parsedNews.data.head_og_image_width}` />
+        )}
+        {parsedNews.data.head_og_image_height && (
+          <meta property="og:image:height" content=`${parsedNews.data.head_og_image_height}` />
+        )}
+
+        <meta property="og:image:alt" content={parsedNews.data.head_og_image_alt} />
+        <meta property="og:image:type" content={parsedNews.data.head_og_image_type} />
+
+        <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+        {parsedNews.data.tags &&
+          parsedNews.data.tags.length > 0 &&
+          parsedNews.data.tags.map(
+            (tag) => tag && tag.name && <meta property="article:tag" content={tag.name} />
+          )}
+      </>
+    )
+  }
 
   {/* Analytics */}
   {
