@@ -10,20 +10,32 @@ import { IMAGE_SIZES } from '@/constants/image';
 
 import Avatar from '@/assets/images/logotelegrafbel.svg';
 
-
 const { hasGallery = false } = Astro.props;
-const data = Astro.props ;
+const data = Astro.props;
 
 const { SCROLL_TO_TOP_ID } = SELECTORS;
+
+// Список ссылок для меню
+const menuLinks = [
+  { href: 'https://telegraf.news/hashtag/belarus/', label: 'Беларусь' },
+  { href: 'https://telegraf.news/world-news/', label: 'Мир' },
+  { href: 'https://telegraf.news/obshhestvo/', label: 'Общество' },
+  { href: 'https://telegraf.news/politika/', label: 'Политика' },
+  { href: 'https://telegraf.news/ehkonomika/', label: 'Экономика' },
+  { href: 'https://telegraf.news/zdorove/', label: 'Здоровье' },
+  { href: 'https://telegraf.news/lifehacks/', label: 'Лайфхаки' },
+  { href: 'https://telegraf.news/auto/', label: 'Авто' },
+  { href: 'https://telegraf.news/proisshestviya/', label: 'Происшествия' },
+];
 ---
 
 <html lang="ru-BY">
   <BaseHead {data} />
   <body class="bg-white min-h-screen text-tel-black font-sans text-[16px]">
-    <!--   Header -->
+    <!-- Header -->
     <header id={SCROLL_TO_TOP_ID} class="bg-tel-black sticky top-0 z-50">
       <div class="container h-10 flex items-center justify-between">
-        <a href="/" class="">
+        <a href="/">
           <Image
             {...IMAGE_SIZES.FIXED.AVATAR}
             loading="eager"
@@ -32,25 +44,18 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
             alt="Telegraf.news"
           />
         </a>
+
+        <!-- Десктоп меню -->
         <nav class="hidden md:flex space-x-4 text-white text-[15px] font-medium">
-          <a href="#">Беларусь</a>
-          <a href="#">Мир</a>
-          <a href="#">Общество</a>
-          <a href="#">Политика</a>
-          <a href="#">Экономика</a>
-          <a href="#">Здоровье</a>
-          <a href="#">Лайфхаки</a>
-          <a href="#">Авто</a>
-          <a href="#">Происшествия</a>
+          {menuLinks.map((link) => <a href={link.href}>{link.label}</a>)}
         </nav>
 
-        <!-- Кнопка меню -->
+        <!-- Кнопки -->
         <div class="head_buttons flex items-center">
           <button id="mobileMenuButton" class="md:hidden" aria-expanded="false">
             <Icon name="mdi:hamburger-menu" class="text-white text-3xl mr-1 menu-icon-open" />
             <Icon name="mdi:close" class="text-white text-3xl mr-1 hidden menu-icon-close" />
           </button>
-          <!-- Другие кнопки -->
           <button id="searchButton">
             <Icon name="mdi:magnify" class="text-white text-2xl" />
           </button>
@@ -62,19 +67,19 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
           class="fixed inset-y-0 left-0 w-64 bg-tel-black shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out z-50"
         >
           <ul class="flex flex-col p-4 space-y-4">
-            <li><a href="#" class="block py-2 hover:opacity-75 text-white">Беларусь</a></li>
-            <li><a href="#" class="block py-2 hover:opacity-75 text-white">Мир</a></li>
-            <li><a href="#" class="block py-2 hover:opacity-75 text-white">Общество</a></li>
-            <li><a href="#" class="block py-2 hover:opacity-75 text-white">Политика</a></li>
-            <li><a href="#" class="block py-2 hover:opacity-75 text-white">Экономика</a></li>
-            <li><a href="#" class="block py-2 hover:opacity-75 text-white">Здоровье</a></li>
-            <li><a href="#" class="block py-2 hover:opacity-75 text-white">Лайфхаки</a></li>
-            <li><a href="#" class="block py-2 hover:opacity-75 text-white">Авто</a></li>
-            <li><a href="#" class="block py-2 hover:opacity-75 text-white">Происшествия</a></li>
+            {
+              menuLinks.map((link) => (
+                <li>
+                  <a href={link.href} class="block py-2 hover:opacity-75 text-white">
+                    {link.label}
+                  </a>
+                </li>
+              ))
+            }
           </ul>
         </nav>
 
-        <!-- Поисковая панель (центрированная) -->
+        <!-- Поиск и оверлей (без изменений) -->
         <div
           id="searchPanel"
           class="fixed inset-0 flex items-center justify-center p-4 z-50 hidden"
@@ -105,12 +110,16 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
           </div>
         </div>
 
-        <!-- Затемнение фона -->
         <div id="Overlay" class="fixed inset-0 bg-black bg-opacity-70 z-40 hidden"></div>
       </div>
     </header>
 
-    <script type='text/javascript'>
+    <slot />
+    <Footer />
+    {hasGallery && <Lightbox />}
+
+    <script>
+      // JS для мобильного меню и поиска — оставляем как есть
       document.addEventListener('DOMContentLoaded', () => {
         const menuButton = document.getElementById('mobileMenuButton');
         const mobileMenu = document.getElementById('mobileMenu');
@@ -120,25 +129,14 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
 
         menuButton.addEventListener('click', () => {
           const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
-
-          // Переключаем состояние
           menuButton.setAttribute('aria-expanded', !isExpanded);
-
-          // Анимация меню
           mobileMenu.classList.toggle('-translate-x-full');
-
-          // Переключаем иконки
           openIcon.classList.toggle('hidden');
           closeIcon.classList.toggle('hidden');
-
-          // Затемнение фона src="/js/nat
           menuOverlay.classList.toggle('hidden');
-
-          // Блокировка скролла
           document.body.classList.toggle('overflow-hidden');
         });
 
-        // Закрытие по клику на оверлей
         menuOverlay.addEventListener('click', () => {
           mobileMenu.classList.add('-translate-x-full');
           menuOverlay.classList.add('hidden');
@@ -147,26 +145,22 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
           menuButton.setAttribute('aria-expanded', 'false');
           document.body.classList.remove('overflow-hidden');
         });
-      });
 
-      document.addEventListener('DOMContentLoaded', () => {
+        // Поиск
         const searchButton = document.getElementById('searchButton');
         const searchPanel = document.getElementById('searchPanel');
-        const searchOverlay = document.getElementById('Overlay');
         const closeButton = document.getElementById('closeSearch');
-        const searchInput = document.querySelector('input[type="search"]');
-        const searchForm = document.querySelector('#searchPanel > div');
+        const searchOverlay = document.getElementById('Overlay');
+        const searchForm = searchPanel.querySelector('div');
+        const searchInput = searchPanel.querySelector('input[type="search"]');
 
         function openSearch() {
           searchOverlay.classList.remove('hidden');
           searchPanel.classList.remove('hidden');
-
-          // Анимация появления
           setTimeout(() => {
             searchForm.classList.remove('scale-95', 'opacity-0');
             searchForm.classList.add('scale-100', 'opacity-100');
           }, 10);
-
           document.body.classList.add('overflow-hidden');
           searchInput.focus();
         }
@@ -174,7 +168,6 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
         function closeSearch() {
           searchForm.classList.remove('scale-100');
           searchForm.classList.add('scale-95', 'opacity-0');
-
           setTimeout(() => {
             searchPanel.classList.add('hidden');
             searchOverlay.classList.add('hidden');
@@ -183,70 +176,12 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
         }
 
         searchButton.addEventListener('click', openSearch);
-        searchOverlay.addEventListener('click', closeSearch);
         closeButton.addEventListener('click', closeSearch);
-
+        searchOverlay.addEventListener('click', closeSearch);
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') closeSearch();
         });
       });
     </script>
-
-    <slot />
-    <Footer />
-    
-    <!--Служебные скрипты -->
-    
-   
-    <script
-      src="https://platform-api.sharethis.com/js/sharethis.js#property=5fad52bce3f5df0012a01974&product=inline-reaction-buttons"
-      client:load></script>
-
-      {hasGallery && (
-  <>
-      <script>
-  import Splide from '@splidejs/splide'
-import '@splidejs/splide/css'
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const main = document.querySelector('#main-slider');
-    const thumbs = document.querySelector('#thumbs');
-
-    if (main && thumbs) {
-      const mainSplide = new Splide(main, {
-        type: 'fade',
-        rewind: true,
-        pagination: false,
-        arrows: true,
-      });
-
-      const thumbsSplide = new Splide(thumbs, {
-        fixedWidth: 100,
-        fixedHeight: 70,
-        gap: 8,
-        rewind: true,
-        pagination: false,
-        arrows: false,
-        isNavigation: true,
-        focus: 'center',
-      });
-
-      mainSplide.sync(thumbsSplide);
-
-      thumbsSplide.mount();
-      mainSplide.mount();
-    } else {
-      // fallback: если нет парного слайдера, то просто запускаем все одиночные
-      document.querySelectorAll('.splide').forEach((el) => {
-        if (!el.id) {
-          new Splide(el).mount();
-        }
-      });
-    }
-  });
-</script>
-	</>
-)}
-<Lightbox />
   </body>
 </html>

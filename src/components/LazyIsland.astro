@@ -7,34 +7,39 @@ const { url = '/fragments/lazy-block' } = Astro.props;
 </div>
 
 <script>
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(async (entry) => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const url = el.dataset.url;
+  const observer = new IntersectionObserver(
+    async (entries, obs) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const url = el.dataset.url;
 
-        try {
-          const res = await fetch(url);
-          if (!res.ok) throw new Error(`Ошибка загрузки: ${res.status}`);
+          try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`Ошибка загрузки: ${res.status}`);
 
-          const html = await res.text();
-          const wrapper = document.createElement('div');
-          wrapper.className = 'lazy-content';
-          wrapper.innerHTML = html;
+            const html = await res.text();
+            const wrapper = document.createElement('div');
+            wrapper.className = 'lazy-content';
+            wrapper.innerHTML = html;
 
-          const fallback = el.querySelector('.lazy-fallback');
-          if (fallback) setTimeout(() => fallback.remove(), 500);
+            const fallback = el.querySelector('.lazy-fallback');
+            if (fallback) setTimeout(() => fallback.remove(), 500);
 
-          el.appendChild(wrapper);
-          el.classList.add('loaded');
-        } catch (err) {
-          el.innerHTML += `<div style="color:red">Ошибка загрузки</div>`;
+            el.appendChild(wrapper);
+            el.classList.add('loaded');
+          } catch (err) {
+            el.innerHTML += `<div style="color:red">Ошибка загрузки</div>`;
+          }
+
+          obs.unobserve(el);
         }
-
-        obs.unobserve(el); // отключаем наблюдение для этого элемента
       }
-    });
-  });
+    },
+    {
+      rootMargin: '0px 0px 200px 0px', // загрузка за 200px до появления
+    }
+  );
 
   document.querySelectorAll('.lazy-island').forEach((el) => observer.observe(el));
 </script>
