@@ -110,7 +110,7 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
       </div>
     </header>
 
-    <script>
+    <script type='text/javascript'>
       document.addEventListener('DOMContentLoaded', () => {
         const menuButton = document.getElementById('mobileMenuButton');
         const mobileMenu = document.getElementById('mobileMenu');
@@ -205,8 +205,8 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
       {hasGallery && (
   <>
       <script>
-  import Splide from '@splidejs/splide';
-  import '@splidejs/splide/css';
+  import Splide from '@splidejs/splide'
+import '@splidejs/splide/css'
 
   document.addEventListener('DOMContentLoaded', () => {
     const main = document.querySelector('#main-slider');
