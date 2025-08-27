@@ -1,0 +1,69 @@
+---
+// components/CookieNotice.astro
+---
+
+<div
+  id="cookie-notice"
+  class="fixed top-11 left-1/2 transform -translate-x-1/2 translate-y-24 bg-cyan-600 text-white px-2 py-3 rounded shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-50
+         w-[calc(100%-1rem)] max-w-xl flex flex-col md:flex-row md:items-center md:space-x-4 space-y-1 md:space-y-0"
+>
+  <span class="text-center md:text-left flex-1"> На сайте используются файлы cookie... </span>
+  <div class="flex justify-center md:justify-start space-x-2">
+    <a
+      id="cookie-learn-more"
+      href="https://telegraf.news/pravila/"
+      class="underline hover:text-gray-300 text-white px-3 py-1 rounded transition"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Что это?
+    </a>
+    <button
+      id="cookie-accept"
+      class="bg-sky-800 hover:bg-blue-700 text-white px-3 py-1 rounded transition"
+    >
+      Принять
+    </button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cookieNotice = document.getElementById('cookie-notice');
+    const cookieAccept = document.getElementById('cookie-accept');
+    const cookieLearnMore = document.getElementById('cookie-learn-more');
+
+    const lastAcceptance = localStorage.getItem('cookieAcceptanceDate30');
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    function showNotice() {
+      cookieNotice.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-24');
+      cookieNotice.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+
+      // Авто-скрытие через 10 секунд
+      setTimeout(hideNotice, 10000);
+    }
+
+    function hideNotice() {
+      cookieNotice.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+      cookieNotice.classList.add('opacity-0', 'pointer-events-none', 'translate-y-24');
+    }
+
+    if (!lastAcceptance || new Date(lastAcceptance) < oneWeekAgo) {
+      setTimeout(showNotice, 100); // небольшая задержка для плавной анимации
+    }
+
+    cookieAccept.addEventListener('click', () => {
+      hideNotice();
+      localStorage.setItem('cookieAcceptanceDate30', new Date().toISOString());
+    });
+
+    cookieLearnMore.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.open('https://telegraf.news/pravila/', '_blank');
+      hideNotice();
+      localStorage.setItem('cookieAcceptanceDate30', new Date().toISOString());
+    });
+  });
+</script>

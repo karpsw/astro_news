@@ -7,8 +7,11 @@ import BaseHead from '@/components/NewsHead.astro';
 import FooterScripts from '@/components/utils/FooterScripts.astro';
 import { SELECTORS } from '@/constants/dom';
 import { IMAGE_SIZES } from '@/constants/image';
+import { CONFIG_CLIENT } from '@/config/client';
 
 import Avatar from '@/assets/images/logotelegrafbel.svg';
+
+const canonicalURL = CONFIG_CLIENT.SITE_URL_CANONICAL;
 
 const { hasGallery = false } = Astro.props;
 const data = Astro.props;
@@ -35,7 +38,7 @@ const menuLinks = [
     <!-- Header -->
     <header id={SCROLL_TO_TOP_ID} class="bg-tel-black sticky top-0 z-50">
       <div class="container h-10 flex items-center justify-between">
-        <a href="/">
+        <a href={canonicalURL}>
           <Image
             {...IMAGE_SIZES.FIXED.AVATAR}
             loading="eager"

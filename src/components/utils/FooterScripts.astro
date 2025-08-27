@@ -4,8 +4,9 @@
 
 const { hasGallery = false } = Astro.props;
 import Lightbox from '@/components/Telebox.astro';
+import CoookieConsent from '@/components/CoookieConsent.astro';
 ---
-<script src="https://platform-api.sharethis.com/js/sharethis.js#property=5fad52bce3f5df0012a01974&product=inline-reaction-buttons"></script>
+<script src="https://platform-api.sharethis.com/js/sharethis.js#property=5fad52bce3f5df0012a01974&product=inline-reaction-buttons" client:idle></script>
 
 <script>
       // JS для мобильного меню и поиска — оставляем как есть
@@ -77,11 +78,11 @@ import Lightbox from '@/components/Telebox.astro';
 
       {hasGallery && (
   <>
-<script>
+      <script>
         import Splide from '@splidejs/splide'
         import '@splidejs/splide/css'
 
-    document.addEventListener('DOMContentLoaded', () => {
+   document.addEventListener('DOMContentLoaded', () => {
     const main = document.querySelector('#main-slider');
     const thumbs = document.querySelector('#thumbs');
 
@@ -120,5 +121,5 @@ import Lightbox from '@/components/Telebox.astro';
 </script>
 	</>
 )}
-
 <Lightbox />
+<CoookieConsent />

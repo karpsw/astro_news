@@ -68,8 +68,9 @@ const structuredData: WithContext<NewsArticle> | any = parsedNews.success
   {/* Global Metadata */}
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-  <meta name="theme-color" content="" />
+  <link rel="icon" href="/images/favicons/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/images/favicons/favicon.png" type="image/x-icon">
+  <meta name="theme-color" content="rgb(12, 12, 12)" />
   {
     parsedMeta.success && (
       <>
@@ -136,18 +137,24 @@ const structuredData: WithContext<NewsArticle> | any = parsedNews.success
       </>
     )
   }
+  <meta name="takprodam-verification" content="a0a3a9fd-1d86-4a90-afc5-76906195de80">
+  <meta name="verified-code" content="2073ad8b-76de-45ab-a836-f3d8801a7b88">
+  <meta name='Petal-Search-site-verification' content='635c34838c'/>
+  <meta name="yandex-verification" content="53f08bc9160e63c3" />
+  <meta name="zen-verification" content="iMKSBpj8qB5TFKwySWdVNq2rSoMv0SYJkgB1qzsmMLcKDfAM9FNC452Wpnf6eOGm" />
+  <meta name="wmail-verification" content="18350c8976987710b8c0311408667d6f" />
+  <meta name="verify-admitad" content="042f1deaf1" />
+  <meta name="recreativ-verification" content="yIBfi5mQygNUhBJaW2Mu22DVs7YqBVCaXZ7SsweS" >
+  <meta name="adlane" content="adc020b208eb2bf4c72605be9fd07c7a">
+  <meta name="propeller" content="1e609f4c9b78f88558d5594b6705dcd7">
+  <meta name="clckd" content="69a60fb85b21e8e7eaaa21bb8f1cfda5" />
+  <meta name="pmail-verification" content="343af00a41fc49694d36c8fed9fed5e7">
+  <meta name="yandex-verification" content="aa13d5ad2ccb3319" />
+  <meta name="verify-admitad" content="21013d433a" />
 
-  {/* Theme */}
-  {/* MUST be inside <head /> to avoid white flash, IMPORTANT */}
-  <ThemeScript />
+ 
+  <!-- <ThemeScript />-->
 
   <ClientRouter fallback="none" />
 
-  <!-- 
-    <style>
-    @view-transition {
-      navigation: auto; /* enabled! */
-    }
-    </style> 
-  -->
 </head>
