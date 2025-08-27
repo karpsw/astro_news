@@ -110,11 +110,11 @@ function formatWind(wind: { speed: number; direction: string }) {
                     <p class="font-medium text-tel-black">Сейчас:</p>
                     <p class="text-gray-600">{(city as CityWeather).current.condition}</p>
                     <p>Ощущается: {(city as CityWeather).current.feels_like}°C</p>
-                    <p class="flex items-center gap-1">
-                      <Icon name={formatWind((city as CityWeather).current.wind).iconName} class="text-3xl" />
-                      {formatWind((city as CityWeather).current.wind).text}
-                    </p>
+                    
                     <p>Влажность: {(city as CityWeather).current.humidity}%</p>
+                    <p>
+                     {formatWind((city as CityWeather).current.wind).text}
+                    </p>
                   </div>
                 </div>
 

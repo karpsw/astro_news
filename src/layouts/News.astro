@@ -50,64 +50,67 @@ const authorUrl = 'https://telegraf.news/redakciya/';
             {data.title}
           </h1>
           <div class="flex flex-wrap justify-between items-center text-xs">
-            <div
-              class="group mb-2 md:mb-0 items-center w-full md:w-auto grid grid-cols-3 auto-cols-max"
-            >
+            <div class="w-full grid grid-cols-1 md:grid-cols-2">
+              <div
+                class="mb-2 md:mb-0 grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] items-center"
+              >
+                {
+                  data.date && (
+                    <time
+                      itemprop="datePublished"
+                      datetime={telDate(data.date)}
+                      class="bg-cyan-700 p-1 text-center text-white"
+                    >
+                      {telDate(data.date)}
+                    </time>
+                  )
+                }
+
+                <a
+                  href={authorUrl}
+                  class="bg-slate-500 px-3 py-1 text-center text-white hover:bg-slate-600 transition-colors overflow-hidden truncate"
+                >
+                  {authorName}
+                </a>
+
+                {data.label && <LabelPost label={data.label} />}
+              </div>
+
               {
-                data.date && (
-                  <time
-                    itemprop="datePublished"
-                    datetime={telDate(data.date)}
-                    class="bg-cyan-700 mr-0 p-1 items-center text-white "
-                  >
-                    {telDate(data.date)}
-                  </time>
+                (data.category || (tags && tags.length > 0)) && (
+                  <div class=" text-gray-900 font-medium flex flex-wrap items-center md:justify-end">
+                    {/* <div class="bg-tel-red p-1 items-center text-white mr-1">Темы:</div> */}
+
+                    {data.category && (
+                      <a
+                        rel="tag"
+                        class="bg-slate-100 hover:bg-slate-200 p-1 mr-1"
+                        href={data.category_slug}
+                      >
+                        #{data.category}
+                      </a>
+                    )}
+
+                    {tags &&
+                      tags.length > 0 &&
+                      tags.map(
+                        (tag) =>
+                          tag &&
+                          tag.name &&
+                          tag.slug && (
+                            <a
+                              rel="tag"
+                              href={tag.slug}
+                              class="bg-slate-100 p-1 hover:bg-slate-200 mr-1"
+                            >
+                              #{tag.name}
+                            </a>
+                          )
+                      )}
+                  </div>
                 )
               }
-
-              <a
-                href={authorUrl}
-                class="bg-slate-500 px-3 py-1 text-white hover:bg-slate-600 transition-colors overflow-x-hidden truncate"
-              >
-                {authorName}
-              </a>
-              <LabelPost label={data.label} />
             </div>
-            {
-              (data.category || (tags && tags.length > 0)) && (
-                <div class="text-xs text-gray-900 font-medium flex flex-wrap items-center">
-                  {/* <div class="bg-tel-red p-1 items-center text-white mr-1">Темы:</div> */}
-
-                  {data.category && (
-                    <a
-                      rel="tag"
-                      class="bg-slate-100 hover:bg-slate-200 p-1 mr-1"
-                      href={data.category_slug}
-                    >
-                      #{data.category}
-                    </a>
-                  )}
-
-                  {tags &&
-                    tags.length > 0 &&
-                    tags.map(
-                      (tag) =>
-                        tag &&
-                        tag.name &&
-                        tag.slug && (
-                          <a
-                            rel="tag"
-                            href={tag.slug}
-                            class="bg-slate-100 p-1 hover:bg-slate-200 mr-1"
-                          >
-                            #{tag.name}
-                          </a>
-                        )
-                    )}
-                </div>
-              )
-            }
-
             <!-- Мета-информация -->
 
             <!-- Image Placeholder -->
@@ -147,7 +150,7 @@ const authorUrl = 'https://telegraf.news/redakciya/';
     </div>
     <!-- конец Left -->
     <!-- Sidebar -->
-    <aside class="mt-8">
+    <aside class="mt-[-0.8rem] md:mt-8">
       <LazyIsland url="/fragments/PostSidebar/">
         <div id="currency-widget" class="bg-white border border-gray-200 p-4 rounded-md mb-5">
           <h2 class="text-lg font-semibold text-gray-700 mb-4">Курсы валют</h2>
