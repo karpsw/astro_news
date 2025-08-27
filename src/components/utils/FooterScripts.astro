@@ -1,0 +1,124 @@
+---
+
+//   Служебные скрипты
+
+const { hasGallery = false } = Astro.props;
+import Lightbox from '@/components/Telebox.astro';
+---
+<script src="https://platform-api.sharethis.com/js/sharethis.js#property=5fad52bce3f5df0012a01974&product=inline-reaction-buttons"></script>
+
+<script>
+      // JS для мобильного меню и поиска — оставляем как есть
+      document.addEventListener('DOMContentLoaded', () => {
+        const menuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuOverlay = document.getElementById('Overlay');
+        const openIcon = document.querySelector('.menu-icon-open');
+        const closeIcon = document.querySelector('.menu-icon-close');
+
+        menuButton.addEventListener('click', () => {
+          const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+          menuButton.setAttribute('aria-expanded', !isExpanded);
+          mobileMenu.classList.toggle('-translate-x-full');
+          openIcon.classList.toggle('hidden');
+          closeIcon.classList.toggle('hidden');
+          menuOverlay.classList.toggle('hidden');
+          document.body.classList.toggle('overflow-hidden');
+        });
+
+        menuOverlay.addEventListener('click', () => {
+          mobileMenu.classList.add('-translate-x-full');
+          menuOverlay.classList.add('hidden');
+          openIcon.classList.remove('hidden');
+          closeIcon.classList.add('hidden');
+          menuButton.setAttribute('aria-expanded', 'false');
+          document.body.classList.remove('overflow-hidden');
+        });
+
+        // Поиск
+        const searchButton = document.getElementById('searchButton');
+        const searchPanel = document.getElementById('searchPanel');
+        const closeButton = document.getElementById('closeSearch');
+        const searchOverlay = document.getElementById('Overlay');
+        const searchForm = searchPanel.querySelector('div');
+        const searchInput = searchPanel.querySelector('input[type="search"]');
+
+        function openSearch() {
+          searchOverlay.classList.remove('hidden');
+          searchPanel.classList.remove('hidden');
+          setTimeout(() => {
+            searchForm.classList.remove('scale-95', 'opacity-0');
+            searchForm.classList.add('scale-100', 'opacity-100');
+          }, 10);
+          document.body.classList.add('overflow-hidden');
+          searchInput.focus();
+        }
+
+        function closeSearch() {
+          searchForm.classList.remove('scale-100');
+          searchForm.classList.add('scale-95', 'opacity-0');
+          setTimeout(() => {
+            searchPanel.classList.add('hidden');
+            searchOverlay.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+          }, 300);
+        }
+
+        searchButton.addEventListener('click', openSearch);
+        closeButton.addEventListener('click', closeSearch);
+        searchOverlay.addEventListener('click', closeSearch);
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeSearch();
+        });
+      });
+    </script>
+
+<!--скрипт для splide -->
+
+      {hasGallery && (
+  <>
+<script>
+        import Splide from '@splidejs/splide'
+        import '@splidejs/splide/css'
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const main = document.querySelector('#main-slider');
+    const thumbs = document.querySelector('#thumbs');
+
+    if (main && thumbs) {
+      const mainSplide = new Splide(main, {
+        type: 'fade',
+        rewind: true,
+        pagination: false,
+        arrows: true,
+      });
+
+      const thumbsSplide = new Splide(thumbs, {
+        fixedWidth: 100,
+        fixedHeight: 70,
+        gap: 8,
+        rewind: true,
+        pagination: false,
+        arrows: false,
+        isNavigation: true,
+        focus: 'center',
+      });
+
+      mainSplide.sync(thumbsSplide);
+
+      thumbsSplide.mount();
+      mainSplide.mount();
+    } else {
+      // fallback: если нет парного слайдера, то просто запускаем все одиночные
+      document.querySelectorAll('.splide').forEach((el) => {
+        if (!el.id) {
+          new Splide(el).mount();
+        }
+      });
+    }
+  });
+</script>
+	</>
+)}
+
+<Lightbox />
