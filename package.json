@@ -45,6 +45,8 @@
     "@iconify-json/devicon": "^1.2.42",
     "@iconify-json/logos": "^1.2.9",
     "@iconify-json/simple-icons": "^1.2.48",
+    "@iconify-json/wi": "^1.2.1",
+    "@iconify/icons-wi": "^1.2.3",
     "@splidejs/splide": "^4.1.4",
     "astro": "^5.12.4",
     "astro-embed": "^0.9.0",

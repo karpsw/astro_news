@@ -1,123 +1,198 @@
 ---
-import type { NadvorDto, CityWeather, CityWeatherError } from '@/modules/wp-api-types';
-import { Tabs } from 'astro-tabs';
- import NadvoreCityPanel from '@/components/Widgets/NadvoreCityPanel.astro';
+import type { CityWeather, CityWeatherError, NadvorDto } from '@/modules/wp-api-types';
+import { Icon } from 'astro-icon/components';
+
 const { nadvore }: { nadvore?: NadvorDto } = Astro.props;
-
-export const extractDate = (raw: string): string => {
-  const match = raw.match(/^\d{2}\.\d{2}\.\d{4}/);
-  return match ? match[0] : '';
-};
-
 const cities = nadvore?.data ? Object.entries(nadvore.data) : [];
- 
 
+function formatDateTime(dateString: string): string {
+  // dateString: "27.08.2025 10:00"
+  const [day, month, yearAndTime] = dateString.split('.');
+  const [year, time] = yearAndTime.split(' '); 
+  const [hour, minute] = time.split(':').map(Number);
+
+  const date = new Date(Number(year), Number(month) - 1, Number(day), hour + 3, minute);
+
+  return date.toLocaleString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit'
+  });
+}
+
+
+// Определяем текущую иконку по JSON времени
+function getCurrentIcon(iconObj: { day: string; night: string }, currentTimeStr: string) {
+  const hour = parseInt(currentTimeStr.slice(11, 13), 10); // берём часы
+  return hour >= 6 && hour < 20 ? iconObj.day : iconObj.night;
+}
+
+// Для прогноза всегда день
+function getForecastIcon(iconObj: { day: string; night: string }) {
+  return iconObj.day;
+}
+
+// Определяем иконку ветра по реальной шкале Бофорта (м/с)
+function getWindIcon(speed: number): string {
+  if (speed <= 0.2) return 'wi:wind-beaufort-0';
+  if (speed <= 1.5) return 'wi:wind-beaufort-1';
+  if (speed <= 3.3) return 'wi:wind-beaufort-2';
+  if (speed <= 5.4) return 'wi:wind-beaufort-3';
+  if (speed <= 7.9) return 'wi:wind-beaufort-4';
+  if (speed <= 10.7) return 'wi:wind-beaufort-5';
+  if (speed <= 13.8) return 'wi:wind-beaufort-6';
+  if (speed <= 17.1) return 'wi:wind-beaufort-7';
+  if (speed <= 20.7) return 'wi:wind-beaufort-8';
+  if (speed <= 24.4) return 'wi:wind-beaufort-9';
+  if (speed <= 28.4) return 'wi:wind-beaufort-10';
+  if (speed <= 32.6) return 'wi:wind-beaufort-11';
+  return 'wi:wind-beaufort-12';
+}
+
+// Форматируем ветровую информацию
+function formatWind(wind: { speed: number; direction: string }) {
+  const iconName = getWindIcon(wind.speed);
+  return { iconName, text: `${wind.speed} м/с, ${wind.direction}` };
+}
 ---
 
-
-
-{nadvore && cities.length > 0 ? (
-  <div class="bg-white border border-gray-200 p-4 rounded-md mb-5">
-    <h3 class="text-md font-semibold text-gray-700 mb-2">Погода по городам</h3>
-    <p class="text-xs text-gray-500 mb-4">Обновлено: {nadvore.last_updated}</p>
-
-
-<Tabs>
-  	<Fragment slot={`tab-1`}>Минск</Fragment>
-		<Fragment slot={`panel-1`}>
-			<NadvoreCityPanel city={nadvore.data['Minsk'] as CityWeather} />
-		</Fragment>
-
-		<Fragment slot={`tab-2`}>Гомель</Fragment>
-		<Fragment slot={`panel-2`}>
-			<NadvoreCityPanel city={nadvore.data['Brest'] as CityWeather} />
-		</Fragment>
-
-		<Fragment slot={`tab-3`}>Гродно</Fragment>
-		<Fragment slot={`panel-3`}>
-			<NadvoreCityPanel city={nadvore.data['Harodnia'] as CityWeather} />
-		</Fragment>
-</Tabs>
-
-
- 
-
-    <!-- Контент -->
-    <div id="weather-tabs-content">
-
-
+{
+  nadvore && cities.length > 0 ? (
+   <div class="w-full flex items-center justify-between mt-3 mb-5 p-2 bg-sky-50">
+  <span class="font-bold">Погода в Беларуси</span>
+  <span class="text-xs text-gray-500">
+    Обновлено: {cities.length > 0 && 'error' in cities[0][1] === false ? formatDateTime((cities[0][1] as CityWeather).current.date) : '-'}
+  </span>
+</div>
+    <div class="tabset">
       {cities.map(([cityKey, city], i) => (
-        <div
-          id={`panel-${cityKey}`}
-          role="tabpanel"
-          aria-labelledby={`tab-${cityKey}`}
-          class={`${i === 0 ? 'block' : 'hidden'} p-4 bg-gray-50 border border-gray-200 rounded-md`}
-        >
-          {'error' in city ? (
-            <p class="text-red-600">Ошибка: {(city as CityWeatherError).error}</p>
-          ) : (
-            <div>
-              <div class="flex items-center gap-3 mb-3">
-                <img src={(city as CityWeather).current.icon} alt="" />
-                <div>
-                  <p class="text-lg font-semibold">{(city as CityWeather).name}</p>
-                  <p class="text-gray-600">{(city as CityWeather).current.condition}</p>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-3 gap-4 text-sm">
-                <div class="p-2 border rounded shadow-sm">
-                  <p class="font-medium">Сейчас</p>
-                  <p>{(city as CityWeather).current.temperature}</p>
-                  <p>Ощущается: {(city as CityWeather).current.feels_like}</p>
-                  <p>Ветер: {(city as CityWeather).current.wind.speed} м/с</p>
-                  <p>Влажность: {(city as CityWeather).current.humidity}%</p>
-                </div>
-
-                <div class="p-2 border rounded shadow-sm">
-                  <p class="font-medium">Завтра</p>
-                  <img src={(city as CityWeather).forecast_tomorrow.icon} alt="" />
-                  <p>
-                    {(city as CityWeather).forecast_tomorrow.max_temp} / {(city as CityWeather).forecast_tomorrow.min_temp}
-                  </p>
-                  <p>Ветер: {(city as CityWeather).forecast_tomorrow.wind_speed} м/с</p>
-                </div>
-
-                <div class="p-2 border rounded shadow-sm">
-                  <p class="font-medium">Послезавтра</p>
-                  <img src={(city as CityWeather).forecast_day_after.icon} alt="" />
-                  <p>
-                    {(city as CityWeather).forecast_day_after.max_temp} / {(city as CityWeather).forecast_day_after.min_temp}
-                  </p>
-                  <p>Ветер: {(city as CityWeather).forecast_day_after.wind_speed} м/с</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        <>
+          <input
+            type="radio"
+            name="tabset"
+            id={`tab-${cityKey}`}
+            aria-controls={`panel-${cityKey}`}
+            class="hidden"
+            checked={i === 0}
+          />
+          <label
+            for={`tab-${cityKey}`}
+            class="relative inline-block px-[0.4rem] py-1 cursor-pointer border border-transparent border-b-0"
+          >
+            {'error' in city ? cityKey : (city as CityWeather).name}
+          </label>
+        </>
       ))}
+
+      <div class="tab-panels mt-4">
+        {cities.map(([cityKey, city], i) => (
+          <section id={`panel-${cityKey}`} class="tab-panel hidden">
+            {'error' in city ? (
+              <p class="text-red-600">Ошибка: {(city as CityWeatherError).error}</p>
+            ) : (
+              <div>
+                {/* Сейчас */}
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                  <div class="flex flex-col items-center">
+                    <Icon
+                      name={getCurrentIcon(
+                        (city as CityWeather).current.icon,
+                        (city as CityWeather).current.date
+                      )}
+                      class="text-[3.5rem] mr-1"
+                      title={(city as CityWeather).current.condition}
+                    />
+                    <p class="mt-1 text-3xl font-semibold">{(city as CityWeather).current.temperature}°C</p>
+                  </div>
+                  <div class="flex flex-col items-end p-2 text-xs text-gray-500">
+                    <p class="font-medium text-tel-black">Сейчас:</p>
+                    <p class="text-gray-600">{(city as CityWeather).current.condition}</p>
+                    <p>Ощущается: {(city as CityWeather).current.feels_like}°C</p>
+                    <p class="flex items-center gap-1">
+                      <Icon name={formatWind((city as CityWeather).current.wind).iconName} class="text-3xl" />
+                      {formatWind((city as CityWeather).current.wind).text}
+                    </p>
+                    <p>Влажность: {(city as CityWeather).current.humidity}%</p>
+                  </div>
+                </div>
+
+                {/* Завтра и послезавтра */}
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                  {/* Завтра */}
+                  <div class="p-2 border rounded shadow-sm flex flex-col items-center">
+                    <p class="font-medium">Завтра:</p>
+                    <Icon
+                      name={getForecastIcon((city as CityWeather).forecast_tomorrow.icon)}
+                      class="text-3xl my-1"
+                      title={(city as CityWeather).forecast_tomorrow.icon.description}
+                    />
+                    <p>
+                      {(city as CityWeather).forecast_tomorrow.max_temp}°C / {(city as CityWeather).forecast_tomorrow.min_temp}°C
+                    </p>
+                    <p class="flex items-center gap-1">
+                      <Icon
+                        name={getWindIcon((city as CityWeather).forecast_tomorrow.wind_speed)}
+                        class="text-3xl"
+                      />
+                      {(city as CityWeather).forecast_tomorrow.wind_speed} м/с, {(city as CityWeather).forecast_tomorrow.wind_direction}
+                    </p>
+                  </div>
+
+                  {/* Послезавтра */}
+                  <div class="p-2 border rounded shadow-sm flex flex-col items-center">
+                    <p class="font-medium">Послезавтра:</p>
+                    <Icon
+                      name={getForecastIcon((city as CityWeather).forecast_day_after.icon)}
+                      class="text-3xl my-1"
+                      title={(city as CityWeather).forecast_day_after.icon.description}
+                    />
+                    <p>
+                      {(city as CityWeather).forecast_day_after.max_temp}°C / {(city as CityWeather).forecast_day_after.min_temp}°C
+                    </p>
+                    <p class="flex items-center gap-1">
+                      <Icon
+                        name={getWindIcon((city as CityWeather).forecast_day_after.wind_speed)}
+                        class="text-3xl"
+                      />
+                      {(city as CityWeather).forecast_day_after.wind_speed} м/с, {(city as CityWeather).forecast_day_after.wind_direction}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+        ))}
+      </div>
     </div>
-  </div>
-) : (
-  <p class="text-gray-500">Нет данных о погоде</p>
-)}
+  ) : (
+    <p class="text-gray-500">Нет данных о погоде</p>
+  )
+}
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const tabButtons = document.querySelectorAll("[data-tab-target]");
-    tabButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.getAttribute("data-tab-target");
-        const parent = btn.closest("#weather-tabs").parentNode;
+<style>
+  .tab-panel {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
 
-        parent.querySelectorAll("[role=tabpanel]").forEach((p) => p.classList.add("hidden"));
-        parent.querySelectorAll("[role=tab]").forEach((b) =>
-          b.classList.remove("border-blue-600", "text-blue-600")
-        );
+  .tabset > input:nth-of-type(1):checked ~ .tab-panels > .tab-panel:nth-of-type(1),
+  .tabset > input:nth-of-type(2):checked ~ .tab-panels > .tab-panel:nth-of-type(2),
+  .tabset > input:nth-of-type(3):checked ~ .tab-panels > .tab-panel:nth-of-type(3),
+  .tabset > input:nth-of-type(4):checked ~ .tab-panels > .tab-panel:nth-of-type(4),
+  .tabset > input:nth-of-type(5):checked ~ .tab-panels > .tab-panel:nth-of-type(5),
+  .tabset > input:nth-of-type(6):checked ~ .tab-panels > .tab-panel:nth-of-type(6) {
+    display: block;
+    opacity: 1;
+  }
 
-        document.querySelector(targetId).classList.remove("hidden");
-        btn.classList.add("border-blue-600", "text-blue-600");
-      });
-    });
-  });
-</script>
+  .tabset > input:checked + label {
+    @apply border-b-4 border-b-tel-red;
+  }
+
+  .tabset > label {
+    @apply text-tel-black;
+  }
+</style>
