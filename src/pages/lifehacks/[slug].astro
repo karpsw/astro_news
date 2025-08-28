@@ -1,0 +1,15 @@
+---
+import { getMarkdown } from '@/modules/post/getArchive';
+import News from '@/layouts/News.astro';
+import { checkCanonicalRedirect } from '@/utils/checkCanonicalRedirect';
+
+const { slug } = Astro.params;
+
+const { data, content } = await getMarkdown(slug!);
+const redirectUrl = await checkCanonicalRedirect(Astro.request, data.head_canonical!);
+if (redirectUrl && redirectUrl.length > 0) {
+  return Astro.redirect(redirectUrl);
+}
+---
+
+<News data={data} content={content} />

@@ -8,97 +8,86 @@ const { show = 'yes' } = Astro.props;
 
 {show === 'yes' && (
   <>
-    <!-- Скрипты и стили для рекламы -->
+  <script src="https://yandex.ru/ads/system/context.js"></script>
+  <script>window.yaContextCb = window.yaContextCb || [];</script>
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
+   <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
 
-     
-     <script src="https://yandex.ru/ads/system/context.js"></script>
-    <script>window.yaContextCb = window.yaContextCb || [];</script>
-    <script >
-      window.googletag = window.googletag || { cmd: [] };
-      googletag.cmd.push(function () {
-        if (window.innerWidth > 768) {
-          // десктопные слоты
-          googletag.defineSlot(
-            '/21857590943,22589559801/Telegraf.news/Telegraf.news_sidebar_300x600_desktop_1',
-            [
-              [300, 600],
-              [160, 600],
-              [336, 280],
-              [300, 300],
-              [300, 250],
-              [250, 250],
-              [240, 400]
-            ],
-            'div-gpt-ad-1747730133108-0'
-          )
-            .setCollapseEmptyDiv(true, true)
-            .addService(googletag.pubads());
-          // ... остальные слоты десктоп
-        } else {
-          // мобильные слоты
-          googletag.defineSlot(
-            '/21857590943,22589559801/Telegraf.news/Telegraf.news_mobile_300x300_art_top_small',
-            [
-              [336, 280],
-              [300, 300],
-              [300, 250],
-              [250, 250],
-              'fluid'
-            ],
-            'div-gpt-ad-1747662691143-0'
-          )
-            .setCollapseEmptyDiv(true, true)
-            .addService(googletag.pubads());
-          // ... остальные слоты мобильные
-        }
+<script>
+// Инициализация GPT
+window.googletag = window.googletag || {cmd: []};
+  
+googletag.cmd.push(function() {
+  if (window.innerWidth > 768) {
+    // десктопные 
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_sidebar_300x600_desktop_1', [[300, 600], [160,600], [336, 280], [300, 300], [300,250], [250, 250], [240, 400]], 'Sidebar3').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_desktop_300x600_2', [[300, 600], [160,600], [336, 280], [300, 300], [300,250], [250, 250], [240, 400]], 'div-gpt-ad-1747663107763-0').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_desktop_rastyazhka_970x250', [[728, 250], [728, 120], [728, 90], [468, 60], 'fluid'], 'div-gpt-ad-1747663213436-0').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_statya_970x250_desktop_1', [[728, 250], [728, 120], [728, 90], [468, 60], 'fluid'], 'div-gpt-ad-1747729427039-0').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_statya_970x250_desktop_2', [[728, 250], [728, 120], [728, 90], [468, 60], 'fluid'], 'div-gpt-ad-1747729714263-0').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
+  } else {
+    // мобильные
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_mobile_300x300_art_top_small', [[336, 280], [300, 300], [300, 250], [250, 250], 'fluid'], 'ArticleInText1').setCollapseEmptyDiv(true, true).addService(googletag.pubads());   
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_mobile_300x250_art_end', [[336, 280], [300, 300], [300, 250], [250, 250], 'fluid'], 'div-gpt-ad-1747662576886-0').setCollapseEmptyDiv(true, true).addService(googletag.pubads());    
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_mobile_300x250_art_longread', [[336, 280], [300, 300], [300, 250], [250, 250], 'fluid'], 'div-gpt-ad-1747663056949-0').setCollapseEmptyDiv(true, true).addService(googletag.pubads());  
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_longread_300x300_mobile', [[336, 280], [300, 300], [300, 250], [250, 250], 'fluid'], 'div-gpt-ad-1747729867173-0').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/Telegraf.news_longread_300x300_mobile_2', [[336, 280], [300, 300], [300, 250], [250, 250], 'fluid'], 'div-gpt-ad-1747729940696-0').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
+    // back лента новостей + infinit
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/mobile_300x300_infinity_1', [[300, 300], [336, 280], [250, 250], [300, 250], 'fluid'], 'pikach-1').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/mobile_300x300_infinity_2', [[300, 300], [336, 280], [250, 250], [300, 250], 'fluid'], 'pikach-3').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
+    googletag.defineSlot('/21857590943,22589559801/Telegraf.news/mobile_300x300_infinity_3', [[300, 300], [336, 280], [250, 250], [300, 250], 'fluid'], 'pikach-5').setCollapseEmptyDiv(true, true).addService(googletag.pubads()); 
+  }
+  googletag.pubads().enableSingleRequest();
+  googletag.pubads().enableLazyLoad(); 
+  googletag.pubads().collapseEmptyDivs();
+  googletag.enableServices();
+});
+  
+// Функция для загрузки и отображения нижнего стикера
+let adLoaded = false;
+let scrollHandlerAdded = true;
 
-        googletag.pubads().enableSingleRequest();
-        googletag.pubads().enableLazyLoad();
-        googletag.pubads().collapseEmptyDivs();
-        googletag.enableServices();
-      });
+function loadFloorAd() {
+  // Отключаем обработчик скролла после первого срабатывания
+  if (scrollHandlerAdded) {
+    window.removeEventListener('scroll', throttledScrollCheck);
+    scrollHandlerAdded = false;
+  }
 
-      // Floor ad для мобильных
-      let adLoaded = false;
-      let scrollHandlerAdded = true;
+  // Загружаем рекламу только для мобильных устройств
+  if (window.innerWidth >= 991) return;
 
-      function loadFloorAd() {
-        if (scrollHandlerAdded) {
-          window.removeEventListener('scroll', throttledScrollCheck);
-          scrollHandlerAdded = false;
-        }
-        if (window.innerWidth >= 991) return;
+  googletag.cmd.push(function() {
+    const anchorSlot = googletag.defineOutOfPageSlot(
+      '/21857590943,22589559801/Telegraf.news/Telegraf.news_floor_ad_mobile',
+      googletag.enums.OutOfPageFormat.BOTTOM_ANCHOR
+    );
 
-        googletag.cmd.push(function () {
-          const anchorSlot = googletag.defineOutOfPageSlot(
-            '/21857590943,22589559801/Telegraf.news/Telegraf.news_floor_ad_mobile',
-            googletag.enums.OutOfPageFormat.BOTTOM_ANCHOR
-          );
+    if (anchorSlot) {
+      anchorSlot.addService(googletag.pubads());
+      googletag.display(anchorSlot);
+      adLoaded = true; // Помечаем как загруженную
+    }
+  });
+}
 
-          if (anchorSlot) {
-            anchorSlot.addService(googletag.pubads());
-            googletag.display(anchorSlot);
-            adLoaded = true;
-          }
-        });
-      }
+// Функция throttle для оптимизации обработки скролла
+let isThrottled = false;
+function throttledScrollCheck() {
+  if (isThrottled) return;
+  
+  isThrottled = true;
+  requestAnimationFrame(() => {
+    isThrottled = false;
+    // Проверяем, проскроллили ли 20% страницы
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.16) {
+      loadFloorAd();
+    }
+  });
+}
 
-      let isThrottled = false;
-      function throttledScrollCheck() {
-        if (isThrottled) return;
-        isThrottled = true;
-        requestAnimationFrame(() => {
-          isThrottled = false;
-          if (
-            window.innerHeight + window.scrollY >=
-            document.body.offsetHeight * 0.16
-          ) {
-            loadFloorAd();
-          }
-        });
-      }
-
-      window.addEventListener('scroll', throttledScrollCheck);
-    </script>
+// Добавляем оптимизированный обработчик
+window.addEventListener('scroll', throttledScrollCheck);
+</script>
   </>
 )}

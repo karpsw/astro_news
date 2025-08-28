@@ -1,0 +1,61 @@
+---
+// сайдбар 3
+
+interface Props {
+  show?: 'yes' | 'no';
+}
+
+const { show = 'yes' } = Astro.props;
+---
+
+{show === 'yes' && (
+  <>
+<div id="sticky-top" class="sticky top-10 w-full bg-white hidden md:block">
+  <div id="Sidebar3"></div>
+</div>
+
+
+<script>
+  const isMobile = window.innerWidth < 768;
+  let adfoxLoaded = false; // флаг успешной загрузки AdFox
+  const containerId = 'Sidebar3';
+  const container = document.getElementById(containerId);
+
+  function DesktopPikachu() {
+      window.yaContextCb.push(()=>{
+        Ya.adfoxCode.createAdaptive({
+            ownerId: 239538,
+            containerId: containerId,
+            params: {
+                p1: 'dhfgp',
+                p2: 'fgou',
+                puid5:0
+            },
+          onLoad: function(data) {
+          adfoxLoaded = true;
+          },
+        }, ['desktop'], {
+            tabletWidth: 992,
+            phoneWidth: 768,
+            isAutoReloads: false
+        })
+    })
+
+   setTimeout(() => {
+      if (!adfoxLoaded) {
+        googletag.cmd.push(() => googletag.display(containerId));
+      }
+    }, 1000);
+}
+
+  if (container) {
+    if (!isMobile) {
+      DesktopPikachu();
+    }
+  }
+</script>
+
+  </>
+)}
+
+

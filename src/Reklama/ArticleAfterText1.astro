@@ -1,0 +1,55 @@
+---
+// после текста новости #1
+interface Props {
+  show?: 'yes' | 'no';
+}
+
+const { show = 'yes' } = Astro.props;
+---
+
+{show === 'yes' && (
+  <>
+
+<aside id="ArticleAfterText1"></aside>
+
+<script>
+  const DeskHtml = '<div id="div-gpt-ad-1747729427039-0"></div>';
+  const MobHtml = '<div id="div-gpt-ad-1747662576886-0"></div>';
+  const isMobile = window.innerWidth < 768;
+  let adfoxLoaded = false; // флаг успешной загрузки AdFox
+  const containerId = 'ArticleAfterText1';
+  const container = document.getElementById(containerId);
+
+  function MobilePikachu() {
+    setTimeout(() => {
+      if (!adfoxLoaded) {
+        googletag.cmd.push(() => googletag.display('div-gpt-ad-1747662576886-0'));
+      }
+    }, 1000);
+  }
+
+   function DesktopPikachu() {
+    setTimeout(() => {
+      if (!adfoxLoaded) {
+        googletag.cmd.push(() => googletag.display('div-gpt-ad-1747729427039-0'));
+      }
+    }, 1000);
+  }
+
+   function InsertHTML (container,Html) {
+     container.innerHTML = Html;
+  }
+
+  if (container) {
+    if (isMobile) {
+      InsertHTML (container, MobHtml);
+      MobilePikachu();
+    } else {
+      InsertHTML (container, DeskHtml);
+      DesktopPikachu();
+    }
+  }
+</script>
+
+  </>
+)}

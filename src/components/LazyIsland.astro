@@ -1,10 +1,22 @@
 ---
-const { url = '/fragments/lazy-block' } = Astro.props;
+const { url = '/fragments/lazy-block', wrap = 'aside' } = Astro.props;
 ---
 
-<aside class="lazy-island" data-url={url}>
-  <div class="lazy-fallback"><slot /></div>
-</aside>
+{
+  wrap === 'div' ? (
+    <div class="lazy-island" data-url={url}>
+      <div class="lazy-fallback">
+        <slot />
+      </div>
+    </div>
+  ) : (
+    <aside class="lazy-island" data-url={url}>
+      <div class="lazy-fallback">
+        <slot />
+      </div>
+    </aside>
+  )
+}
 
 <script>
   const observer = new IntersectionObserver(

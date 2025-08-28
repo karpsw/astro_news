@@ -30,7 +30,7 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
       case NewsPostCardLayout.variant1:
         return (
           <article class="bg-white rounded-lg shadow hover:shadow-md transition overflow-hidden relative">
-            <h3 class="text-lg font-semibold text-gray-800 hover:text-blue-600 transition px-4 mb-4 pt-4">
+            <h3 class="text-lg font-semibold text-gray-800 transition px-4 mb-4 pt-4">
               <a href={wrapUrl(post.url)}>{decode(post.title)}</a>
             </h3>
             <a href={wrapUrl(post.url)} class="block relative mb-0 pb-0">
@@ -54,7 +54,7 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
               />
               <LabelPost label={post.label} position="absolute bottom-0 left-0" />
             </a>
-            <h3 class="text-lg font-semibold text-gray-800 hover:text-blue-600 transition px-4 pt-4 line-clamp-4">
+            <h3 class="text-lg font-semibold text-gray-800 transition px-4 pt-4 line-clamp-4">
               <a href={wrapUrl(post.url)}>{decode(post.title)}</a>
             </h3>
             {post.lid && (
@@ -76,7 +76,7 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
               />
               <LabelPost label={post.label} position="absolute bottom-0 left-0" />
             </a>
-            <h3 class="text-lg font-semibold text-gray-800 hover:text-blue-600 transition p-4">
+            <h3 class="text-lg font-semibold text-gray-800 transition p-4">
               <a href={wrapUrl(post.url)}>{decode(post.title)}</a>
             </h3>
           </article>
@@ -99,7 +99,7 @@ const { post, layout = NewsPostCardLayout.variant1 } = Astro.props;
             <div class="w-2/3 p-3 flex flex-col">
               <!-- Заголовок и лейбл в одной строке -->
               <div class="flex items-start gap-2 mb-2">
-                <h3 class="text-sm font-semibold text-gray-800 hover:text-blue-600 transition flex-1 line-clamp-4">
+                <h3 class="text-sm font-semibold text-gray-800 transition flex-1 line-clamp-4">
                   <a href={wrapUrl(post.url)}>{decode(post.title)}  <LabelPost label={post.label} variant={LabelPostVariant.outlined} position="static" /> </a>
                 </h3>
                
