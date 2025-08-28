@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
 
 import Podpiska from '@/components/Podpiska.astro';
@@ -10,30 +11,37 @@ import Avatar from '@/assets/images/logotelegrafbel.svg';
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="bg-tel-black text-white mt-5" role="contentinfo">
+<footer class="bg-tel-black text-white my-5" role="contentinfo">
   <div class="container py-3">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 md:mb-0">
       <!-- Левая колонка -->
-      <div class="md:w-1/2 mb-4 md:mb-0">
-        <a href="/" class="inline-block mb-2">
-          <Image
-            {...IMAGE_SIZES.FIXED.AVATAR}
-            loading="lazy"
-            class="shrink-0 select-none"
-            src={Avatar}
-            alt="Telegraf.news"
-          />
-        </a>
-
+      <div class="md:w-1/2 mb-4 md:mb-0 gap-4">
+        <div class="flex items-center mb-2">
+          <a href="/" class="inline-block">
+            <Image
+              {...IMAGE_SIZES.FIXED.AVATAR}
+              loading="lazy"
+              class="shrink-0 select-none mr-2"
+              src={Avatar}
+              alt="Telegraf.news"
+            />
+          </a>
+          <button id="searchButton2" class="inline-block">
+            <Icon name="mdi:magnify" class="text-white text-xl" />
+          </button>
+        </div>
         <p class="text-sm text-white">
           &copy; 2005 - {currentYear} Телеграф - новости Беларуси и мира.
         </p>
+        <p class="text-xs">
+          При использовании информации Telegraf.news активная ссылка обязательна
+        </p>
 
-        <div class="text-xs text-white space-y-1 mt-2">
+        <div class="text-xs text-white space-y-1 mt-4">
           <p>ЧИУП «АГЕНТСТВО «ТЕЛЕГРАФ». УНП: 191309537</p>
           <p>220035, г. Минск, ул. Тимирязева, д. 65Б</p>
           <p>В Реестре рекламораспространителей МАРТ РБ: 1398</p>
-          <p>При использовании информации Telegraf.news активная ссылка обязательна</p>
+
           <p>E-mail рекламного отдела: reklama@telegraf.news</p>
         </div>
       </div>
@@ -53,18 +61,6 @@ const currentYear = new Date().getFullYear();
           </a>
           <a href="/redakciya/" class="text-sm text-white hover:text-red-600 transition-colors">
             О сайте
-          </a>
-          <a
-            href="#"
-            class="text-sm text-white hover:text-red-600 transition-colors"
-            aria-label="Поиск по сайту"
-          >
-            <svg width="16" height="16" viewBox="0 0 640 640" class="inline-block">
-              <path
-                fill="#CC0000"
-                d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z"
-              ></path>
-            </svg>
           </a>
         </nav>
 
