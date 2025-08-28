@@ -15,8 +15,13 @@ import { zNewsPostSchema } from '@/schemas/archive'
 import { zMetaHead } from '@/schemas/meat-head'
 
 import type { NewsArticle, WithContext } from 'schema-dts'
+import HtmlHead from 'Reklama/HtmlHead.astro'
 
 const { data }: { data: unknown } = Astro.props;
+
+//показывать рекламу или нет
+const vyklReklama = data.vyklreklama;
+
 const parsedMeta = zMetaHead.safeParse(data);
 const parsedNews = zNewsPostSchema.safeParse(data);
 
@@ -152,9 +157,10 @@ const structuredData: WithContext<NewsArticle> | any = parsedNews.success
   <meta name="yandex-verification" content="aa13d5ad2ccb3319" />
   <meta name="verify-admitad" content="21013d433a" />
 
- 
-  <!-- <ThemeScript />-->
-
   <ClientRouter fallback="none" />
+
+    <!-- Пикачу -->
+   {!vyklReklama && <HtmlHead />}   
+  
 
 </head>

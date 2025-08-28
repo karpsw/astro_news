@@ -2,6 +2,8 @@
 import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
 
+import HtmlFooter from 'Reklama/HtmlFooter.astro';
+
 import Footer from '@/components/Footer.astro';
 import FooterScripts from '@/components/FooterScripts.astro';
 import FooterScriptsGallery from '@/components/FooterScriptsGallery.astro';
@@ -16,6 +18,8 @@ import Avatar from '@/assets/images/logotelegrafbel.svg';
 
 const SiteUrl = wrapUrl(CONFIG_CLIENT.SITE_URL);
 
+const { vyklReklama = 0 } = Astro.props;
+
 const { hasGallery = false } = Astro.props;
 const data = Astro.props;
 
@@ -24,7 +28,7 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
 // Список ссылок для меню
 const menuLinks = [
   { href: wrapUrl('https://telegraf.news/hashtag/belarus/'), label: 'Беларусь' },
-  { href: wrapUrl('/world-news/'), label: 'Мир' },
+  { href: wrapUrl('https://telegraf.news/world-news/'), label: 'Мир' },
   { href: wrapUrl('https://telegraf.news/obshhestvo/'), label: 'Общество' },
   { href: wrapUrl('https://telegraf.news/politika/'), label: 'Политика' },
   { href: wrapUrl('https://telegraf.news/ehkonomika/'), label: 'Экономика' },
@@ -130,6 +134,8 @@ const menuLinks = [
     <slot />
     <Footer />
     <FooterScripts />
+    <!-- пикачу -->
+    {!vyklReklama && <HtmlFooter />}
     {hasGallery && <FooterScriptsGallery />}
   </body>
 </html>

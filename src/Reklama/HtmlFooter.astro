@@ -1,0 +1,78 @@
+---
+interface Props {
+  show?: 'yes' | 'no';
+}
+
+const { show = 'yes' } = Astro.props;
+---
+
+{show === 'yes' && (
+  <>
+    <!--AdFox START-->
+<!--dsail-Minsk-->
+<!--Площадка: Dsail - Telegraf.news - Fullscreen Mobile / Dsail - Telegraf.news - Fullscreen Mobile / Dsail - Telegraf.news - Fullscreen Mobile-->
+<!--Категория: прямая реклама + проверка google INTERSTITIAL -->
+<!--Тип баннера: Fullscreen_mobile-->
+<script>
+window.addEventListener('load', function() {
+   
+   window.googletag = window.googletag || {cmd: []};
+  let interstitialSlot = null;
+    let adfoxLoaded = false;
+    
+     googletag.cmd.push(function() {
+         googletag.pubads().enableSingleRequest();
+         googletag.pubads().collapseEmptyDivs();
+        
+        if (window.innerWidth < 768) {
+            interstitialSlot = googletag.defineOutOfPageSlot(
+                '/21857590943,22589559801/Telegraf.news/Telegraf.news_fullscreen_mobile',                 
+              googletag.enums.OutOfPageFormat.INTERSTITIAL
+            );
+             
+             if (interstitialSlot) {
+                interstitialSlot.addService(googletag.pubads());
+             }
+        }
+         googletag.enableServices();
+     });
+    
+     function displayGoogleInterstitial() {
+        if (interstitialSlot && !adfoxLoaded && window.innerWidth < 768) {
+            googletag.cmd.push(function() {
+                 googletag.display(interstitialSlot);
+            });
+         }
+    }
+    
+    window.yaContextCb.push(() => {
+        Ya.adfoxCode.create({
+            ownerId: 239538,
+            containerId: 'adfox_Fullscreen_mobile',
+            type: 'fullscreen',
+            params: {
+                p1: 'dfvvm',
+                p2: 'fixs',
+            },
+            onLoad: function() {
+                adfoxLoaded = true;
+                // console.log('AdFox loaded successfully');
+            },
+            onError: function() {
+                // console.log('AdFox failed to load, trying Google');
+                displayGoogleInterstitial();
+            },
+            onStub: function() {
+                //console.log('AdFox stub created, but ad not loaded');
+                displayGoogleInterstitial();
+            }
+        });
+        
+        //setTimeout(displayGoogleInterstitial, 3000);
+    });
+});
+</script>
+
+<div id="adfox_Fullscreen_mobile"></div>
+  </>
+)}
