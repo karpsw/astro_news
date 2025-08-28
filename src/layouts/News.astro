@@ -12,6 +12,7 @@ import Share from '@/components/Share.astro';
 import Telepicture from '@/components/Telepicture.astro';
 import { telDate } from '@/utils/datetime';
 import { renderMarkdown } from '@/utils/markdown';
+import { wrapUrl } from '@/utils/urls';
 import NewsBase from './NewsBase.astro';
 
 // для новости
@@ -34,7 +35,7 @@ const hasGallery = contentHtml.indexOf('splide') > 0;
 
 const authorName = data.avtor_name?.trim() ? data.avtor_name : 'Редакция';
 
-const authorUrl = 'https://telegraf.news/redakciya/';
+const authorUrl = wrapUrl('https://telegraf.news/redakciya/');
 ---
 
 <NewsBase {...data} hasGallery={hasGallery}>
@@ -78,12 +79,12 @@ const authorUrl = 'https://telegraf.news/redakciya/';
 
               {
                 (data.category || (tags && tags.length > 0)) && (
-                  <div class="text-gray-900 font-medium flex flex-wrap md:flex-nowrap items-center md:justify-end md:overflow-hidden md:whitespace-nowrap md:ml-4">
+                  <div class="text-gray-900 font-medium flex flex-wrap md:flex-nowrap items-center md:justify-start md:overflow-hidden md:whitespace-nowrap md:ml-4">
                     {data.category && (
                       <a
                         rel="tag"
                         class="bg-slate-100 hover:bg-slate-200 p-1 mr-1"
-                        href={data.category_slug}
+                        href={wrapUrl(data.category_slug)}
                         title={`#${data.category}`}
                       >
                         #{data.category}
@@ -98,7 +99,7 @@ const authorUrl = 'https://telegraf.news/redakciya/';
                           tag?.slug && (
                             <a
                               rel="tag"
-                              href={tag.slug}
+                              href={wrapUrl(tag.slug)}
                               class="bg-slate-100 p-1 hover:bg-slate-200 mr-1"
                               title={`#${tag.name}`}
                             >
