@@ -43,6 +43,7 @@
     "@astrojs/vercel": "^8.2.3",
     "@fontsource-variable/inter": "^5.2.6",
     "@iconify-json/devicon": "^1.2.42",
+    "@iconify-json/hugeicons": "^1.2.14",
     "@iconify-json/logos": "^1.2.9",
     "@iconify-json/simple-icons": "^1.2.48",
     "@iconify-json/wi": "^1.2.1",

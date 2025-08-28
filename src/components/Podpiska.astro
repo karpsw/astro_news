@@ -10,21 +10,28 @@ const { theme = 'default', title = 'Подпишитесь на Телеграф
 
 // Определяем классы в зависимости от темы
 const getContainerClasses = () => {
-  const baseClasses = 'w-full flex items-center justify-between mt-4 p-2 rounded';
+  const baseClasses = 'w-full flex items-center';
 
   if (theme === 'black') {
-    return `${baseClasses} bg-transparent`;
+    return `${baseClasses} bg-transparent justify-center md:justify-end mt-2`;
   }
 
-  return `${baseClasses} bg-sky-50`;
+  return `${baseClasses} bg-sky-50 justify-between`;
 };
 
 const getTextClasses = () => {
   if (theme === 'black') {
-    return 'mr-2 font-semibold text-white';
+    return 'mr-2 font-semibold text-white mt-0';
   }
 
-  return 'mr-2 font-semibold text-gray-800';
+  return 'mr-2 font-semibold text-gray-800 mt-4 p-2';
+};
+
+const getIconClasses = () => {
+  if (theme === 'black') {
+    return 'text-white ';
+  }
+  return '';
 };
 ---
 
@@ -68,7 +75,7 @@ const getTextClasses = () => {
       aria-label="Подписаться в X"
       class="hover:opacity-80 transition-opacity"
     >
-      <Icon name="devicon:twitter" class="text-[19px] mr-2" />
+      <Icon name="hugeicons:new-twitter-rectangle" class={`text-[24px] mr-1 ${getIconClasses()}`} />
     </a>
 
     <a
@@ -78,7 +85,7 @@ const getTextClasses = () => {
       aria-label="Подписаться RSS"
       class="hover:opacity-80 transition-opacity"
     >
-      <Icon name="mdi:rss" class="mr-2 text-[29px] text-orange-600" />
+      <Icon name="mdi:rss" class="text-[29px] text-orange-600" />
     </a>
   </div>
 </div>
