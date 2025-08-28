@@ -51,16 +51,17 @@ const authorUrl = wrapUrl('https://telegraf.news/redakciya/');
             {data.title}
           </h1>
           <div class="flex flex-wrap justify-between items-center text-xs">
-            <div class="w-full grid grid-cols-1 md:grid-cols-2">
+            <div class="w-full grid grid-cols-1 md:grid-cols-[auto_1fr] gap-2">
+              <!-- Левый блок: дата, автор, label -->
               <div
-                class="mb-2 md:mb-0 grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] items-center"
+                class="w-full grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] md:flex md:flex-nowrap"
               >
                 {
                   data.date && (
                     <time
                       itemprop="datePublished"
                       datetime={telDate(data.date)}
-                      class="bg-cyan-700 p-1 text-center text-white"
+                      class="bg-cyan-700 p-1 text-center text-white p-2"
                     >
                       {telDate(data.date)}
                     </time>
@@ -69,7 +70,7 @@ const authorUrl = wrapUrl('https://telegraf.news/redakciya/');
 
                 <a
                   href={authorUrl}
-                  class="bg-slate-500 px-3 py-1 text-center text-white hover:bg-slate-600 transition-colors overflow-hidden truncate"
+                  class="bg-slate-500 px-3 p-2 text-center text-white hover:bg-slate-600 transition-colors overflow-hidden truncate"
                 >
                   {authorName}
                 </a>
@@ -77,14 +78,15 @@ const authorUrl = wrapUrl('https://telegraf.news/redakciya/');
                 {data.label && <LabelPost label={data.label} />}
               </div>
 
+              <!-- Правый блок: категория + теги -->
               {
                 (data.category || (tags && tags.length > 0)) && (
-                  <div class="text-gray-900 font-medium flex flex-wrap md:flex-nowrap items-center md:justify-start md:overflow-hidden md:whitespace-nowrap md:ml-4">
+                  <div class="flex flex-wrap items-center gap-1 w-full">
                     {data.category && (
                       <a
                         rel="tag"
-                        class="bg-slate-100 hover:bg-slate-200 p-1 mr-1"
                         href={wrapUrl(data.category_slug)}
+                        class="bg-slate-100 hover:bg-slate-200 p-1"
                         title={`#${data.category}`}
                       >
                         #{data.category}
@@ -100,8 +102,9 @@ const authorUrl = wrapUrl('https://telegraf.news/redakciya/');
                             <a
                               rel="tag"
                               href={wrapUrl(tag.slug)}
-                              class="bg-slate-100 p-1 hover:bg-slate-200 mr-1"
+                              class="bg-slate-100 p-1 hover:bg-slate-200"
                               title={`#${tag.name}`}
+                              key={tag.slug}
                             >
                               #{tag.name}
                             </a>
@@ -111,6 +114,7 @@ const authorUrl = wrapUrl('https://telegraf.news/redakciya/');
                 )
               }
             </div>
+
             <!-- Мета-информация -->
 
             <!-- Image Placeholder -->

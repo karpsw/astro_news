@@ -37,7 +37,7 @@ const menuLinks = [
 
 <html lang="ru-BY">
   <BaseHead {data} />
-  <body class="bg-white min-h-screen text-tel-black font-sans text-[16px]">
+  <body class="flex flex-col min-h-screen text-tel-black font-sans text-[16px] bg-white">
     <!-- Header -->
     <header id={SCROLL_TO_TOP_ID} class="bg-tel-black sticky top-0 z-50">
       <div class="container h-10 flex items-center justify-between">
@@ -95,7 +95,7 @@ const menuLinks = [
         <!-- Поиск и оверлей (без изменений) -->
         <div id="searchPanel" class="fixed w-full justify-center left-0 p-2 z-50 hidden">
           <div
-            class="relative top-[4.5rem] pt-5 max-w-lg w-full bg-tel-black shadow-lg overflow-hidden transform transition-all duration-300 ease-in-out scale-95 opacity-0"
+            class="relative top-[4.5rem] pt-5 max-w-lg w-full bg-tel-black shadow-lg mx-auto overflow-hidden transform transition-all duration-300 ease-in-out scale-95 opacity-0"
           >
             <form role="search" method="get" action="https://telegraf.news//poisk/" class="p-4">
               <div class="flex gap-2">
