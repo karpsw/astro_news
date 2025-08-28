@@ -1,0 +1,51 @@
+---
+import CoookieConsent from '@/components/CoookieConsent.astro';
+import Lightbox from '@/components/Telebox.astro';
+
+//   Служебные скрипты
+
+const { hasGallery = false } = Astro.props;
+---
+
+<script>
+  import Splide from '@splidejs/splide';
+
+  import '@splidejs/splide/css';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const main = document.querySelector('#main-slider');
+    const thumbs = document.querySelector('#thumbs');
+
+    if (main && thumbs) {
+      const mainSplide = new Splide(main, {
+        type: 'fade',
+        rewind: true,
+        pagination: false,
+        arrows: true,
+      });
+
+      const thumbsSplide = new Splide(thumbs, {
+        fixedWidth: 100,
+        fixedHeight: 70,
+        gap: 8,
+        rewind: true,
+        pagination: false,
+        arrows: false,
+        isNavigation: true,
+        focus: 'center',
+      });
+
+      mainSplide.sync(thumbsSplide);
+
+      thumbsSplide.mount();
+      mainSplide.mount();
+    } else {
+      // fallback: если нет парного слайдера, то просто запускаем все одиночные
+      document.querySelectorAll('.splide').forEach((el) => {
+        if (!el.id) {
+          new Splide(el).mount();
+        }
+      });
+    }
+  });
+</script>

@@ -5,6 +5,7 @@ import { Image } from 'astro:assets';
 import Footer from '@/components/Footer.astro';
 import BaseHead from '@/components/NewsHead.astro';
 import FooterScripts from '@/components/utils/FooterScripts.astro';
+import FooterScriptsGallery from '@/components/utils/FooterScriptsGallery.astro';
 import { SELECTORS } from '@/constants/dom';
 import { IMAGE_SIZES } from '@/constants/image';
 import { CONFIG_CLIENT } from '@/config/client';
@@ -119,6 +120,7 @@ const menuLinks = [
 
     <slot />
     <Footer />
-    <FooterScripts hasGallery={hasGallery} />
+    <FooterScripts />
+    {hasGallery && <FooterScriptsGallery />}
   </body>
 </html>
