@@ -9,7 +9,7 @@ const configClientData: ConfigClientType = {
   /** all urls without '/' */
   SITE_URL,
   /** same for all environments, defined here, not env var */
-  SITE_URL_CANONICAL: 'https://telegraf.news/',
+
   SITE_TITLE: 'Nemanja Mitic',
   SITE_DESCRIPTION: 'I am Nemanja, a full stack developer',
   PLAUSIBLE_SCRIPT_URL,

@@ -3,16 +3,17 @@ import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
 
 import Footer from '@/components/Footer.astro';
+import FooterScripts from '@/components/FooterScripts.astro';
+import FooterScriptsGallery from '@/components/FooterScriptsGallery.astro';
 import BaseHead from '@/components/NewsHead.astro';
-import FooterScripts from '@/components/utils/FooterScripts.astro';
-import FooterScriptsGallery from '@/components/utils/FooterScriptsGallery.astro';
 import { SELECTORS } from '@/constants/dom';
 import { IMAGE_SIZES } from '@/constants/image';
 import { CONFIG_CLIENT } from '@/config/client';
+import { wrapUrl } from '@/utils/urls';
 
 import Avatar from '@/assets/images/logotelegrafbel.svg';
 
-const canonicalURL = CONFIG_CLIENT.SITE_URL_CANONICAL;
+const canonicalURL = wrapUrl(CONFIG_CLIENT.SITE_URL);
 
 const { hasGallery = false } = Astro.props;
 const data = Astro.props;
@@ -21,15 +22,15 @@ const { SCROLL_TO_TOP_ID } = SELECTORS;
 
 // Список ссылок для меню
 const menuLinks = [
-  { href: 'https://telegraf.news/hashtag/belarus/', label: 'Беларусь' },
-  { href: 'https://telegraf.news/world-news/', label: 'Мир' },
-  { href: 'https://telegraf.news/obshhestvo/', label: 'Общество' },
-  { href: 'https://telegraf.news/politika/', label: 'Политика' },
-  { href: 'https://telegraf.news/ehkonomika/', label: 'Экономика' },
-  { href: 'https://telegraf.news/zdorove/', label: 'Здоровье' },
-  { href: 'https://telegraf.news/lifehacks/', label: 'Лайфхаки' },
-  { href: 'https://telegraf.news/auto/', label: 'Авто' },
-  { href: 'https://telegraf.news/proisshestviya/', label: 'Происшествия' },
+  { href: wrapUrl('https://telegraf.news/hashtag/belarus/'), label: 'Беларусь' },
+  { href: wrapUrl('/world-news/'), label: 'Мир' },
+  { href: wrapUrl('https://telegraf.news/obshhestvo/'), label: 'Общество' },
+  { href: wrapUrl('https://telegraf.news/politika/'), label: 'Политика' },
+  { href: wrapUrl('https://telegraf.news/ehkonomika/'), label: 'Экономика' },
+  { href: wrapUrl('https://telegraf.news/zdorove/'), label: 'Здоровье' },
+  { href: wrapUrl('https://telegraf.news/lifehacks/'), label: 'Лайфхаки' },
+  { href: wrapUrl('https://telegraf.news/auto/'), label: 'Авто' },
+  { href: wrapUrl('https://telegraf.news/proisshestviya/'), label: 'Происшествия' },
 ];
 ---
 

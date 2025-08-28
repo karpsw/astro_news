@@ -1,6 +1,6 @@
 ---
-import '@fontsource-variable/inter/index.css';
 import '@/styles/main.css';
+import '@fontsource-variable/inter/index.css';
 
 import { ClientRouter } from 'astro:transitions';
 
@@ -13,7 +13,7 @@ import { filterUndefined } from '@/utils/objects';
 
 import type { Metadata } from '@/types/common';
 
-const { SITE_URL_CANONICAL, AUTHOR_NAME, PLAUSIBLE_SCRIPT_URL, PLAUSIBLE_DOMAIN } = CONFIG_CLIENT;
+const { SITE_URL, AUTHOR_NAME, PLAUSIBLE_SCRIPT_URL, PLAUSIBLE_DOMAIN } = CONFIG_CLIENT;
 
 export interface BaseHeadProps {
   metadata: Metadata;
@@ -28,7 +28,7 @@ const { url } = Astro; // objects
 const { host, pathname, search } = url; // host - nemanjamitic.com
 
 // replace host - all deployments point to single canonical deployment url
-const canonicalUrl = new URL(`${pathname}${search}`, SITE_URL_CANONICAL);
+const canonicalUrl = new URL(`${pathname}${search}`, SITE_URL);
 
 const handledMetadata = handleTitle(metadata);
 
