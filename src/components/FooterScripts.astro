@@ -10,50 +10,74 @@ import Lightbox from '@/components/Telebox.astro';
   client:idle></script>
 
 <script>
-  // JS для мобильного меню и поиска — оставляем как есть
   document.addEventListener('DOMContentLoaded', () => {
+    // --- Мобильное меню ---
     const menuButton = document.getElementById('mobileMenuButton');
+    const menuButtonСlose = document.getElementById('closeMenu');
     const mobileMenu = document.getElementById('mobileMenu');
-    const menuOverlay = document.getElementById('Overlay');
+    const overlay = document.getElementById('Overlay'); // общий оверлей
     const openIcon = document.querySelector('.menu-icon-open');
     const closeIcon = document.querySelector('.menu-icon-close');
 
-    menuButton.addEventListener('click', () => {
-      const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
-      menuButton.setAttribute('aria-expanded', !isExpanded);
-      mobileMenu.classList.toggle('-translate-x-full');
-      openIcon.classList.toggle('hidden');
-      closeIcon.classList.toggle('hidden');
-      menuOverlay.classList.toggle('hidden');
-      document.body.classList.toggle('overflow-hidden');
-    });
+    const isMenuOpen = () => !mobileMenu.classList.contains('-translate-x-full');
+    const isSearchOpen = () => !searchPanel.classList.contains('hidden');
 
-    menuOverlay.addEventListener('click', () => {
-      mobileMenu.classList.add('-translate-x-full');
-      menuOverlay.classList.add('hidden');
-      openIcon.classList.remove('hidden');
-      closeIcon.classList.add('hidden');
+    function openMenu() {
+      menuButton.setAttribute('aria-expanded', 'true');
+      mobileMenu.classList.remove('-translate-x-full');
+      openIcon?.classList.add('hidden');
+      closeIcon?.classList.remove('hidden');
+      overlay.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeMenu() {
       menuButton.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('overflow-hidden');
-    });
+      mobileMenu.classList.add('-translate-x-full');
+      openIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+      if (!isSearchOpen()) overlay.classList.add('hidden');
+      document.body.classList.toggle('overflow-hidden', isSearchOpen());
+    }
 
-    // Поиск
-    const searchButton = document.getElementById('searchButton');
+    if (menuButton) {
+      menuButton.addEventListener('click', () => {
+        if (isMenuOpen()) closeMenu();
+        else {
+          if (isSearchOpen()) closeSearch(); // если поиск открыт — закрыть
+          openMenu();
+        }
+      });
+    }
+
+    if (menuButtonСlose) {
+      menuButtonСlose.addEventListener('click', () => {
+        if (isMenuOpen()) closeMenu();
+        else {
+          if (isSearchOpen()) closeSearch(); // если поиск открыт — закрыть
+          openMenu();
+        }
+      });
+    }
+
+    // --- Поиск ---
     const searchPanel = document.getElementById('searchPanel');
-    const closeButton = document.getElementById('closeSearch');
-    const searchOverlay = document.getElementById('Overlay');
     const searchForm = searchPanel.querySelector('div');
     const searchInput = searchPanel.querySelector('input[type="search"]');
 
+    const openButtons = document.querySelectorAll('.open-search, #searchButton');
+    const closeButtons = document.querySelectorAll('.close-search');
+
     function openSearch() {
-      searchOverlay.classList.remove('hidden');
+      if (isMenuOpen()) closeMenu(); // закрыть меню если оно открыто
+      overlay.classList.remove('hidden');
       searchPanel.classList.remove('hidden');
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         searchForm.classList.remove('scale-95', 'opacity-0');
         searchForm.classList.add('scale-100', 'opacity-100');
-      }, 10);
+      });
       document.body.classList.add('overflow-hidden');
-      searchInput.focus();
+      searchInput?.focus();
     }
 
     function closeSearch() {
@@ -61,16 +85,25 @@ import Lightbox from '@/components/Telebox.astro';
       searchForm.classList.add('scale-95', 'opacity-0');
       setTimeout(() => {
         searchPanel.classList.add('hidden');
-        searchOverlay.classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
+        if (!isMenuOpen()) overlay.classList.add('hidden');
+        document.body.classList.toggle('overflow-hidden', isMenuOpen());
       }, 300);
     }
 
-    searchButton.addEventListener('click', openSearch);
-    closeButton.addEventListener('click', closeSearch);
-    searchOverlay.addEventListener('click', closeSearch);
+    // Обработчики
+    openButtons.forEach((btn) => btn.addEventListener('click', openSearch));
+    closeButtons.forEach((btn) => btn.addEventListener('click', closeSearch));
+
+    overlay.addEventListener('click', () => {
+      if (isSearchOpen()) closeSearch();
+      else if (isMenuOpen()) closeMenu();
+    });
+
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeSearch();
+      if (e.key === 'Escape') {
+        if (isSearchOpen()) closeSearch();
+        else if (isMenuOpen()) closeMenu();
+      }
     });
   });
 </script>

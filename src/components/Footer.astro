@@ -4,8 +4,12 @@ import { Image } from 'astro:assets';
 
 import Podpiska from '@/components/Podpiska.astro';
 import { IMAGE_SIZES } from '@/constants/image';
+import { CONFIG_CLIENT } from '@/config/client';
+import { wrapUrl } from '@/utils/urls';
 
 import Avatar from '@/assets/images/logotelegrafbel.svg';
+
+const SiteUrl = wrapUrl(CONFIG_CLIENT.SITE_URL);
 
 // components/SiteFooter.astro
 const currentYear = new Date().getFullYear();
@@ -17,7 +21,7 @@ const currentYear = new Date().getFullYear();
       <!-- Левая колонка -->
       <div class="md:w-1/2 mb-4 md:mb-0 gap-4">
         <div class="flex items-center mb-2">
-          <a href="/" class="inline-block">
+          <a href={SiteUrl} class="inline-block">
             <Image
               {...IMAGE_SIZES.FIXED.AVATAR}
               loading="lazy"
@@ -26,7 +30,7 @@ const currentYear = new Date().getFullYear();
               alt="Telegraf.news"
             />
           </a>
-          <button id="searchButton2" class="inline-block">
+          <button id="closeSearch2" class="open-search inline-block">
             <Icon name="mdi:magnify" class="text-white text-xl" />
           </button>
         </div>
