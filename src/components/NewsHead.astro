@@ -1,6 +1,7 @@
 ---
 import '@/styles/main.css'
 import '@fontsource-variable/inter/index.css'
+import { wrapUrl } from '@/utils/urls'
 
 import { ClientRouter } from 'astro:transitions'
 
@@ -26,6 +27,7 @@ const parsedMeta = zMetaHead.safeParse(data);
 const parsedNews = zNewsPostSchema.safeParse(data);
 
 const { PLAUSIBLE_SCRIPT_URL, PLAUSIBLE_DOMAIN } = CONFIG_CLIENT;
+const SiteUrl = wrapUrl(CONFIG_CLIENT.SITE_URL);
 
 // set defualt metadata in this component
 //const { data } = Astro.props;
@@ -37,36 +39,63 @@ function decodeHtml(html) {
   return plainText;
 }
 
-const structuredData: WithContext<NewsArticle> | any = parsedNews.success
-  ? {
-      '@context': 'https://schema.org',
-      '@type': 'NewsArticle',
-      mainEntityOfPage: {
-        '@type': 'WebPage',
-        '@id': parsedNews.data.head_canonical,
-      },
-      headline: decodedTitle2,
-      image: parsedNews.data.head_og_image,
-      datePublished: parsedNews.data.date,
-      articleSection: parsedNews.data.category,
-      author: {
-        '@type': parsedNews.data.avtor_name?.trim() ? 'Person' : 'Organization',
-        name: parsedNews.data.avtor_name?.trim()
-          ? parsedNews.data.avtor_name
-          : 'Редакция Telegraf.news',
-        url: 'https://telegraf.news/redakciya/',
-      },
-      publisher: {
-        '@type': 'Organization',
-        name: 'ЧИУП Агентство Телеграф',
-        logo: {
-          '@type': 'ImageObject',
-          url: 'https://telegraf.news/file/2022/07/Telegraf.news-C.png',
+const structuredData: any = parsedNews.success
+  ? [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': parsedNews.data.head_canonical,
         },
+        headline: decodedTitle2,
+        image: parsedNews.data.head_og_image,
+        datePublished: parsedNews.data.date,
+        articleSection: parsedNews.data.category,
+        author: {
+          '@type': parsedNews.data.avtor_name?.trim() ? 'Person' : 'Organization',
+          name: parsedNews.data.avtor_name?.trim()
+            ? parsedNews.data.avtor_name
+            : 'Редакция Telegraf.news',
+          url: wrapUrl ('https://telegraf.news/redakciya/'),
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'ЧИУП Агентство Телеграф',
+          logo: {
+            '@type': 'ImageObject',
+            url: wrapUrl ('https://telegraf.news/file/2022/07/Telegraf.news-C.png'),
+          },
+        },
+        description: parsedNews.data.head_description,
       },
-      description: parsedNews.data.head_description,
-    }
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Главная',
+            item: wrapUrl(SiteUrl),
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: parsedNews.data.category,
+            item: parsedNews.data.category_slug,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: parsedNews.data.title,
+            item: parsedNews.data.permalink,
+          },
+        ],
+      },
+    ]
   : {};
+
 ---
 
 <head>
