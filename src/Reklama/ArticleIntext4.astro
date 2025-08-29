@@ -1,5 +1,5 @@
 ---
-//  внутри текста новости #2
+//  внутри текста новости #4
 interface Props {
   show?: 'yes' | 'no';
 }
@@ -9,13 +9,12 @@ const { show = 'yes' } = Astro.props;
 
 {show === 'yes' && (
   <>
-    <script src="https://nzkjjqrcte.com/script.js"></script>
     <script>
-      const MobHtml = '<aside id="ArticleIntext2"><div id="ins234235"></div></aside>';
-      const AfterP = 6;
+      const MobHtml = '<aside id="ArticleIntext4"></aside>';
+      const AfterP = 17;
       const MinP = 4;
       const isMobile = window.innerWidth < 768;
-      const containerId = 'ins234235';
+      const containerId = 'ArticleIntext4';
 
       if (isMobile) {
         const container = document.getElementById('post-text');
@@ -41,12 +40,11 @@ const { show = 'yes' } = Astro.props;
       }
 
       function MobilePikachu() {
-        window.addEventListener("load", function () {
-          !(function (w, m) {
-            (w[m] || (w[m] = [])) &&
-              w[m].push({ id: containerId, block: "141287", site_id: "14667" });
-          })(window, "mtzBlocks");
-        });
+         setTimeout(() => {
+            if (!adfoxLoaded) {
+              googletag.cmd.push(() => googletag.display(containerId));
+            }
+          }, 1000);
       }
     </script>
   </>

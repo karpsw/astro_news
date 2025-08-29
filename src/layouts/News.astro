@@ -1,12 +1,19 @@
 ---
 import '@/assets/styles/news-markdown.css';
 
+// реклама
 import ArticleAfterText1 from 'Reklama/ArticleAfterText1.astro';
 import ArticleInText1 from 'Reklama/ArticleInText1.astro';
 import ArticleIntext2 from 'Reklama/ArticleIntext2.astro';
+import ArticleIntext3 from 'Reklama/ArticleIntext3.astro';
+import ArticleIntext4 from 'Reklama/ArticleIntext4.astro';
+import ArticleIntext4 from 'Reklama/ArticleIntext5.astro';
+import Sidebar1 from 'Reklama/Sidebar1.astro';
 import Sidebar3 from 'Reklama/Sidebar3.astro';
+// служебные
 import sanitizeHtml from 'sanitize-html';
 
+// оформление
 import LabelPost from '@/components/Labelpost.astro';
 import LazyIsland from '@/components/LazyIsland.astro';
 import Podpiska from '@/components/Podpiska.astro';
@@ -156,15 +163,24 @@ const authorUrl = wrapUrl('https://telegraf.news/redakciya/');
           <Share />
         </footer>
       </article>
-
+      {!vyklReklama && <ArticleIntext2 />}
+      {!vyklReklama && <ArticleIntext3 />}
+      {!vyklReklama && <ArticleIntext4 />}
+      {!vyklReklama && <ArticleIntext4 />}
       <!-- блок рекомендаций -->
-      <PostBlockShareaholic title="Подобрали для вас" className="mt-5" location={data.permalink} />
+      <PostBlockShareaholic
+        title="Подобрали для вас"
+        className="mt-5"
+        location={data.permalink}
+        vyklReklama={vyklReklama}
+      />
       <!-- Блоки: главные, популярные -->
       <LazyIsland url="/fragments/PostBlocksLazy/" />
     </div>
     <!-- конец Left -->
     <!-- Sidebar -->
     <aside class="mt-[-0.8rem] md:mt-8">
+      {!vyklReklama && <Sidebar1 />}
       <LazyIsland url="/fragments/PostSidebar/" wrap="div">
         <div id="currency-widget" class="bg-white border border-gray-200 p-4 rounded-md mb-5">
           <h2 class="text-lg font-semibold text-gray-700 mb-4">Курсы валют</h2>

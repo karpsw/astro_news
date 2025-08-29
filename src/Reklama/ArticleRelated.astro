@@ -1,0 +1,40 @@
+---
+//  внутри текста новости #2
+interface Props {
+  show?: 'yes' | 'no';
+}
+
+const { show = 'yes' } = Astro.props;
+---
+
+{show === 'yes' && (
+  <aside id="ArticleRelated"></aside>
+  <>
+    <script src="https://ysusuu.com/9t717l219liv/p0m30y/qh8786vqu786pkyb7.php"></script>
+    <script>
+      const isMobile = window.innerWidth < 768;
+      const containerId = 'ArticleRelated';
+
+      if (isMobile) {
+          MobilePikachu();
+      }
+
+      function MobilePikachu() {
+        window.addEventListener("load", function () {
+          userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          if (userTimeZone) {
+            var tzArr = userTimeZone.split("/");
+          userCity = tzArr[tzArr.length - 1];
+            }
+
+          if (userCity == 'Minsk') {
+            const el = document.createElement('div');
+            el.setAttribute('data-la-block', '321c7d8e-d486-41e3-aa58-006f6b6df191');
+            const box = document.getElementById(containerId);
+            box.appendChild(el);
+          }
+        });
+      }
+    </script>
+  </>
+)}

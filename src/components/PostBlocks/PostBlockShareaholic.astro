@@ -1,6 +1,7 @@
 ---
 // components/ShareaholicRecs.astro
 import { decode } from 'html-entities';
+import ArticleRelated from 'Reklama/ArticleRelated.astro';
 
 import NewsPostCard, { NewsPostCardLayout } from '@/components/NewsPostCard.astro';
 
@@ -11,7 +12,13 @@ interface Props {
   internal?: string | number;
 }
 
-const { className, location, internal = 6, title = 'Подобрали для вас:' } = Astro.props;
+const {
+  vyklReklama,
+  className,
+  location,
+  internal = 6,
+  title = 'Подобрали для вас:',
+} = Astro.props;
 const API_KEY = '0fe2353072a05d61c3a9353ff83bbc15';
 
 // Функция для получения данных
@@ -78,7 +85,10 @@ const transformedData = recommendationsData ? transformRecommendations(recommend
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {transformedData.map((post, index) => (
-          <NewsPostCard post={post} layout={NewsPostCardLayout.variant2} key={post.url + index} />
+          <>
+            <NewsPostCard post={post} layout={NewsPostCardLayout.variant2} key={post.url + index} />
+            {index === 0 && !vyklReklama && <ArticleRelated />}
+          </>
         ))}
       </div>
     </aside>
