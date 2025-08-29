@@ -1,3 +1,5 @@
+import { Icon } from 'astro-icon/components';
+
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
@@ -188,10 +190,7 @@ function parseOblovlenoBlock(newChildren, content, shortcode, attrs) {
         type: 'html',
         value: `<div class="${shortcode}-head">
 			 
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 512 512">
-    <path d="M290.74 93.24L418.76 221.26L176.37 463.65L48.35 335.63L290.74 93.24ZM497.94 74.17C511.81 88.04 511.81 110.96 497.94 124.83L459.31 163.46L348.54 52.69L387.17 14.06C401.04 0.19 423.96 0.19 437.83 14.06L497.94 74.17ZM0 512L144.52 467.48L44.52 367.48L0 512Z"/>
-  </svg>
-  Обновлено
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M2 12A10 10 0 1 0 12 2A10 10 0 0 0 2 12m13.6 1.72A4 4 0 0 0 16 12a4 4 0 0 0-4-4v2L8.88 7L12 4v2a6 6 0 0 1 6 6a5.9 5.9 0 0 1-.93 3.19M6 12a5.9 5.9 0 0 1 .93-3.19l1.47 1.47A4 4 0 0 0 8 12a4 4 0 0 0 4 4v-2l3 3l-3 3v-2a6 6 0 0 1-6-6"/></svg>  Обновлено
 </div>`,
       },
       {
